@@ -10,6 +10,9 @@ const app = express();
 // setup view engine
 viewEngine(app);
 
+// setup app static content
+app.use(express.static('public'));
+
 // setup middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
