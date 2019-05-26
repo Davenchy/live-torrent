@@ -26,6 +26,9 @@
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "express-session": "^1.16.1",
+    "mime": "^2.4.3",
+    "pump": "^3.0.0",
+    "range-parser": "^1.2.1",
     "webtorrent": "^0.103.1"
   },
   "devDependencies": {

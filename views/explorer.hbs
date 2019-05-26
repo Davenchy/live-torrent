@@ -1,0 +1,12 @@
+{{#each files}}
+<a href="/torrent/stream?torrentId={{this.torrentInfoHash}}&fileIndex={{this.index}}">{{this.name}} - {{this.length}}
+  bytes -
+  {{this.path}}</a>
+<br>
+{{else}}
+<p>No files found</p>
+{{/each}}
+
+<script>
+
+</script>
