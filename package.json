@@ -1,0 +1,33 @@
+{
+  "name": "live-torrent",
+  "version": "1.0.0",
+  "description": "explore, stream and share torrent online",
+  "main": "app.js",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon ."
+  },
+  "keywords": [
+    "live",
+    "torrent",
+    "share",
+    "stream",
+    "explore",
+    "play",
+    "online"
+  ],
+  "author": "Davenchy <firon1222@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "express-session": "^1.16.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
