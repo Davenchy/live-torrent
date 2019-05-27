@@ -10,14 +10,17 @@ function add(torrentId, cb) {
     torrent = client.add(torrentId);
     torrent.on('error', cb);
     torrent.on('ready', () => {
-      torrent.jsonify = () => torrent.files.map((f, i) => ({
-        name: f.name,
-        index: i,
-        path: f.path,
-        length: f.length,
-        downloaded: f.downloaded,
-        torrentInfoHash: torrent.infoHash
-      }));
+      torrent.jsonify = () => ({
+        infoHash: torrent.infoHash,
+        files: [...torrent.files.map((f, i) => ({
+          name: f.name,
+          index: i,
+          path: f.path,
+          length: f.length,
+          type: mime.getType(f.name),
+          downloaded: f.downloaded,
+        }))]
+      });
       cb(null, torrent);
     });
   }

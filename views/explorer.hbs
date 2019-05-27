@@ -1,12 +1,56 @@
-{{#each files}}
-<a href="/torrent/stream?torrentId={{this.torrentInfoHash}}&fileIndex={{this.index}}">{{this.name}} - {{this.length}}
-  bytes -
-  {{this.path}}</a>
-<br>
-{{else}}
-<p>No files found</p>
-{{/each}}
+<div id="list" class="row"></div>
+<p id="no-results">No files found</p>
 
 <script>
+  const torrent = {{{ json torrent }}};
+  $(document).ready(_ => {
+    const nor = $('#no-results');
+    const list = $('#list');
 
+    if (torrent.files.length === 0) list.hide();
+    else {
+      nor.hide();
+      for (let f of torrent.files) {
+
+        const url = `?torrentId=${torrent.infoHash}&fileIndex=${f.index}`;
+        /* list.append(`<li>
+          ${f.name} - ${size2string(f.length)} - ${f.path}: <a href="/player${url}">Video Player</a>
+          - <a href="/torrent/stream${url}" download="${f.name}" target="_blank">Download</a><br/>
+          Stream: <a href="/torrent/stream${url}">/torrent/stream${url}</a>
+          <hr/>
+        </li>`); */
+
+        list.append(`<div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">${f.name} - ${size2string(f.length)}</span>
+              <p>Type: ${f.type}</p>
+              <p>Path: ${f.path}</p>
+              <p>Stream URL: <a href="/torrent/stream${url}">/torrent/stream${url}</a></p>
+            </div>
+            <div class="card-action">
+              <a href="/torrent/stream${url}" download="${f.name}" class="green-text text-darken-3" target="_blank">Download</a>  
+              ${
+          f.type.startsWith('video')
+            || f.type.startsWith('video')
+            || f.type.startsWith('image')
+            || f.type.startsWith('audio')
+            ? `<a href="/player${url}" class="purple-text text-darken-3">Video Player</a>` : ""}
+            </div >
+          </div >
+        </div > `);
+      }
+    }
+  });
+
+  function size2string(n) {
+    const types = ['bytes', 'Kb', 'Mb', 'Gb', 'Tb'];
+    let size = n;
+    let i = 0;
+    while (size >= 1024) {
+      size /= 1024;
+      i++;
+    }
+    return `${parseFloat(size).toFixed(2)} ${types[i] || '?'}`;
+  }
 </script>

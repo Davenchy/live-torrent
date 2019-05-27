@@ -11,7 +11,7 @@ router.get('/explorer', (req, res) => {
       console.error(err);
       res.render('error', { code: 500, message: 'Can not parse the torrentId' });
     } else {
-      res.render('explorer', { files: torrent.jsonify() });
+      res.render('explorer', { torrent: torrent.jsonify() });
     }
   });
 });

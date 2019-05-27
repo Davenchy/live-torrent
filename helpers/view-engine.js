@@ -2,12 +2,12 @@ const Handlebars = require('handlebars');
 const exphbs = require('express-handlebars');
 
 function helpers() {
-  // define helpers here...
+  Handlebars.registerHelper('json', (context) => JSON.stringify(context));
 }
 
 module.exports = function (app) {
   const hbs = exphbs.create({
-      extname: '.hbs'
+    extname: '.hbs'
   });
 
   app.engine(hbs.extname, hbs.engine);
