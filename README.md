@@ -1,4 +1,4 @@
-# live-stream
+# live-torrent
 
 Explore, stream and share torrents online
 
