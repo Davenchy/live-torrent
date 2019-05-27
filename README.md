@@ -2,6 +2,10 @@
 
 Explore, stream and share torrents online
 
+Player page framework: __Plyr.js__
+
+__Web Torrent based__
+
 
 ## Server API
 
@@ -51,3 +55,22 @@ torrentId:
 - torrent infoHash
 
 > supports ranges
+
+
+## Front-End Routes
+
+Explorer
+
+params:
+
+- torrendId [required]
+
+---
+
+Player
+
+params:
+
+- torrentId [required]
+- fileIndex [required]
+- subtitle
