@@ -1,0 +1,22 @@
+<div style="margin: 5em 0;">
+  <video id="player" src="/torrent/stream?torrentId={{torrent.infoHash}}&fileIndex={{fileIndex}}"></video>
+</div>
+
+<div class="input-field">
+  <input type="text" name="stream"
+    value="{{host}}/torrent/stream?torrentId={{torrent.infoHash}}&fileIndex={{fileIndex}}" readonly>
+  <label for="stream">Stream</label>
+</div>
+<div class="input-field">
+  <input type="text" name="share" value="{{host}}/player?torrentId={{torrent.infoHash}}&fileIndex={{fileIndex}}"
+    readonly>
+  <label for="share">Share</label>
+</div>
+<div class="input-field">
+  <input type="text" name="expore" value="{{host}}/explorer?torrentId={{torrent.infoHash}}" readonly>
+  <label for="expore">Explore The Torrent File</label>
+</div>
+
+<script>
+  const player = new Plyr('#player')
+</script>
