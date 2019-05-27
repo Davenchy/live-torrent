@@ -73,4 +73,3 @@ params:
 
 - torrentId [required]
 - fileIndex [required]
-- subtitle

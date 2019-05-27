@@ -21,7 +21,7 @@ router.get('/explorer', (req, res) => {
 
 // player page
 router.get('/player', (req, res) => {
-  const { torrentId, fileIndex, subtitle } = req.query;
+  const { torrentId, fileIndex } = req.query;
   torrents.add(torrentId, (err, torrent) => {
     if (err) {
       console.error(err);
@@ -30,8 +30,7 @@ router.get('/player', (req, res) => {
       res.render('player', {
         host: (req.secure ? "https://" : "http://") + req.headers.host,
         torrent: torrent.jsonify(),
-        fileIndex,
-        subtitle
+        fileIndex
       });
     }
   });
