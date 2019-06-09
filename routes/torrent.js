@@ -3,9 +3,15 @@ const torrents = require('../helpers/torrents');
 const yazl = require('yazl');
 const pump = require('pump');
 
+const reqParser = (req, res, next) => {
+  req.torrentId = req.params.infoHash || req.query.torrentId;
+  req.fileIndex = req.params.fileIndex || req.query.fileIndex || 0;
+  next();
+};
+
 // stream torrent file by index
-router.get('/stream', (req, res) => {
-  const { torrentId, fileIndex } = req.query;
+const stream = (req, res) => {
+  const { torrentId, fileIndex } = req;
   torrents.add(torrentId, (err, torrent) => {
     if (err) res.sendStatus(500);
     else {
@@ -14,20 +20,15 @@ router.get('/stream', (req, res) => {
       else torrents.serveFile(torrent.files[fileIndex], req, res);
     }
   });
-});
+};
 
-// add torrent file to the webtorrent client
-router.get('/', (req, res) => {
-  const { torrentId } = req.query;
-  torrents.add(torrentId, (err, torrent) => {
-    if (err) res.sendStatus(500);
-    else res.send(torrent.jsonify());
-  });
-});
+router.get('/stream', reqParser, stream);
+router.get('/stream/:infoHash/:fileIndex', reqParser, stream);
+
 
 // download zip file
-router.get('/download', (req, res, next) => {
-  const { torrentId } = req.query;
+const downloadReqParser = (req, res, next) => {
+  const { torrentId } = req;
   torrents.add(torrentId, (err, torrent) => {
     if (err) res.sendStatus(500);
     else {
@@ -35,18 +36,35 @@ router.get('/download', (req, res, next) => {
       next();
     }
   });
-}, (req, res) => {
+};
+
+const downloadZIP = (req, res) => {
   const { torrent } = req;
   const zipFile = new yazl.ZipFile();
   
   res.attachment(torrent.name + '.zip');
   res.setHeader('Content-Length', torrent.length);
   req.connection.setTimeout(3600000);
-
+  
   pump(zipFile.outputStream, res);
-
+  
   torrent.files.forEach(f => zipFile.addReadStream(f.createReadStream(), f.path));
   zipFile.end();
-});
+};
+
+router.get('/download', reqParser, downloadReqParser, downloadZIP);
+router.get('/download/:infoHash', reqParser, downloadReqParser, downloadZIP);
+
+// add torrent file to the webtorrent client
+const torrentInfo = (req, res) => {
+  const { torrentId } = req;
+  torrents.add(torrentId, (err, torrent) => {
+    if (err) res.sendStatus(500);
+    else res.send(torrent.jsonify());
+  });
+};
+
+router.get('/info', reqParser, torrentInfo);
+router.get('/info/:infoHash', reqParser, torrentInfo);
 
 module.exports = router;

@@ -49,7 +49,8 @@ npm run dev
 
 Method | path | params
 ----|----|----
-GET | /torrent | torrentId, fileIndex
+GET | /torrent/info | torrentId [required]
+GET | /torrent/info/:infoHash
 
 response:
 
@@ -85,9 +86,10 @@ ______
 
 Method | path | params
 -------|-----|-------
-GET | /torrent/stream | torrentId, fileIndex
+GET | /torrent/stream | torrentId [required], fileIndex [default = 0]
+GET | /torrent/stream/:infoHash/:fileIndex
 
-torrentId:
+torrentId can be:
 
 - magnet-uri
 - http/https torrent file
@@ -95,20 +97,17 @@ torrentId:
 
 > supports ranges
 
+### Download torrent file as zip archive
+
+Method | path | params
+-------|-----|-------
+GET | /torrent/download | torrentId [required]
+GET | /torrent/download/:infoHash
+
 
 ## Front-End Routes
 
-Explorer
-
-params:
-
-- torrendId [required]
-
----
-
-Player
-
-params:
-
-- torrentId [required]
-- fileIndex [required]
+Route | Params
+------|-------
+/explorer | torrentId[required]
+/player | torrentId[required], fileIndex[required]
