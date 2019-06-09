@@ -20,6 +20,7 @@
     </div>
     <div class="card-action">
       <a download="${torrent.name}.zip" class="green-text text-darken-3" href="/torrent/download/${torrent.infoHash}" target="_blank">Download ZIP [BETA]</a>
+      <a download="${torrent.name}.m3u" class="orange-text text-darken-3" href="/torrent/playlist/${torrent.infoHash}" target="_blank">Download Playlist File [.m3u]</a>
     </div>
   </div >`)
 
@@ -41,9 +42,7 @@
             <div class="card-action">
               <a href="/torrent/stream${url}" download="${f.name}" class="green-text text-darken-3" target="_blank">Download</a>  
               ${
-          f.type.startsWith('video')
-            || f.type.startsWith('video')
-            || f.type.startsWith('audio')
+          f.type.startsWith('video') || f.type.startsWith('audio')
             ? `<a href="/player${url}" class="purple-text text-darken-3">Video Player</a>` : ""}
             </div >
           </div >

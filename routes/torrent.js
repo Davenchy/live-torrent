@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const playlistBuilder = require('../helpers/playlist-builder');
 const torrents = require('../helpers/torrents');
 const yazl = require('yazl');
 const pump = require('pump');
@@ -66,5 +67,20 @@ const torrentInfo = (req, res) => {
 
 router.get('/info', reqParser, torrentInfo);
 router.get('/info/:infoHash', reqParser, torrentInfo);
+
+// build playlist
+const playlist = (req, res, next) => {
+  const { torrentId } = req;
+  torrents.add(torrentId, (err, torrent) => {
+    if (err) res.sendStatus(500);
+    else {
+      req.torrent = torrent.jsonify();
+      next();
+    }
+  });
+};
+
+router.get('/playlist', reqParser, playlist, playlistBuilder);
+router.get('/playlist/:infoHash', reqParser, playlist, playlistBuilder);
 
 module.exports = router;

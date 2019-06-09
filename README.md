@@ -97,13 +97,19 @@ torrentId can be:
 
 > supports ranges
 
-### Download torrent file as zip archive
+### Download torrent as zip archive
 
 Method | path | params
 -------|-----|-------
 GET | /torrent/download | torrentId [required]
 GET | /torrent/download/:infoHash
 
+### Download torrent as playlist [.m3u]
+
+Method | path | params
+-------|-----|-------
+GET | /torrent/playlist | torrentId [required]
+GET | /torrent/playlist/:infoHash
 
 ## Front-End Routes
 

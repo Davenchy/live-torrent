@@ -4,30 +4,32 @@ const rangeParser = require('range-parser');
 const mime = require('mime');
 const client = new WebTorrent();
 
+const jsonifyINIT = (torrent, cb) => {
+  torrent.jsonify = () => ({
+    name: torrent.name,
+    infoHash: torrent.infoHash,
+    size: torrent.length,
+    peers: torrent.numPeers,
+    files: [...torrent.files.map((f, i) => ({
+      name: f.name,
+      index: i,
+      path: f.path,
+      size: f.length,
+      type: mime.getType(f.name) || '',
+      downloaded: f.downloaded,
+    }))]
+  });
+  cb(null, torrent);
+}
+
 function add(torrentId, cb) {
   let torrent = client.get(torrentId);
   if (!torrent) {
     torrent = client.add(torrentId);
     torrent.on('error', cb);
-    torrent.on('ready', () => {
-      torrent.jsonify = () => ({
-        name: torrent.name,
-        infoHash: torrent.infoHash,
-        size: torrent.length,
-        peers: torrent._peersLength,
-        files: [...torrent.files.map((f, i) => ({
-          name: f.name,
-          index: i,
-          path: f.path,
-          size: f.length,
-          type: mime.getType(f.name),
-          downloaded: f.downloaded,
-        }))]
-      });
-      cb(null, torrent);
-    });
+    torrent.on('ready', () => jsonifyINIT(torrent, cb));
   }
-  else cb(null, torrent);
+  else jsonifyINIT(torrent, cb);
 }
 
 // serveFile from inside webtorrent createServer method
