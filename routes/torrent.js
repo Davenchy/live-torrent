@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const torrents = require('../helpers/torrents');
-const archiver = require('archiver');
+const yazl = require('yazl');
 const pump = require('pump');
 
 // stream torrent file by index
@@ -37,25 +37,16 @@ router.get('/download', (req, res, next) => {
   });
 }, (req, res) => {
   const { torrent } = req;
+  const zipFile = new yazl.ZipFile();
   
   res.attachment(torrent.name + '.zip');
   res.setHeader('Content-Length', torrent.length);
   req.connection.setTimeout(3600000);
 
-  var archive = archiver('zip');
-  archive.on('warning', m => console.warn(m));
-  archive.on('error', e => {
-    console.error(e);
-    res.sendStatus(500);
-    res.end();
-  });
+  pump(zipFile.outputStream, res);
 
-  pump(archive, res);
-
-  torrent.files.forEach(f => archive.append(f.createReadStream(), { name: f.path }));
-  archive.finalize();
+  torrent.files.forEach(f => zipFile.addReadStream(f.createReadStream(), f.path));
+  zipFile.end();
 });
-
-
 
 module.exports = router;

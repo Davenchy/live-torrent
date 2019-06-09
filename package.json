@@ -19,7 +19,6 @@
   "author": "Davenchy <firon1222@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "archiver": "^3.0.0",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",
@@ -30,7 +29,8 @@
     "mime": "^2.4.3",
     "pump": "^3.0.0",
     "range-parser": "^1.2.1",
-    "webtorrent": "^0.103.1"
+    "webtorrent": "^0.103.1",
+    "yazl": "^2.5.1"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
