@@ -3,9 +3,15 @@ const torrents = require('../helpers/torrents');
 
 router.get('/', (req, res) => res.render('home'));
 
+const reqParser = (req, res, next) => {
+  req.torrentId = req.params.infoHash || req.query.torrentId;
+  req.fileIndex = req.params.fileIndex || req.query.fileIndex || 0;
+  next();
+};
+
 // explorer page
-router.get('/explorer', (req, res) => {
-  const { torrentId } = req.query;
+const explorer = (req, res) => {
+  const { torrentId } = req;
   torrents.add(torrentId, (err, torrent) => {
     if (err) {
       console.error(err);
@@ -17,11 +23,14 @@ router.get('/explorer', (req, res) => {
       });
     }
   });
-});
+};
+
+router.get('/explorer', reqParser, explorer);
+router.get('/explorer/:infoHash', reqParser, explorer);
 
 // player page
-router.get('/player', (req, res) => {
-  const { torrentId, fileIndex } = req.query;
+const player = (req, res) => {
+  const { torrentId, fileIndex } = req;
   torrents.add(torrentId, (err, torrent) => {
     if (err) {
       console.error(err);
@@ -30,10 +39,14 @@ router.get('/player', (req, res) => {
       res.render('player', {
         host: (req.secure ? "https://" : "http://") + req.headers.host,
         torrent: torrent.jsonify(),
-        fileIndex
+        fileIndex,
+        file: torrent.files[fileIndex]
       });
     }
   });
-});
+};
+
+router.get('/player', reqParser, player);
+router.get('/player/:infoHash/:fileIndex', reqParser, player);
 
 module.exports = router;

@@ -15,11 +15,11 @@
       <span class="card-title">${torrent.name} - ${size2string(torrent.size)}</span>
       <p>Peers: ${torrent.peers}</p>
       <p>
-        Share: <a href="{{host}}/explorer?torrentId=${torrent.infoHash}">{{host}}/explorer?torrentId=${torrent.infoHash}</a>
+        Share: <a href="{{host}}/explorer/${torrent.infoHash}">{{host}}/explorer/${torrent.infoHash}</a>
       </p>
     </div>
     <div class="card-action">
-      <a download="${torrent.name}.zip" class="green-text text-darken-3" href="/torrent/download?torrentId=${torrent.infoHash}" target="_blank">Download ZIP [BETA] [Download all files then create zip archive on server]</a>
+      <a download="${torrent.name}.zip" class="green-text text-darken-3" href="/torrent/download/${torrent.infoHash}" target="_blank">Download ZIP [BETA]</a>
     </div>
   </div >`)
 
@@ -28,7 +28,7 @@
       nor.hide();
       for (let f of torrent.files) {
 
-        const url = `?torrentId=${torrent.infoHash}&fileIndex=${f.index}`;
+        const url = `/${torrent.infoHash}/${f.index}`;
 
         list.append(`<div class="col s12">
           <div class="card">
