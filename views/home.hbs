@@ -1,4 +1,4 @@
-<form style="margin: 5em auto; overflow: hidden">
+<form style="margin: 5em auto; overflow: hidden" id="form">
   <div class="input-field">
     <input type="search" id="torrentId" placeholder="magnet uri, info hash, http/https torrent file"
       value="magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel">
@@ -47,6 +47,11 @@
   </div >
 
 <script>
+  document.querySelector('#form').addEventListener('submit', e => {
+    e.preventDefault();
+    explore();
+  });
+
   function explore() {
     const value = $('#torrentId').val();
     location.href = '/explorer?torrentId=' + value;

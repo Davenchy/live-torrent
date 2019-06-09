@@ -5,6 +5,7 @@ const mime = require('mime');
 const client = new WebTorrent();
 
 const jsonifyINIT = (torrent, cb) => {
+  torrent.jsonify = () => {};
   torrent.jsonify = () => ({
     name: torrent.name,
     infoHash: torrent.infoHash,
@@ -23,13 +24,13 @@ const jsonifyINIT = (torrent, cb) => {
 }
 
 function add(torrentId, cb) {
-  let torrent = client.get(torrentId);
-  if (!torrent) {
-    torrent = client.add(torrentId);
-    torrent.on('error', cb);
-    torrent.on('ready', () => jsonifyINIT(torrent, cb));
-  }
-  else jsonifyINIT(torrent, cb);
+  torrent = client.add(torrentId);
+  torrent.on('error', e => {
+    if (e.message.indexOf('Cannot add duplicate torrent') !== -1) {
+      jsonifyINIT(client.get(torrent.infoHash), cb);
+    } else cb(e);
+  });
+  torrent.on('ready', () => jsonifyINIT(torrent, cb));
 }
 
 // serveFile from inside webtorrent createServer method
