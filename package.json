@@ -19,6 +19,7 @@
   "author": "Davenchy <firon1222@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "archiver": "^3.0.0",
     "body-parser": "^1.19.0",
     "connect-flash": "^0.1.1",
     "cors": "^2.8.5",

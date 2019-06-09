@@ -1,7 +1,5 @@
-<div class="input-field" style="margin: 5em 0;">
-  <input type="text" name="share" value="{{host}}/explorer?torrentId={{torrent.infoHash}}" readonly>
-  <label for="share">Share</label>
-</div>
+<div class="col s12" style="margin: 50px auto;" id="info"></div> 
+<h3>Files:</h3>
 <div id="list" class="row"></div>
 <p id="no-results">No files found</p>
 
@@ -10,6 +8,20 @@
   $(document).ready(_ => {
     const nor = $('#no-results');
     const list = $('#list');
+    const info = $('#info');
+
+    info.html(`<div class="card grey darken-3 white-text">
+    <div class="card-content">
+      <span class="card-title">${torrent.name} - ${size2string(torrent.size)}</span>
+      <p>Peers: ${torrent.peers}</p>
+      <p>
+        Share: <a href="{{host}}/explorer?torrentId=${torrent.infoHash}">{{host}}/explorer?torrentId=${torrent.infoHash}</a>
+      </p>
+    </div>
+    <div class="card-action">
+      <a download="${torrent.name}.zip" class="green-text text-darken-3" href="/torrent/download?torrentId=${torrent.infoHash}" target="_blank">Download ZIP [BETA]</a>
+    </div>
+  </div >`)
 
     if (torrent.files.length === 0) list.hide();
     else {
@@ -21,7 +33,7 @@
         list.append(`<div class="col s12">
           <div class="card">
             <div class="card-content">
-              <span class="card-title">${f.name} - ${size2string(f.length)}</span>
+              <span class="card-title">${f.name} - ${size2string(f.size)}</span>
               <p>Type: ${f.type}</p>
               <p>Path: ${f.path}</p>
               <p>Stream URL: <a href="{{host}}/torrent/stream${url}">{{host}}/torrent/stream${url}</a></p>

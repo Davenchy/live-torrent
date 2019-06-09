@@ -2,9 +2,9 @@ const express = require('express');
 const viewEngine = require('./helpers/view-engine');
 const bodyParser = require('body-parser');
 
+// setup env vars
 require('dotenv').config();
 
-const { PORT } = process.env;
 const app = express();
 
 // setup view engine
@@ -21,5 +21,5 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', require('./routes/main'));
 app.use('/torrent', require('./routes/torrent'));
 
-if (!PORT) throw new Error('PORT env var is not defined');
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('app is running on port ' + PORT))

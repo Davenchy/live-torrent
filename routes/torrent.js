@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const torrents = require('../helpers/torrents');
+const archiver = require('archiver');
+const pump = require('pump');
 
 // stream torrent file by index
 router.get('/stream', (req, res) => {
@@ -21,6 +23,37 @@ router.get('/', (req, res) => {
     if (err) res.sendStatus(500);
     else res.send(torrent.jsonify());
   });
+});
+
+// download zip file
+router.get('/download', (req, res, next) => {
+  const { torrentId } = req.query;
+  torrents.add(torrentId, (err, torrent) => {
+    if (err) res.sendStatus(500);
+    else {
+      req.torrent = torrent;
+      next();
+    }
+  });
+}, (req, res) => {
+  const { torrent } = req;
+  
+  res.attachment(torrent.name + '.zip');
+  res.setHeader('Content-Length', torrent.length);
+  req.connection.setTimeout(3600000);
+
+  var archive = archiver('zip');
+  archive.on('warning', m => console.warn(m));
+  archive.on('error', e => {
+    console.error(e);
+    res.sendStatus(500);
+    res.end();
+  });
+
+  pump(archive, res);
+
+  torrent.files.forEach(f => archive.append(f.createReadStream(), { name: f.path }));
+  archive.finalize();
 });
 
 

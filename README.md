@@ -2,9 +2,45 @@
 
 Explore, stream and share torrents online
 
-Player page framework: __Plyr.js__
+HTML5 video player: __Plyr.js__
 
-__Web Torrent based__
+project is __Web Torrent based__
+
+## How to use
+
+### Environment Variables
+
+> Note: you can use .env file to setup vars
+
+Var | Default | Desc
+----|---------|-----
+PORT | 3000 | server listening port
+
+### For Users
+
+```bash
+# clone the project
+git clone https://github.com/Davenchy/live-torrent.git
+
+# install dependencies
+npm i
+
+# start the server
+npm start
+```
+
+### For Developers
+
+```bash
+# clone the project
+git clone https://github.com/Davenchy/live-torrent.git
+
+# install dependencies
+npm i -D
+
+# run dev server
+npm run dev
+```
 
 
 ## Server API
@@ -13,13 +49,16 @@ __Web Torrent based__
 
 Method | path | params
 ----|----|----
-GET | /torrent/stream | torrentId, fileIndex
+GET | /torrent | torrentId, fileIndex
 
 response:
 
 ```javascript
 {
+  name: String,
   infoHash: String,
+  size: Number,
+  peers: Number,
   files: [Object]
 }
 
@@ -33,7 +72,7 @@ The File Object:
   name: String,
   index: Number,
   path: String,
-  length: Number,
+  size: Number,
   downloaded: Number,
   type: String // file mime type e.g.: video/mp4 image/jpg
 }

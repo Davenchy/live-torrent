@@ -11,12 +11,15 @@ function add(torrentId, cb) {
     torrent.on('error', cb);
     torrent.on('ready', () => {
       torrent.jsonify = () => ({
+        name: torrent.name,
         infoHash: torrent.infoHash,
+        size: torrent.length,
+        peers: torrent._peersLength,
         files: [...torrent.files.map((f, i) => ({
           name: f.name,
           index: i,
           path: f.path,
-          length: f.length,
+          size: f.length,
           type: mime.getType(f.name),
           downloaded: f.downloaded,
         }))]
