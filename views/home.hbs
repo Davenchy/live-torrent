@@ -1,4 +1,4 @@
-<div style="margin-top: 5em;">
+<form style="margin: 5em auto; overflow: hidden">
   <div class="input-field">
     <input type="search" id="torrentId" placeholder="magnet uri, info hash, http/https torrent file"
       value="magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel">
@@ -7,7 +7,29 @@
   <div class="right">
     <a href="javascript:explore();" class="btn blue waves-effects">Explore</a>
   </div>
-</div>
+</form>
+
+<div class="card grey darken-3 white-text">
+    <div class="card-content">
+      <span class="card-title">Live Torrent - API</span>
+      <a href="https://github.com/Davenchy/live-torrent">Github Repo</a>
+      <hr>
+      <h5>Notes:</h5>
+      <p>$TORRENT_FILE$ -> any torrent infoHash, magnet-uri, http/https uri</p>
+      <hr>
+      <h5>Get Torrent Info:</h5>
+      <p>/torrent/info/$INFO_HASH$</p>
+      <p>/torrent/info?torrentId=$TORRENT_FILE$</p>
+      <hr>
+      <h5>Get Torrent Stream:</h5>
+      <p>/torrent/stream/$INFO_HASH$/$FILE_INDEX$</p>
+      <p>/torrent/stream?torrentId=$TORRENT_FILE$&fileIndex=$FILE_INDEX$</p>
+      <hr>
+      <h5>Download Torrent ZIP:</h5>
+      <p>/torrent/download/$INFO_HASH$</p>
+      <p>/torrent/download?torrentId=$TORRENT_FILE$</p>
+    </div>
+  </div >
 
 <script>
   function explore() {
