@@ -1,10 +1,11 @@
 <form style="margin: 5em auto; overflow: hidden" id="form">
   <div class="input-field">
     <input type="search" id="torrentId" placeholder="magnet uri, info hash, http/https torrent file"
-      value="magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel">
+      value="">
     <label for="magnet">Torrent File</label>
   </div>
   <div class="right">
+    <a href="javascript:demo();" class="btn green waves-effects">Demo</a>
     <a href="javascript:clear();" class="btn red waves-effects">Clear</a>
     <a href="javascript:explore();" class="btn blue waves-effects">Explore</a>
   </div>
@@ -64,5 +65,9 @@
 
   function clear() {
     $('#torrentId').val('');
+  }
+
+  function demo() {
+    $('#torrentId').val('magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel');
   }
 </script>
