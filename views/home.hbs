@@ -5,6 +5,7 @@
     <label for="magnet">Torrent File</label>
   </div>
   <div class="right">
+    <a href="javascript:clear();" class="btn red waves-effects">Clear</a>
     <a href="javascript:explore();" class="btn blue waves-effects">Explore</a>
   </div>
 </form>
@@ -59,5 +60,9 @@
   function explore() {
     const value = $('#torrentId').val();
     location.href = '/explorer?torrentId=' + value;
+  }
+
+  function clear() {
+    $('#torrentId').val('');
   }
 </script>
