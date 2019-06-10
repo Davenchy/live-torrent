@@ -36,11 +36,12 @@ const player = (req, res) => {
       console.error(err);
       res.render('error', { code: 500, message: 'Can not parse the torrentId' });
     } else {
+      const t = torrent.jsonify();
       res.render('player', {
         host: (req.secure ? "https://" : "http://") + req.headers.host,
-        torrent: torrent.jsonify(),
+        torrent: t,
         fileIndex,
-        file: torrent.files[fileIndex]
+        file: t.files[fileIndex]
       });
     }
   });

@@ -1,5 +1,7 @@
-<h4>{{torrent.name}} - {{file.name}}</h4>
-<a href="{{host}}/explorer/{{torrent.infoHash}}">Back</a>
+<h4 style="color: #eee;">
+  {{torrent.name}} - {{file.name}} - {{size file.size}} - Peers: {{torrent.peers}}
+</h4>
+<a href="{{host}}/explorer/{{torrent.infoHash}}#File{{fileIndex}}">Back</a>
 <div style="margin: 5em 0;">
   <video id="player" src="/torrent/stream/{{torrent.infoHash}}/{{fileIndex}}"></video>
 </div>
@@ -46,5 +48,7 @@
       player.currentTime += r;
     }
   })
+
+  {{!-- $('#size').val() --}}
 
 </script>

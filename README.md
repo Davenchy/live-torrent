@@ -111,6 +111,13 @@ Method | path | params
 GET | /torrent/playlist | torrentId [required]
 GET | /torrent/playlist/:infoHash
 
+### Download torrent file [.torrent]
+
+Method | path | params
+-------|-----|-------
+GET | /torrent/torrentfile | torrentId [required]
+GET | /torrent/torrentfile/:infoHash
+
 ## Front-End Routes
 
 Route | Params

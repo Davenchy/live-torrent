@@ -83,4 +83,26 @@ const playlist = (req, res, next) => {
 router.get('/playlist', reqParser, playlist, playlistBuilder);
 router.get('/playlist/:infoHash', reqParser, playlist, playlistBuilder);
 
+// download torrent file
+const torrentFile = (req, res) => {
+  const { torrentId } = req;
+  torrents.add(torrentId, (err, torrent) => {
+    if (err) res.sendStatus(500);
+    else {
+      const tor = torrent.torrentFile;
+      
+      res.attachment(torrent.name + '.torrent');
+      res.setHeader('Content-Length', tor.length);
+      res.setHeader('Content-Type', 'application/x-bittorrent');
+      req.connection.setTimeout(30000);
+
+      
+      res.send(tor);
+    }
+  });
+};
+
+router.get('/torrentfile', reqParser, torrentFile);
+router.get('/torrentfile/:infoHash', reqParser, torrentFile);
+
 module.exports = router;
