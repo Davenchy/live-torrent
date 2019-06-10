@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // setup routes
 app.use('/', require('./routes/main'));
-app.use('/torrent', require('./routes/torrent'));
+app.use('/api/torrent', require('./routes/torrent'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log('app is running on port ' + PORT))

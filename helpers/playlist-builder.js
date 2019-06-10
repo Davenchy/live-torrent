@@ -4,7 +4,7 @@ module.exports = function (req, res) {
     
     let m3u = '#EXTM3U\n' + torrent.files
         .filter(f => f.type.startsWith('video') || f.type.startsWith('audio'))
-        .map(f => `#EXTINF:0,${f.name}\n${host}/torrent/stream/${torrent.infoHash}/${f.index}`)
+        .map(f => `#EXTINF:0,${f.name}\n${host}/api/torrent/stream/${torrent.infoHash}/${f.index}`)
         .join('\n');
     
     res.attachment(torrent.name + '.m3u');

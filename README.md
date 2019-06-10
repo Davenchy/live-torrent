@@ -49,8 +49,8 @@ npm run dev
 
 Method | path | params
 ----|----|----
-GET | /torrent/info | torrentId [required]
-GET | /torrent/info/:infoHash
+GET | /api/torrent/info | torrentId [required]
+GET | /api/torrent/info/:infoHash
 
 response:
 
@@ -86,8 +86,8 @@ ______
 
 Method | path | params
 -------|-----|-------
-GET | /torrent/stream | torrentId [required], fileIndex [default = 0]
-GET | /torrent/stream/:infoHash/:fileIndex
+GET | /api/torrent/stream | torrentId [required], fileIndex [default = 0]
+GET | /api/torrent/stream/:infoHash/:fileIndex
 
 torrentId can be:
 
@@ -101,22 +101,22 @@ torrentId can be:
 
 Method | path | params
 -------|-----|-------
-GET | /torrent/download | torrentId [required]
-GET | /torrent/download/:infoHash
+GET | /api/torrent/download | torrentId [required]
+GET | /api/torrent/download/:infoHash
 
 ### Download torrent as playlist [.m3u]
 
 Method | path | params
 -------|-----|-------
-GET | /torrent/playlist | torrentId [required]
-GET | /torrent/playlist/:infoHash
+GET | /api/torrent/playlist | torrentId [required]
+GET | /api/torrent/playlist/:infoHash
 
 ### Download torrent file [.torrent]
 
 Method | path | params
 -------|-----|-------
-GET | /torrent/torrentfile | torrentId [required]
-GET | /torrent/torrentfile/:infoHash
+GET | /api/torrent/torrentfile | torrentId [required]
+GET | /api/torrent/torrentfile/:infoHash
 
 ## Front-End Routes
 
