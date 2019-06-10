@@ -1,7 +1,8 @@
 <form style="margin: 5em auto; overflow: hidden" id="form">
   <div class="input-field">
     <input type="search" id="torrentId" placeholder="magnet uri, info hash, http/https torrent file"
-      value="">
+      value="" class="validate">
+    <span class="helper-text red-text" id="err"></span>
     <label for="magnet">Torrent File</label>
   </div>
   <div class="right">
@@ -60,7 +61,8 @@
 
   function explore() {
     const value = $('#torrentId').val();
-    location.href = '/explorer?torrentId=' + value;
+    if (value.trim() === '') $('#err').text('Enter torrent id please -> magnet uri, info hash, http/https torrent file');
+    else location.href = '/explorer?torrentId=' + value;
   }
 
   function clear() {
