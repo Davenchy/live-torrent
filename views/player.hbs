@@ -3,17 +3,25 @@
 </h4>
 <a href="{{host}}/explorer/{{torrent.infoHash}}#File{{fileIndex}}">Back</a>
 <div style="margin: 5em 0;">
-  <video id="player" src="/api/torrent/stream/{{torrent.infoHash}}/{{fileIndex}}"></video>
+  <video id="player" src="/api/torrent/stream/{{torrent.infoHash}}/{{fileIndex}}">
+    <track kind="subtitles" id="subtitle" label="Built-in" src="" srclang="auto" default />
+  </video>
+</div>
+
+<div style="margin: 5em 0;">
+  <div class="input-field">
+    <input type="text" name="subtitle" placeholder="subtitle_file_uri.vtt" id="subtitle_uri">
+    <label for="subtitle">Subtitle</label>
+  </div>
+  <button class="btn blue right" id="subtitle_btn">Set Subtitle</button>
 </div>
 
 <div class="input-field">
-  <input type="text" name="stream"
-    value="{{host}}/api/torrent/stream/{{torrent.infoHash}}/{{fileIndex}}" readonly>
+  <input type="text" name="stream" value="{{host}}/api/torrent/stream/{{torrent.infoHash}}/{{fileIndex}}" readonly>
   <label for="stream">Stream</label>
 </div>
 <div class="input-field">
-  <input type="text" name="share" value="{{host}}/player/{{torrent.infoHash}}/{{fileIndex}}"
-    readonly>
+  <input type="text" name="share" value="{{host}}/player/{{torrent.infoHash}}/{{fileIndex}}" readonly>
   <label for="share">Share</label>
 </div>
 <div class="input-field">
@@ -35,20 +43,15 @@
     'captions', // Toggle captions
     'settings', // Settings menu
     'fullscreen', // Toggle fullscreen
-];
+  ];
 
-  const player = new Plyr("#player", { controls });
+  const $player = new Plyr("#player", {
+    controls
+  });
+  $player.touch = true;
 
-  $('.plyr__poster').swipe({
-    swipe(event, dir, dist, dur) {
-      const s = 10;
-      const v = dir === 'left' ? -1 : dir === 'right' ? 1 : 0;
-      const r = Math.round(dist / 100 * v * s - 10);
-      {{!-- console.log(r); --}}
-      player.currentTime += r;
-    }
-  })
-
-  {{!-- $('#size').val() --}}
-
+  subtitle_btn.addEventListener('click', e => {
+    subtitle.src = $(subtitle_uri).val();
+    captionator.captionify(player);
+  });
 </script>
