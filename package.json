@@ -1,38 +1,43 @@
 {
   "name": "live-torrent",
-  "version": "1.0.0",
-  "description": "explore, stream and share torrent online",
-  "main": "app.js",
+  "version": "1.1.0",
+  "private": true,
+  "main": "server.js",
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon ."
+    "start": "npm run torrent-server",
+    "torrent-server": "node server.js",
+    "torrent-server-dev": "nodemon server.js",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
-  "keywords": [
-    "live",
-    "torrent",
-    "share",
-    "stream",
-    "explore",
-    "play",
-    "online"
-  ],
-  "author": "Davenchy <firon1222@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "connect-flash": "^0.1.1",
-    "cors": "^2.8.5",
+    "core-js": "^2.6.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
-    "express-handlebars": "^3.1.0",
-    "express-session": "^1.16.1",
-    "mime": "^2.4.3",
+    "mime": "^2.4.4",
     "pump": "^3.0.0",
     "range-parser": "^1.2.1",
-    "webtorrent": "^0.103.1",
+    "register-service-worker": "^1.6.2",
+    "vue": "^2.6.10",
+    "vue-router": "^3.0.3",
+    "vuex": "^3.0.1",
+    "webtorrent": "^0.105.0",
     "yazl": "^2.5.1"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-plugin-eslint": "^3.9.0",
+    "@vue/cli-plugin-pwa": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "@vue/eslint-config-prettier": "^4.0.1",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.9.0",
+    "nodemon": "^1.19.1",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
   }
 }

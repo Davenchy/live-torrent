@@ -1,10 +1,10 @@
 # live-torrent
 
-Explore, stream and share torrents online
+Explore, stream and share torrents online.
 
-HTML5 video player: __Plyr.js__
+HTML5 video player: **Plyr.js**.
 
-project is __Web Torrent based__
+Project is **Web Torrent** based.
 
 ## How to use
 
@@ -12,45 +12,52 @@ project is __Web Torrent based__
 
 > Note: you can use .env file to setup vars
 
-Var | Default | Desc
-----|---------|-----
-PORT | 3000 | server listening port
+| Var  | Default | Desc                  |
+| ---- | ------- | --------------------- |
+| PORT | 3000    | server listening port |
 
 ### For Users
 
 ```bash
-# clone the project
-git clone https://github.com/Davenchy/live-torrent.git
-
 # install dependencies
-npm i
+npm install
+
+# build frontend
+npm run build
 
 # start the server
 npm start
+# or
+npm run torrent-server
 ```
 
 ### For Developers
 
 ```bash
-# clone the project
-git clone https://github.com/Davenchy/live-torrent.git
-
 # install dependencies
-npm i -D
+npm install -D
 
-# run dev server
-npm run dev
+# run torrent api server
+npm run torrent-server-dev
+
+# compile and hot-reloads vue.js frontend
+npm run serve
 ```
 
+#### To Build Frontend
+
+```bash
+npm run build
+```
 
 ## Server API
 
 ### Get torrent info
 
-Method | path | params
-----|----|----
-GET | /api/torrent/info | torrentId [required]
-GET | /api/torrent/info/:infoHash
+| Method | path                | params               |
+| ------ | ------------------- | -------------------- |
+| GET    | /api/info           | torrentId [required] |
+| GET    | /api/info/:infoHash |
 
 response:
 
@@ -80,14 +87,14 @@ The File Object:
 
 ```
 
-______
+---
 
 ### Streaming
 
-Method | path | params
--------|-----|-------
-GET | /api/torrent/stream | torrentId [required], fileIndex [default = 0]
-GET | /api/torrent/stream/:infoHash/:fileIndex
+| Method | path                             | params                                        |
+| ------ | -------------------------------- | --------------------------------------------- |
+| GET    | /api/stream                      | torrentId [required], fileIndex [default = 0] |
+| GET    | /api/stream/:infoHash/:fileIndex |
 
 torrentId can be:
 
@@ -99,28 +106,21 @@ torrentId can be:
 
 ### Download torrent as zip archive
 
-Method | path | params
--------|-----|-------
-GET | /api/torrent/download | torrentId [required]
-GET | /api/torrent/download/:infoHash
+| Method | path                    | params               |
+| ------ | ----------------------- | -------------------- |
+| GET    | /api/download           | torrentId [required] |
+| GET    | /api/download/:infoHash |
 
 ### Download torrent as playlist [.m3u]
 
-Method | path | params
--------|-----|-------
-GET | /api/torrent/playlist | torrentId [required]
-GET | /api/torrent/playlist/:infoHash
+| Method | path                    | params               |
+| ------ | ----------------------- | -------------------- |
+| GET    | /api/playlist           | torrentId [required] |
+| GET    | /api/playlist/:infoHash |
 
 ### Download torrent file [.torrent]
 
-Method | path | params
--------|-----|-------
-GET | /api/torrent/torrentfile | torrentId [required]
-GET | /api/torrent/torrentfile/:infoHash
-
-## Front-End Routes
-
-Route | Params
-------|-------
-/explorer | torrentId[required]
-/player | torrentId[required], fileIndex[required]
+| Method | path                       | params               |
+| ------ | -------------------------- | -------------------- |
+| GET    | /api/torrentfile           | torrentId [required] |
+| GET    | /api/torrentfile/:infoHash |
