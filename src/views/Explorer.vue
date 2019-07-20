@@ -117,15 +117,18 @@
     </v-layout>
   </v-container>
   <v-layout v-else justify-center align-center fill-height>
-    <v-progress-circular :size="70" :width="7" color="primary" indeterminate></v-progress-circular>
+    <v-flex xs1 offset-xs>
+      <v-progress-circular :size="100" :width="10" color="primary" indeterminate></v-progress-circular>
+    </v-flex>
   </v-layout>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
+import sizeFilter from "../mixins/sizeFilter";
 
 export default {
-  name: "home",
+  name: "explorer",
   data() {
     return {
       tree: [],
@@ -140,11 +143,13 @@ export default {
     watch(item) {
       const { $router, torrentInfo } = this;
 
+      console.log(item);
+
       $router.push({
         name: "player",
         query: {
           torrentId: torrentInfo.infoHash,
-          fileIndex: item.index
+          fileIndex: "" + item.index
         }
       });
     }
@@ -191,6 +196,7 @@ export default {
   },
   created() {
     const id = this.$route.query.torrentId;
+
     if (!this.torrentInfo) {
       if (!id) this.$router.push({ name: "home" });
       else {
@@ -201,18 +207,7 @@ export default {
       }
     }
   },
-  filters: {
-    size(n) {
-      const types = ["bytes", "Kb", "Mb", "Gb", "Tb"];
-      let size = n;
-      let i = 0;
-      while (size >= 1024) {
-        size /= 1024;
-        i++;
-      }
-      return `${parseFloat(size).toFixed(2)} ${types[i] || "?"}`;
-    }
-  }
+  mixins: [sizeFilter]
 };
 </script>
 

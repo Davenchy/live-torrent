@@ -18,3 +18,9 @@
     </v-dialog>
   </v-layout>
 </template>
+
+<script>
+export default {
+  name: "notfound"
+};
+</script>

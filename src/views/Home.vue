@@ -39,6 +39,7 @@
 import { mapActions } from "vuex";
 
 export default {
+  name: "home",
   data() {
     return {
       loading: false,
