@@ -11,7 +11,7 @@
             ]"
           >Live Torrent</h1>
         </v-flex>
-        <v-flex xs8 offset-xs2>
+        <v-flex xs10 offset-xs1>
           <v-text-field
             v-model="torrentId"
             label="Torrent ID"
@@ -25,7 +25,7 @@
             hint="torrentID can be torrent magnet uri, torrent HTTP/HTTPS url or torrent info hash"
             clearable
           />
-          <div class="text-xs-right">
+          <div class="text-xs-center text-md-right mt-4">
             <v-btn color="success" :disabled="loading" @click="loadDemo">Demo</v-btn>
             <v-btn color="info" @click="loadInfo" :loading="loading" :disabled="loading">Explore</v-btn>
           </div>
@@ -101,6 +101,10 @@ export default {
         isEmpty
       };
     }
+  },
+  created() {
+    const { q } = this.$route.params;
+    if (q) this.torrentId = q;
   }
 };
 </script>

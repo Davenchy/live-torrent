@@ -4,7 +4,22 @@
       <v-card>
         <v-card-title>{{ file.name }} - {{ file.size | size }} - Peers {{ torrentInfo.peers }}</v-card-title>
         <v-card-text>
-          <video id="player" :src="`/api/stream/${torrentInfo.infoHash}/${fileIndex}`" controls></video>
+          <video
+            id="player"
+            ref="player"
+            :src="`/api/stream/${torrentInfo.infoHash}/${fileIndex}`"
+            controls
+          >
+            <track
+              v-for="(c, i) in captions"
+              :key="i"
+              kind="captions"
+              :label="c.label"
+              :src="c.url"
+            />
+          </video>
+
+          <v-text-field label="Share Video" readonly prepend-icon="share" :value="shareURL" />
         </v-card-text>
       </v-card>
     </v-flex>
@@ -24,7 +39,8 @@ export default {
   name: "player",
   data() {
     return {
-      fileIndex: null
+      fileIndex: null,
+      captions: []
     };
   },
   mixins: [sizeFilter],
@@ -40,7 +56,9 @@ export default {
             torrentId: torrentInfo.infoHash
           }
         });
-      } else this.setPlayer();
+      } else {
+        this.$nextTick(() => this.setPlayer());
+      }
     },
     setPlayer() {
       const controls = [
@@ -58,22 +76,54 @@ export default {
         "fullscreen" // Toggle fullscreen
       ];
 
-      const player = new this.$Plyr("#player", {
-        controls
-      });
-
-      // player.touch = true;
+      try {
+        const player = new this.$Plyr(this.$refs.player, {
+          controls
+        });
+        player.touch = true;
+      } catch (err) {
+        console.error(err);
+      }
     }
   },
   computed: {
     ...mapState(["torrentInfo"]),
     file() {
       return this.torrentInfo.files[this.fileIndex];
+    },
+    shareURL() {
+      const { hostURL, torrentInfo, file, captions } = this;
+      return `${hostURL}/player?torrentId=${torrentInfo.infoHash}&fileIndex=${
+        file.index
+      }${captions.map(c => `&${c.label}::${c.url}`)}`;
     }
   },
-  created() {
-    const id = this.$route.query.torrentId;
-    this.fileIndex = this.$route.query.fileIndex;
+  mounted() {
+    const { torrentId, fileIndex, caption, captionName } = this.$route.query;
+    const id = torrentId;
+    this.fileIndex = fileIndex;
+    let captions = [];
+
+    if (Array.isArray(caption)) captions = caption;
+    else captions = [caption];
+
+    const srt2vtt = l => `${this.hostURL}/api/srt2vtt?path=${l}`;
+
+    captions.forEach(c => {
+      const cInfo = c.split("::");
+      const len = cInfo.length;
+
+      if (len === 1)
+        this.captions.push({
+          url: srt2vtt(cInfo[0]),
+          label: "Unamed Caption"
+        });
+      else if (len === 2)
+        this.captions.push({
+          url: srt2vtt(cInfo[1]),
+          label: cInfo[0] || "Unamed Caption"
+        });
+    });
 
     if (!this.torrentInfo) {
       if (!id) this.$router.push({ name: "home" });

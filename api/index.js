@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const playlistBuilder = require("./playlist-builder");
 const torrents = require("./torrents");
+const srt2vtt = require("./srt2vtt");
 const yazl = require("yazl");
 const pump = require("pump");
 
@@ -107,5 +108,9 @@ const torrentFile = (req, res) => {
 
 router.get("/torrentfile", reqParser, torrentFile);
 router.get("/torrentfile/:infoHash", reqParser, torrentFile);
+
+// srt to vtt converter
+router.get("/srt2vtt", srt2vtt.get);
+router.post("/srt2vtt", srt2vtt.post);
 
 module.exports = router;

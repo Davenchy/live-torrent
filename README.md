@@ -124,3 +124,26 @@ torrentId can be:
 | ------ | -------------------------- | -------------------- |
 | GET    | /api/torrentfile           | torrentId [required] |
 | GET    | /api/torrentfile/:infoHash |
+
+### SRT to VTT [.vtt]
+
+| Method | path         | params          | body                             |
+| ------ | ------------ | --------------- | -------------------------------- |
+| GET    | /api/srt2vtt | path [required] |
+| POST   | /api/srt2vtt |                 | srt [srt file content][required] |
+
+## Frontend API
+
+| Path      | params                          | description                                                                                    |
+| --------- | ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| /         | [q]                             | [coming soon]                                                                                  |
+| /explorer | torrentId                       | explore torrent file using its torrent id (http/https torrent file or info hash or magnet uri) |
+| /player   | torrentId, fileIndex, [caption] | play video or audio file using torrentId and the file index, find more about captions below    |
+
+### Media player and Captions
+
+to add captions to the player **you can use the gui or request params**
+
+send captions params as must as you need
+
+Caption Scheme: `caption={caption label}::{caption url}&...`

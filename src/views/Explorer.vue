@@ -7,9 +7,16 @@
             <div
               class="title mb-3"
             >{{ torrentInfo.name }} - {{ torrentInfo.size | size }} - Peers: {{ torrentInfo.peers }}</div>
-            <div class="subheading mb-3">Hash: {{ torrentInfo.infoHash }}</div>
 
-            <v-text-field readonly flat label="Share Link" :value="shareURL" prepend-icon="share"></v-text-field>
+            <v-text-field
+              readonly
+              flat
+              label="Info Hash"
+              :value="torrentInfo.infoHash"
+              prepend-icon="info"
+            />
+
+            <v-text-field readonly flat label="Share Link" :value="shareURL" prepend-icon="share" />
 
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
@@ -142,14 +149,30 @@ export default {
     ...mapActions(["loadTorrentInfo"]),
     watch(item) {
       const { $router, torrentInfo } = this;
+      let captions = [];
 
-      console.log(item);
+      try {
+        const name = item.name.match(/(.+)\..+/)[1];
+        captions = torrentInfo.files
+          .filter(
+            f =>
+              (f.name.endsWith(".srt") || f.name.endsWith(".vtt")) &&
+              f.name.indexOf(name) > -1
+          )
+          .map(
+            f =>
+              `${f.name}::${this.hostURL}/api/stream/${torrentInfo.infoHash}/${f.index}`
+          );
+      } catch (err) {
+        console.error(err);
+      }
 
       $router.push({
         name: "player",
         query: {
           torrentId: torrentInfo.infoHash,
-          fileIndex: "" + item.index
+          fileIndex: "" + item.index,
+          caption: captions
         }
       });
     }
@@ -214,5 +237,9 @@ export default {
 <style scoped>
 .clearfix {
   clear: both;
+}
+
+.v-card {
+  overflow: auto;
 }
 </style>
