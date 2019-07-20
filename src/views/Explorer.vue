@@ -53,6 +53,7 @@
               :filter="filter"
               :search="search"
               :open="[0]"
+              open-on-click
             >
               <template v-slot:append="{ item }">
                 <div v-if="item.type !== 'folder'">

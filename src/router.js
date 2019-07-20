@@ -34,6 +34,10 @@ export default new Router({
       path: "/docs",
       name: "docs",
       component: () => import("./views/Docs.vue")
+    },
+    {
+      path: "*",
+      component: () => import("./views/NotFound.vue")
     }
   ]
 });
