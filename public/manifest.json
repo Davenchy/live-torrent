@@ -1,8 +1,7 @@
 {
   "name": "live-torrent-vue",
   "short_name": "live-torrent-vue",
-  "icons": [
-    {
+  "icons": [{
       "src": "./img/icons/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
@@ -16,5 +15,5 @@
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#4DBA87"
+  "theme_color": "#2b2b2b"
 }

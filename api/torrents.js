@@ -36,6 +36,11 @@ function add(torrentId, cb) {
 
 // serveFile from inside webtorrent createServer method
 function serveFile(file, req, res) {
+  if (!file) {
+    res.statusCode = 404;
+    return res.send();
+  }
+
   res.statusCode = 200;
   res.setHeader("Content-Type", mime.getType(file.name));
 

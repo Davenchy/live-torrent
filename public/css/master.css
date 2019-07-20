@@ -1,7 +1,25 @@
-body {
-  background-color: #333;
-}
+/* * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+} */
 
-.card {
-  overflow: hidden;
-}
+/* body,
+html {
+  background-color: #303742 !important;
+} */
+
+/* .container {
+  max-width: 960px;
+  margin: 0 auto;
+} */
+
+/* .clearfix {
+  clear: both;
+} */
+
+/* @media screen and (max-width: 960px) {
+  .container {
+    padding: 0 20px;
+  }
+} */

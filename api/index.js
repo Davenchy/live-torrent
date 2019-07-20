@@ -58,11 +58,14 @@ router.get("/download", reqParser, downloadReqParser, downloadZIP);
 router.get("/download/:infoHash", reqParser, downloadReqParser, downloadZIP);
 
 // add torrent file to the webtorrent client
+// torrent info
 const torrentInfo = (req, res) => {
   const { torrentId } = req;
   torrents.add(torrentId, (err, torrent) => {
-    if (err) res.sendStatus(500);
-    else res.send(torrent.toJson());
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else res.send(torrent.toJson());
   });
 };
 

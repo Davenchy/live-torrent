@@ -1,16 +1,17 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 // setup env vars
 require("dotenv").config();
 
 const app = express();
 
-// setup view engine
+// server cors policy issue
+app.use(cors());
 
 // setup app static content
-// TODO: active the next line later
-// app.use(express.static("public"));
+app.use(express.static("dist"));
 
 // setup middle wares
 app.use(bodyParser.json());
