@@ -1,6 +1,6 @@
 <template>
   <v-app dark style="background: #303742;">
-    <!-- <nav-bar /> -->
+    <nav-bar />
     <v-content>
       <router-view />
     </v-content>

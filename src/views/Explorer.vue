@@ -2,8 +2,8 @@
   <v-container fluid mt-5 v-if="torrentInfo">
     <v-layout row>
       <v-flex xs12 md8 offset-md2>
-        <v-card>
-          <v-sheet class="pa-3">
+        <v-card color="#445064">
+          <v-sheet class="pa-3" color="#445064">
             <div
               class="title mb-3"
             >{{ torrentInfo.name }} - {{ torrentInfo.size | size }} - Peers: {{ torrentInfo.peers }}</div>
@@ -14,13 +14,21 @@
               label="Info Hash"
               :value="torrentInfo.infoHash"
               prepend-icon="info"
+              color="blue"
             />
 
-            <v-text-field readonly flat label="Share Link" :value="shareURL" prepend-icon="share" />
+            <v-text-field
+              color="green"
+              readonly
+              flat
+              label="Share Link"
+              :value="shareURL"
+              prepend-icon="share"
+            />
 
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
-                <v-btn color="primary" class="right" dark v-on="on">
+                <v-btn color="blue" class="right" dark v-on="on">
                   Download
                   <v-icon dark right>arrow_drop_down</v-icon>
                 </v-btn>

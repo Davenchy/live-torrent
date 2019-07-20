@@ -9,7 +9,12 @@
               { 'display-2': $vuetify.breakpoint.mdAndUp },
               { 'display-1': $vuetify.breakpoint.smOnly }
             ]"
-          >Live Torrent</h1>
+          >
+            <span style="color: #d21414">
+              <i class="fas fa-circle logo"></i>
+              Live
+            </span> Torrent
+          </h1>
         </v-flex>
         <v-flex xs10 offset-xs1>
           <v-text-field
@@ -108,3 +113,30 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.v-messages {
+  color: #eee !important;
+}
+
+.logo {
+  animation: fade-in-out 2s ease-in-out infinite;
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 1;
+  }
+  10% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  90% {
+    opacity: 1;
+  }
+}
+</style>

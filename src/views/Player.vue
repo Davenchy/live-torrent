@@ -1,6 +1,6 @@
 <template>
   <v-layout fill-height justify-center align-center v-if="torrentInfo && fileIndex">
-    <v-flex xs12 sm10 offset-sm>
+    <v-flex xs12 sm10 offset-sm my-5>
       <v-card>
         <v-card-title>{{ file.name }} - {{ file.size | size }} - Peers {{ torrentInfo.peers }}</v-card-title>
         <v-card-text>
@@ -19,7 +19,13 @@
             />
           </video>
 
-          <v-text-field label="Share Video" readonly prepend-icon="share" :value="shareURL" />
+          <v-text-field
+            label="Share Video"
+            class="mt-5"
+            readonly
+            prepend-icon="share"
+            :value="shareURL"
+          />
         </v-card-text>
       </v-card>
     </v-flex>
