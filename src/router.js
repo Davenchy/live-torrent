@@ -31,11 +31,6 @@ export default new Router({
       component: () => import("./views/About.vue")
     },
     {
-      path: "/docs",
-      name: "docs",
-      component: () => import("./views/Docs.vue")
-    },
-    {
       path: "*",
       component: () => import("./views/NotFound.vue")
     }

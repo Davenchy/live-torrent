@@ -4,6 +4,9 @@
       <v-btn icon @click="$router.go(-1)">
         <i class="fas fa-chevron-left"></i>
       </v-btn>
+      <v-btn icon @click="$router.go(1)">
+        <i class="fas fa-chevron-right"></i>
+      </v-btn>
       <v-spacer></v-spacer>
       <v-toolbar-title @click="$router.push('/')">
         <img src="/img/logo.png" style="max-height: 5em" alt="live torrent logo" />
@@ -62,7 +65,17 @@
           </v-list-tile-action>
 
           <v-list-tile-content>
-            <v-list-tile-title>back</v-list-tile-title>
+            <v-list-tile-title>Go Back</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
+        <v-list-tile @click="$router.go(1)">
+          <v-list-tile-action>
+            <i class="fas fa-chevron-right"></i>
+          </v-list-tile-action>
+
+          <v-list-tile-content>
+            <v-list-tile-title>Go Forward</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -80,7 +93,6 @@ export default {
       items: [
         { title: "Home", icon: "dashboard", path: "/" },
         { title: "Movies", icon: "videocam", path: "/movies" },
-        { title: "Docs & API", icon: "book", path: "/docs" },
         { title: "About", icon: "info", path: "/about" }
       ]
     };

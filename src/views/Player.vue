@@ -110,6 +110,7 @@ export default {
         });
       } else {
         this.$nextTick(() => this.setPlayer());
+        document.title = "Live Torrent - video player - " + this.file.name;
       }
     },
     setPlayer() {
@@ -129,7 +130,7 @@ export default {
       ];
 
       try {
-        const player = new this.$Plyr(this.$refs.player, {
+        const player = new window.Plyr(this.$refs.player, {
           controls
         });
         player.touch = true;
@@ -151,31 +152,14 @@ export default {
     }
   },
   mounted() {
+    const self = this;
     const { torrentId, fileIndex, caption } = this.$route.query;
     const id = torrentId;
     this.fileIndex = fileIndex;
     let captions = [];
-
-    if (Array.isArray(caption)) captions = caption;
-    else captions = [caption];
-
-    const srt2vtt = l => `${this.hostURL}/api/srt2vtt?path=${l}`;
-
-    captions.forEach(c => {
-      const cInfo = c.split("::");
-      const len = cInfo.length;
-
-      if (len === 1)
-        this.captions.push({
-          url: srt2vtt(cInfo[0]),
-          label: "Unamed Caption"
-        });
-      else if (len === 2)
-        this.captions.push({
-          url: srt2vtt(cInfo[1]),
-          label: cInfo[0] || "Unamed Caption"
-        });
-    });
+    let label = "Unamed Caption";
+    let url = "";
+    let type = "url";
 
     if (!this.torrentInfo) {
       if (!id) this.$router.push({ name: "home" });
@@ -188,6 +172,46 @@ export default {
           });
       }
     } else this.checkIndex();
+
+    if (Array.isArray(caption)) captions = caption;
+    else captions = [caption];
+
+    const srt2vtt = l => `${this.hostURL}/api/srt2vtt?path=${l}`;
+
+    captions.forEach(async function(c) {
+      const cInfo = c.split("::");
+      const len = cInfo.length;
+
+      if (len === 1) {
+        url = srt2vtt(cInfo[0]);
+      } else if (len === 2) {
+        label = cInfo[0] || label;
+        url = srt2vtt(cInfo[1]);
+      } else if (len === 3) {
+        label = cInfo[0] || label;
+        type = cInfo[1];
+        const data = cInfo[2];
+
+        if (!data || !type) return;
+
+        if (type === "text") {
+          try {
+            const res = await backend.post("/srt2vtt", { srt: data });
+            const blob = new Blob([res.data.trim()], { type: "text/vtt" });
+            url = URL.createObjectURL(blob);
+            console.log("ready");
+          } catch (err) {
+            console.error(err);
+          }
+        } else if (type === "zip") {
+        } else if (type === "os") {
+        } else if (type === "imdb") {
+        }
+      }
+
+      if (!url) return;
+      self.captions.push({ label, url, type });
+    });
   }
 };
 </script>

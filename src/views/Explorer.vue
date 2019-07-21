@@ -306,16 +306,20 @@ export default {
   },
   created() {
     const id = this.$route.query.torrentId;
+    const setTitle = () =>
+      (document.title = "Live Torrent - Explorer - " + this.torrentInfo.name);
 
     if (!this.torrentInfo) {
       if (!id) this.$router.push({ name: "home" });
       else {
-        this.loadTorrentInfo(id).catch(err => {
-          console.error(err);
-          this.$router.push({ name: "home" });
-        });
+        this.loadTorrentInfo(id)
+          .then(setTitle)
+          .catch(err => {
+            console.error(err);
+            this.$router.push({ name: "home" });
+          });
       }
-    }
+    } else setTitle();
   },
   mixins: [sizeFilter]
 };

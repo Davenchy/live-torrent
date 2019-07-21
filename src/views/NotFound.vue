@@ -21,6 +21,9 @@
 
 <script>
 export default {
-  name: "notfound"
+  name: "notfound",
+  created() {
+    document.title = "Live Torrent - Error 404";
+  }
 };
 </script>

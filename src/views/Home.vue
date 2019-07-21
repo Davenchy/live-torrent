@@ -111,6 +111,7 @@ export default {
   created() {
     const { q } = this.$route.params;
     if (q) this.torrentId = q;
+    document.title = "Live Torrent";
   }
 };
 </script>
