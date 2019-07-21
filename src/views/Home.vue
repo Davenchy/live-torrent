@@ -19,9 +19,9 @@
         <v-flex xs10 offset-xs1>
           <v-text-field
             v-model="torrentId"
-            label="Torrent ID"
+            label="Torrent ID -> http/https url, magnet uri, info hash"
             @keydown.enter="loadInfo"
-            :error-messages="validationError"
+            :error-messages="errors"
             :disabled="loading"
             solo
             light
@@ -29,6 +29,7 @@
             persistent-hint
             hint="torrentID can be torrent magnet uri, torrent HTTP/HTTPS url or torrent info hash"
             clearable
+            autofocus
           />
           <div class="text-xs-center text-md-right mt-4">
             <v-btn color="success" :disabled="loading" @click="loadDemo">Demo</v-btn>
@@ -49,20 +50,19 @@ export default {
     return {
       loading: false,
       torrentId: "",
-      validationError: ""
+      errors: ""
     };
   },
   methods: {
     ...mapActions(["loadTorrentInfo"]),
     loadInfo() {
       this.loading = true;
-      this.validationError = "";
+      this.errors = "";
 
       const validation = this.validateInput();
       if (!validation.isValid) {
-        if (validation.isEmpty)
-          this.validationError = "Please enter torrent ID";
-        else this.validationError = "Invalid torrent ID";
+        if (validation.isEmpty) this.errors = "Please enter torrent ID";
+        else this.errors = "Invalid torrent ID";
 
         this.loading = false;
         return;
@@ -78,6 +78,7 @@ export default {
           });
         })
         .catch(err => {
+          this.errors = "Can not access the server right now, Try again later!";
           console.error(err);
         })
         .finally(() => (this.loading = false));

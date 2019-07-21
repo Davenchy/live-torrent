@@ -4,9 +4,13 @@
       <v-flex xs12 md8 offset-md2>
         <v-card color="#445064">
           <v-sheet class="pa-3" color="#445064">
-            <div
-              class="title mb-3"
-            >{{ torrentInfo.name }} - {{ torrentInfo.size | size }} - Peers: {{ torrentInfo.peers }}</div>
+            <div class="title mb-3">
+              {{ torrentInfo.name }} - {{ torrentInfo.size | size }} - Peers:
+              {{ torrentInfo.peers }}
+              <v-btn icon color="green" @click="reload">
+                <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
+              </v-btn>
+            </div>
 
             <v-text-field
               readonly
@@ -17,6 +21,8 @@
               color="blue"
             />
 
+            <h1 class="subheading my-2">Share:</h1>
+
             <v-text-field
               color="green"
               readonly
@@ -25,6 +31,50 @@
               :value="shareURL"
               prepend-icon="share"
             />
+
+            <social-sharing
+              :url="`${hostURL}/explorer?torrentId=${torrentInfo.infoHash}`"
+              :title="`Explore '${torrentInfo.name}' torrent file`"
+              description="Explore this torrent file"
+              hashtags="live-torrent"
+              twitter-user="fadi_davenchy"
+              network-tag="a"
+              class="my-3"
+              inline-template
+            >
+              <div>
+                <network network="facebook" class="blue--text text--darken-2 ma-3">
+                  <i class="fab fa-facebook"></i> Facebook
+                </network>
+                <network network="reddit" class="red--text text--lighten-1 ma-3">
+                  <i class="fab fa-reddit-alien"></i> Reddit
+                </network>
+                <network network="twitter" class="blue--text text--lighten-4 ma-3">
+                  <i class="fab fa-twitter"></i> Twitter
+                </network>
+                <network network="telegram" class="blue--text text--lighten-2 ma-3">
+                  <i class="fab fa-telegram"></i> Telegram
+                </network>
+                <network network="skype" class="blue--text ma-3">
+                  <i class="fab fa-skype"></i> Skype
+                </network>
+                <network network="sms" class="yellow--text ma-3">
+                  <i class="fas fa-sms"></i> SMS
+                </network>
+                <network network="email" class="orange--text ma-3">
+                  <i class="fas fa-envelope"></i> Email
+                </network>
+                <network network="vk" class="blue--text text--darken-3 ma-3">
+                  <i class="fab fa-vk"></i> VKontakte
+                </network>
+                <network network="weibo" class="red--text text--darken-1 ma-3">
+                  <i class="fab fa-weibo"></i> Weibo
+                </network>
+                <network network="whatsapp" class="green--text text--lighten-2 ma-3">
+                  <i class="fab fa-fw fa-whatsapp"></i> Whatsapp
+                </network>
+              </div>
+            </social-sharing>
 
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
@@ -69,13 +119,17 @@
               :search="search"
               :open="[0]"
               open-on-click
+              style="max-width: 100%; overflow: auto;"
             >
               <template v-slot:append="{ item }">
                 <div v-if="item.type !== 'folder'">
                   <v-btn
                     icon
                     @click="watch(item)"
-                    v-if="item.type.startsWith('video') || item.type.startsWith('audio')"
+                    v-if="
+                      item.type.startsWith('video') ||
+                        item.type.startsWith('audio')
+                    "
                   >
                     <v-icon color="indigo lighten-2">remove_red_eye</v-icon>
                   </v-btn>
@@ -92,11 +146,12 @@
                 </div>
               </template>
               <template v-slot:label="{ item, open }">
-                <div>
+                <div :title="item.name">
                   <a
-                    v-if="item.type!=='folder'"
+                    v-if="item.type !== 'folder'"
                     :href="`/api/stream/${torrentInfo.infoHash}/${item.index}`"
                     target="_blank"
+                    class="text-truncate wrap"
                   >{{ item.name }}&nbsp;</a>
                   <span v-else>{{ item.name }}</span>
                   <span v-if="item.type !== 'folder'" class="green--text">- {{ item.size | size }}</span>
@@ -105,7 +160,13 @@
               <template v-slot:prepend="{ item, open }">
                 <i
                   v-if="item.type === 'folder'"
-                  :class="`fas fa-${open ? 'folder-open text--lighten-2' : 'folder text--darken-2'} blue--text`"
+                  :class="
+                    `fas fa-${
+                      open
+                        ? 'folder-open text--lighten-2'
+                        : 'folder text--darken-2'
+                    } blue--text`
+                  "
                 ></i>
                 <i
                   v-else-if="item.type.startsWith('video')"
@@ -120,7 +181,10 @@
                   class="fas fa-image orange--text text--lighten-1"
                 ></i>
                 <i
-                  v-else-if="item.type === 'text/vtt' || item.type === 'application/x-subrip'"
+                  v-else-if="
+                    item.type === 'text/vtt' ||
+                      item.type === 'application/x-subrip'
+                  "
                   class="far fa-closed-captioning yellow--text text--lighten-1"
                 ></i>
                 <i v-else class="fas fa-file"></i>
@@ -150,6 +214,7 @@ export default {
       insensitive: true,
       filesOnly: true,
       reverse: false,
+      spin: false,
       search: ""
     };
   },
@@ -169,7 +234,9 @@ export default {
           )
           .map(
             f =>
-              `${f.name}::${this.hostURL}/api/stream/${torrentInfo.infoHash}/${f.index}`
+              `${f.name}::${this.hostURL}/api/stream/${torrentInfo.infoHash}/${
+                f.index
+              }`
           );
       } catch (err) {
         console.error(err);
@@ -183,6 +250,18 @@ export default {
           caption: captions
         }
       });
+    },
+    reload() {
+      const { torrentInfo, loadTorrentInfo, $router } = this;
+      this.spin = true;
+      loadTorrentInfo(torrentInfo.infoHash)
+        .catch(err => {
+          console.error(err);
+          $router.push({ name: "home" });
+        })
+        .finally(() => {
+          setTimeout(() => (this.spin = false), 1000);
+        });
     }
   },
   computed: {
