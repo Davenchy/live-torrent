@@ -1,6 +1,6 @@
 {
-  "name": "live-torrent-vue",
-  "short_name": "live-torrent-vue",
+  "name": "Live Torrent",
+  "short_name": "Live Torrent",
   "icons": [{
       "src": "./img/icons/android-icon-36x36.png",
       "sizes": "36x36",
@@ -38,8 +38,8 @@
       "density": "4.0"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
+  "background_color": "#363e49",
   "theme_color": "#363e49"
 }
