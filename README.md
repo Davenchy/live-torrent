@@ -132,6 +132,15 @@ torrentId can be:
 | GET    | /api/srt2vtt | path [required] |
 | POST   | /api/srt2vtt |                 | srt [srt file content][required] |
 
+### Torrent Search Engine
+
+| Method | path                  | params                                                                 |
+| ------ | --------------------- | ---------------------------------------------------------------------- |
+| GET    | /api/search           | query[required], provider, category[default="All"], limit[default=100] |
+| GET    | /api/search/providers |
+
+> if no provider will search using all providers [takes too long time]
+
 ## Frontend API
 
 | Path      | params                          | description                                                                                    |

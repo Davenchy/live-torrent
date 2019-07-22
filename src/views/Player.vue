@@ -1,5 +1,5 @@
 <template>
-  <v-layout fill-height justify-center align-center v-if="torrentInfo && fileIndex">
+  <v-layout fill-height justify-center align-center v-if="file">
     <v-flex xs12 sm10 offset-sm my-5>
       <v-card color="#445064">
         <v-card-title>{{ file.name }} - {{ file.size | size }} - Peers {{ torrentInfo.peers }}</v-card-title>
@@ -100,18 +100,29 @@ export default {
     ...mapActions(["loadTorrentInfo"]),
     checkIndex() {
       const { fileIndex, $router, torrentInfo } = this;
-
-      if (!fileIndex) {
-        $router.push({
-          name: "explorer",
-          query: {
-            torrentId: torrentInfo.infoHash
-          }
-        });
-      } else {
+      const ready = () => {
         this.$nextTick(() => this.setPlayer());
         document.title = "Live Torrent - video player - " + this.file.name;
-      }
+      };
+
+      if (!fileIndex) {
+        // try to get playlist for future updates
+        const playlist = torrentInfo.files.filter(
+          f => f.type.startsWith("video") || f.type.startsWith("audio")
+        );
+
+        if (playlist.length > 0) {
+          this.fileIndex = playlist[0].index;
+          ready();
+        } else {
+          $router.push({
+            name: "explorer",
+            query: {
+              torrentId: torrentInfo.infoHash
+            }
+          });
+        }
+      } else ready();
     },
     setPlayer() {
       const controls = [
@@ -142,7 +153,8 @@ export default {
   computed: {
     ...mapState(["torrentInfo"]),
     file() {
-      return this.torrentInfo.files[this.fileIndex];
+      const { torrentInfo } = this;
+      return torrentInfo ? torrentInfo.files[this.fileIndex] : null;
     },
     shareURL() {
       const { hostURL, torrentInfo, file, captions } = this;
@@ -178,40 +190,42 @@ export default {
 
     const srt2vtt = l => `${this.hostURL}/api/srt2vtt?path=${l}`;
 
-    captions.forEach(async function(c) {
-      const cInfo = c.split("::");
-      const len = cInfo.length;
+    captions
+      .filter(a => a)
+      .forEach(async function(c) {
+        const cInfo = c.split("::");
+        const len = cInfo.length;
 
-      if (len === 1) {
-        url = srt2vtt(cInfo[0]);
-      } else if (len === 2) {
-        label = cInfo[0] || label;
-        url = srt2vtt(cInfo[1]);
-      } else if (len === 3) {
-        label = cInfo[0] || label;
-        type = cInfo[1];
-        const data = cInfo[2];
+        if (len === 1) {
+          url = srt2vtt(cInfo[0]);
+        } else if (len === 2) {
+          label = cInfo[0] || label;
+          url = srt2vtt(cInfo[1]);
+        } else if (len === 3) {
+          label = cInfo[0] || label;
+          type = cInfo[1];
+          const data = cInfo[2];
 
-        if (!data || !type) return;
+          if (!data || !type) return;
 
-        if (type === "text") {
-          try {
-            const res = await backend.post("/srt2vtt", { srt: data });
-            const blob = new Blob([res.data.trim()], { type: "text/vtt" });
-            url = URL.createObjectURL(blob);
-            console.log("ready");
-          } catch (err) {
-            console.error(err);
+          if (type === "text") {
+            try {
+              const res = await backend.post("/srt2vtt", { srt: data });
+              const blob = new Blob([res.data.trim()], { type: "text/vtt" });
+              url = URL.createObjectURL(blob);
+              console.log("ready");
+            } catch (err) {
+              console.error(err);
+            }
+          } else if (type === "zip") {
+          } else if (type === "os") {
+          } else if (type === "imdb") {
           }
-        } else if (type === "zip") {
-        } else if (type === "os") {
-        } else if (type === "imdb") {
         }
-      }
 
-      if (!url) return;
-      self.captions.push({ label, url, type });
-    });
+        if (!url) return;
+        self.captions.push({ label, url, type });
+      });
   }
 };
 </script>

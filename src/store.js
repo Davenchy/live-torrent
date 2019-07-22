@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from "./axios";
+import { getTorrentInfo } from "./axios";
 
 Vue.use(Vuex);
 
@@ -47,7 +47,7 @@ export default new Vuex.Store({
   },
   actions: {
     loadTorrentInfo({ commit }, torrentId) {
-      return axios.getTorrentInfo(torrentId).then(res => {
+      return getTorrentInfo(torrentId).then(res => {
         commit("setTorrentInfo", res.data);
       });
     },

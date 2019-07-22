@@ -1,8 +1,9 @@
+const app = require("express")();
 const http = require("http");
 const srt2vtt = require("srt-to-vtt");
 const Readable = require("stream").Readable;
 
-const get = (req, res) => {
+app.get("/", (req, res) => {
   const { path } = req.query;
   if (!path) return res.sendStatus(400);
   http.get(path, r => {
@@ -11,9 +12,9 @@ const get = (req, res) => {
     res.setHeader("Content-Type", "text/vtt");
     r.pipe(srt2vtt()).pipe(res);
   });
-};
+});
 
-const post = (req, res) => {
+app.post("/", (req, res) => {
   const { srt } = req.body;
   if (!srt) return res.sendStatus(400);
 
@@ -24,6 +25,6 @@ const post = (req, res) => {
   stream.push(srt);
   stream.push(null);
   stream.pipe(srt2vtt()).pipe(res);
-};
+});
 
-module.exports = { get, post };
+module.exports = app;

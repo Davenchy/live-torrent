@@ -2,6 +2,7 @@ const router = require("express").Router();
 const playlistBuilder = require("./playlist-builder");
 const torrents = require("./torrents");
 const srt2vtt = require("./srt2vtt");
+const torrentSearchEngine = require("./torrent-search-engine");
 const yazl = require("yazl");
 const pump = require("pump");
 
@@ -110,7 +111,9 @@ router.get("/torrentfile", reqParser, torrentFile);
 router.get("/torrentfile/:infoHash", reqParser, torrentFile);
 
 // srt to vtt converter
-router.get("/srt2vtt", srt2vtt.get);
-router.post("/srt2vtt", srt2vtt.post);
+router.use("/srt2vtt", srt2vtt);
+
+// torrent search engine
+router.use("/search", torrentSearchEngine);
 
 module.exports = router;
