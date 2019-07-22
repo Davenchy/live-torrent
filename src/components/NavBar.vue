@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar color="#363e49" v-if="small || (!small && !drawer)">
+    <v-toolbar color="#363e49" v-if="small">
       <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer></v-spacer>
       <v-toolbar-title @click="$router.push('/')">
@@ -16,11 +16,11 @@
     </v-toolbar>
 
     <v-navigation-drawer
-      v-model="drawer"
+      :value="small ? drawer : true"
       hide-overlay
       :floating="small"
       :temporary="small"
-      :mini-variant="mini"
+      :mini-variant="small ? false : mini"
       stateless
       app
       style="background: #414758;"
@@ -49,7 +49,12 @@
       <v-list class="pt-0" dense>
         <v-divider></v-divider>
 
-        <v-list-tile v-for="item in items" :key="item.title" :to="item.path">
+        <v-list-tile
+          v-for="item in items"
+          :key="item.title"
+          :to="item.path"
+          @click="drawer = !drawer;"
+        >
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
@@ -59,7 +64,7 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile @click="$router.go(-1)">
+        <v-list-tile @click="$router.go(-1)" v-if="!small">
           <v-list-tile-action>
             <i class="fas fa-chevron-left"></i>
           </v-list-tile-action>
@@ -69,7 +74,7 @@
           </v-list-tile-content>
         </v-list-tile>
 
-        <v-list-tile @click="$router.go(1)">
+        <v-list-tile @click="$router.go(1)" v-if="!small">
           <v-list-tile-action>
             <i class="fas fa-chevron-right"></i>
           </v-list-tile-action>

@@ -29,7 +29,7 @@
             persistent-hint
             hint="torrentID can be torrent magnet uri, torrent HTTP/HTTPS url or torrent info hash"
             clearable
-            autofocus
+            :autofocus="!$vuetify.breakpoint.xsOnly"
           />
           <div class="text-xs-center text-md-right mt-4">
             <v-btn color="success" :disabled="loading" @click="loadDemo">Demo</v-btn>

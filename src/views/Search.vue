@@ -1,7 +1,10 @@
 <template>
   <v-container fluid>
     <v-layout row wrap>
-      <v-flex xs10 offset-xs1 md8 offset-md2 mb-4>
+      <v-flex class="my-5 text-xs-center">
+        <h1>Torrent Search Engine</h1>
+      </v-flex>
+      <v-flex xs12 md8 offset-md2 mb-4>
         <v-text-field
           placeholder="Looking for..."
           solo
@@ -9,7 +12,7 @@
           :loading="loading"
           clearable
           :disabled="loading"
-          autofocus
+          :autofocus="!$vuetify.breakpoint.xsOnly"
           v-model="query"
           @keydown.enter="search"
           :error-messages="errors"
@@ -18,7 +21,7 @@
           @click:append="search"
         />
       </v-flex>
-      <v-flex xs2 offset-xs1>
+      <v-flex sm2 offset-sm1 xs12>
         <v-select
           label="Provider"
           :disabled="loading"
@@ -29,7 +32,7 @@
           @change="categories = provider.categories"
         ></v-select>
       </v-flex>
-      <v-flex xs2 offset-xs2>
+      <v-flex sm2 offset-sm2 xs6>
         <v-select
           label="Category"
           :disabled="loading"
@@ -37,7 +40,7 @@
           :items="categories.length ? categories : ['All']"
         ></v-select>
       </v-flex>
-      <v-flex xs2 offset-xs2>
+      <v-flex sm2 offset-sm2 xs6>
         <v-text-field
           v-model="limit"
           label="Results Limit"
