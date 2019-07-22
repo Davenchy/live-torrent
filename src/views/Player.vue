@@ -2,7 +2,13 @@
   <v-layout fill-height justify-center align-center v-if="file">
     <v-flex xs12 sm10 offset-sm my-5>
       <v-card color="#445064">
-        <v-card-title>{{ file.name }} - {{ file.size | size }} - Peers {{ torrentInfo.peers }}</v-card-title>
+        <v-card-title>
+          {{ file.name }} - {{ file.size | size }} - Peers {{ torrentInfo.peers }}
+          <v-btn icon color="green" @click="reload">
+            <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
+          </v-btn>
+          <v-btn color="blue" @click="$router.push('/explorer')">Back To Explorer</v-btn>
+        </v-card-title>
         <v-card-text>
           <h1 class="subheading">Share:</h1>
 
@@ -18,7 +24,7 @@
             :url="shareURL"
             :title="`Watch this video '${file.name}'`"
             :description="`Watch this video '${file.name}'`"
-            hashtags="live-torrent"
+            hashtags="live_torrent"
             twitter-user="fadi_davenchy"
             network-tag="a"
             class="mt-2 mb-5"
@@ -86,11 +92,13 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import sizeFilter from "../mixins/sizeFilter";
+import backend from "axios";
 
 export default {
   name: "player",
   data() {
     return {
+      spin: false,
       fileIndex: null,
       captions: []
     };
@@ -148,6 +156,18 @@ export default {
       } catch (err) {
         console.error(err);
       }
+    },
+    reload() {
+      const { torrentInfo, loadTorrentInfo, $router } = this;
+      this.spin = true;
+      loadTorrentInfo(torrentInfo.infoHash)
+        .catch(err => {
+          console.error(err);
+          $router.push({ name: "home" });
+        })
+        .finally(() => {
+          setTimeout(() => (this.spin = false), 1000);
+        });
     }
   },
   computed: {
@@ -217,10 +237,10 @@ export default {
             } catch (err) {
               console.error(err);
             }
-          } else if (type === "zip") {
-          } else if (type === "os") {
-          } else if (type === "imdb") {
           }
+          //  else if (type === "zip") {
+          // } else if (type === "os") {
+          // } else if (type === "imdb") {}
         }
 
         if (!url) return;

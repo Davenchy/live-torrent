@@ -2,6 +2,7 @@ const app = require("express")();
 const tsapi = require("torrent-search-api");
 
 tsapi.enablePublicProviders();
+tsapi.disableProvider("Torrent9");
 
 app.get("/providers", (req, res) => {
   res.send(

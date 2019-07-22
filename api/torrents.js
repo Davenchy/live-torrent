@@ -3,6 +3,17 @@ const pump = require("pump");
 const rangeParser = require("range-parser");
 const mime = require("mime");
 const client = new WebTorrent();
+const trackers = `udp://open.demonii.com:1337/announce
+udp://tracker.openbittorrent.com:80
+udp://tracker.coppersurfer.tk:6969
+udp://glotorrents.pw:6969/announce
+udp://tracker.opentrackr.org:1337/announce
+udp://torrent.gresille.org:80/announce
+udp://p4p.arenabg.com:1337
+udp://tracker.leechers-paradise.org:6969`
+  .split("\n")
+  .map(a => a.trim())
+  .filter(a => a);
 
 const toJSONInit = (torrent, cb) => {
   torrent.toJson = () => ({
@@ -25,7 +36,7 @@ const toJSONInit = (torrent, cb) => {
 };
 
 function add(torrentId, cb) {
-  const torrent = client.add(torrentId);
+  const torrent = client.add(torrentId, { announce: trackers });
   torrent.on("error", e => {
     if (e.message.indexOf("Cannot add duplicate torrent") !== -1) {
       toJSONInit(client.get(torrent.infoHash), cb);

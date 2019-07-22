@@ -1,12 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { getTorrentInfo } from "./axios";
+import { getTorrentInfo, searchEngine } from "./axios";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    torrentInfo: null
+    torrentInfo: null,
+    searchResults: []
   },
   getters: {
     filesTree({ torrentInfo }) {
@@ -43,6 +44,9 @@ export default new Vuex.Store({
   mutations: {
     setTorrentInfo(state, torrentFileInfo) {
       state.torrentInfo = torrentFileInfo;
+    },
+    setSearchResults(state, results) {
+      state.searchResults = results || [];
     }
   },
   actions: {
@@ -50,6 +54,11 @@ export default new Vuex.Store({
       return getTorrentInfo(torrentId).then(res => {
         commit("setTorrentInfo", res.data);
       });
+    },
+    searchTorrentProviders({ commit }, params) {
+      return searchEngine(params).then(res =>
+        commit("setSearchResults", res.data)
+      );
     },
     refreshTorrentIfo({ state, commit }) {
       const torrent = state.torrentInfo;

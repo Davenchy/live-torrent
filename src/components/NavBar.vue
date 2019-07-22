@@ -1,18 +1,18 @@
 <template>
   <div>
     <v-toolbar color="#363e49" v-if="small || (!small && !drawer)">
+      <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
+      <v-spacer></v-spacer>
+      <v-toolbar-title @click="$router.push('/')">
+        <img src="/img/logo.png" style="max-height: 5em" alt="live torrent logo" />
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
       <v-btn icon @click="$router.go(-1)">
         <i class="fas fa-chevron-left"></i>
       </v-btn>
       <v-btn icon @click="$router.go(1)">
         <i class="fas fa-chevron-right"></i>
       </v-btn>
-      <v-spacer></v-spacer>
-      <v-toolbar-title @click="$router.push('/')">
-        <img src="/img/logo.png" style="max-height: 5em" alt="live torrent logo" />
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
     </v-toolbar>
 
     <v-navigation-drawer

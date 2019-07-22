@@ -36,7 +36,7 @@
               :url="`${hostURL}/explorer?torrentId=${torrentInfo.infoHash}`"
               :title="`Explore '${torrentInfo.name}' torrent file`"
               description="Explore this torrent file"
-              hashtags="live-torrent"
+              hashtags="live_torrent"
               twitter-user="fadi_davenchy"
               network-tag="a"
               class="my-3"
