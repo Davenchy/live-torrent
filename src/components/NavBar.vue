@@ -98,7 +98,7 @@ export default {
       items: [
         { title: "Home", icon: "fas fa-home", path: "/" },
         { title: "Search", icon: "fab fa-searchengin", path: "/search" },
-        // { title: "Movies", icon: "fas fa-film", path: "/movies" },
+        { title: "Movies", icon: "fas fa-film", path: "/movies" },
         { title: "About", icon: "info", path: "/about" }
       ]
     };

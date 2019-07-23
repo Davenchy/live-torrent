@@ -1,11 +1,16 @@
 <template>
-  <v-container fluid>
-    <v-layout raw wrap xs12>
+  <v-container fluid fill-height>
+    <v-layout raw wrap xs12 v-if="movies">
       <v-flex xs12 class="my-5 text-xs-center">
         <h1>Torrent Movies</h1>
       </v-flex>
-      <v-flex xs12 sm4 md3 xl2 v-for="movie in movies" :key="movie.id" class="pa-2 double-ms">
+      <v-flex xs12 sm4 md3 xl2 v-for="movie in movies" :key="movie.id" class="pa-3 double-ms">
         <movie-card :movie="movie" />
+      </v-flex>
+    </v-layout>
+    <v-layout v-else justify-center align-center fill-height>
+      <v-flex class="text-xs-center">
+        <v-progress-circular :size="100" :width="10" color="primary" indeterminate></v-progress-circular>
       </v-flex>
     </v-layout>
   </v-container>

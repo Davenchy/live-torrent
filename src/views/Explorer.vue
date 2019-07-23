@@ -21,60 +21,71 @@
               color="blue"
             />
 
-            <h1 class="subheading my-2">Share:</h1>
+            <v-expansion-panel popout dark>
+              <v-expansion-panel-content style="background: #20252c !important">
+                <template v-slot:header>
+                  <div class="title">
+                    <v-icon left>fas fa-share-alt</v-icon>Share
+                  </div>
+                </template>
+                <v-card color="#2b313b">
+                  <v-card-text>
+                    <v-text-field
+                      color="green"
+                      readonly
+                      flat
+                      label="Share Link"
+                      :value="shareURL"
+                      prepend-icon="share"
+                    />
 
-            <v-text-field
-              color="green"
-              readonly
-              flat
-              label="Share Link"
-              :value="shareURL"
-              prepend-icon="share"
-            />
-
-            <social-sharing
-              :url="`${hostURL}/explorer?torrentId=${torrentInfo.infoHash}`"
-              :title="`Explore '${torrentInfo.name}' torrent file`"
-              description="Explore this torrent file"
-              hashtags="live_torrent"
-              twitter-user="fadi_davenchy"
-              network-tag="a"
-              class="my-3"
-              inline-template
-            >
-              <div>
-                <network network="facebook" class="blue--text text--darken-2 ma-3">
-                  <i class="fab fa-facebook"></i> Facebook
-                </network>
-                <network network="reddit" class="red--text text--lighten-1 ma-3">
-                  <i class="fab fa-reddit-alien"></i> Reddit
-                </network>
-                <network network="twitter" class="blue--text text--lighten-4 ma-3">
-                  <i class="fab fa-twitter"></i> Twitter
-                </network>
-                <network network="telegram" class="blue--text text--lighten-2 ma-3">
-                  <i class="fab fa-telegram"></i> Telegram
-                </network>
-                <network network="skype" class="blue--text ma-3">
-                  <i class="fab fa-skype"></i> Skype
-                </network>
-                <network network="sms" class="yellow--text ma-3">
-                  <i class="fas fa-sms"></i> SMS
-                </network>
-                <network network="email" class="orange--text ma-3">
-                  <i class="fas fa-envelope"></i> Email
-                </network>
-                <network network="vk" class="blue--text text--darken-3 ma-3">
-                  <i class="fab fa-vk"></i> VKontakte
-                </network>
-                <network network="weibo" class="red--text text--darken-1 ma-3">
-                  <i class="fab fa-weibo"></i> Weibo
-                </network>
-                <network network="whatsapp" class="green--text text--lighten-2 ma-3">
-                  <i class="fab fa-fw fa-whatsapp"></i> Whatsapp
-                </network>
-              </div>
-            </social-sharing>
+                    <social-sharing
+                      :url="`${hostURL}/explorer?torrentId=${torrentInfo.infoHash}`"
+                      :title="`Explore '${torrentInfo.name}' torrent file`"
+                      description="Explore this torrent file"
+                      hashtags="live_torrent"
+                      twitter-user="fadi_davenchy"
+                      network-tag="a"
+                      class="my-3"
+                      inline-template
+                    >
+                      <div>
+                        <network network="facebook" class="blue--text text--darken-2 ma-3">
+                          <i class="fab fa-facebook"></i> Facebook
+                        </network>
+                        <network network="reddit" class="red--text text--lighten-1 ma-3">
+                          <i class="fab fa-reddit-alien"></i> Reddit
+                        </network>
+                        <network network="twitter" class="blue--text text--lighten-4 ma-3">
+                          <i class="fab fa-twitter"></i> Twitter
+                        </network>
+                        <network network="telegram" class="blue--text text--lighten-2 ma-3">
+                          <i class="fab fa-telegram"></i> Telegram
+                        </network>
+                        <network network="skype" class="blue--text ma-3">
+                          <i class="fab fa-skype"></i> Skype
+                        </network>
+                        <network network="sms" class="yellow--text ma-3">
+                          <i class="fas fa-sms"></i> SMS
+                        </network>
+                        <network network="email" class="orange--text ma-3">
+                          <i class="fas fa-envelope"></i> Email
+                        </network>
+                        <network network="vk" class="blue--text text--darken-3 ma-3">
+                          <i class="fab fa-vk"></i> VKontakte
+                        </network>
+                        <network network="weibo" class="red--text text--darken-1 ma-3">
+                          <i class="fab fa-weibo"></i> Weibo
+                        </network>
+                        <network network="whatsapp" class="green--text text--lighten-2 ma-3">
+                          <i class="fab fa-fw fa-whatsapp"></i> Whatsapp
+                        </network>
+                      </div>
+                    </social-sharing>
+                  </v-card-text>
+                </v-card>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
 
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
@@ -214,7 +225,16 @@
       <v-card light>
         <v-card-title class="headline grey lighten-2" primary-title>{{ selectedImageFile.name }}</v-card-title>
 
-        <v-img :src="`${hostURL}/api/stream/${torrentInfo.infoHash}/${selectedImageFile.index}`"></v-img>
+        <v-img
+          :src="`${hostURL}/api/stream/${torrentInfo.infoHash}/${selectedImageFile.index}`"
+          min-height="200px"
+        >
+          <template v-slot:placeholder>
+            <v-layout fill-height align-center justify-center ma-0>
+              <v-progress-circular indeterminate color="blue"></v-progress-circular>
+            </v-layout>
+          </template>
+        </v-img>
 
         <v-divider></v-divider>
 
@@ -226,7 +246,7 @@
     </v-dialog>
   </v-container>
   <v-layout v-else justify-center align-center fill-height>
-    <v-flex xs1 offset-xs>
+    <v-flex class="text-xs-center">
       <v-progress-circular :size="100" :width="10" color="primary" indeterminate></v-progress-circular>
     </v-flex>
   </v-layout>
