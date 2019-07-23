@@ -17,8 +17,6 @@
           @keydown.enter="search"
           :error-messages="errors"
           @click:clear="clearResults"
-          append-icon="fas fa-search"
-          @click:append="search"
         />
       </v-flex>
       <v-flex sm2 offset-sm1 xs12>
@@ -50,6 +48,13 @@
           type="number"
           :disabled="loading"
         ></v-text-field>
+      </v-flex>
+
+      <v-flex xs12 mt-3 class="text-xs-center">
+        <v-btn color="green" @click="search" :disabled="loading">
+          Search
+          <v-icon right>fas fa-search</v-icon>
+        </v-btn>
       </v-flex>
 
       <v-flex xs12 v-if="query && searchResults.length">

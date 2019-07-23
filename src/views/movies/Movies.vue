@@ -17,7 +17,7 @@
           v-model="query"
           @keydown.enter="search(true)"
           :error-messages="errors"
-          @click:clear="clearResults"
+          @click:clear="search(true)"
         />
       </v-flex>
 
@@ -33,7 +33,7 @@
               type="number"
               hide-details
               min="10"
-              max="100"
+              max="50"
               v-model="limit"
               :disabled="loading"
             />
@@ -116,6 +116,10 @@
               Search
               <v-icon right>fas fa-search</v-icon>
             </v-btn>
+            <v-btn color="blue" @click="random" :disabled="loading">
+              Random
+              <v-icon right>fas fa-dice</v-icon>
+            </v-btn>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -146,6 +150,25 @@
       <v-flex class="text-xs-center" v-else>
         <h1 class="title">No Results.</h1>
       </v-flex>
+      <v-flex xs12 sm6 offset-sm3 v-if="movies" class="text-xs-center mb-5">
+        <v-layout row>
+          <v-btn icon large @click="cpage > 1 ? cpage-- : null" :disabled="loading">
+            <v-icon>fas fa-chevron-left</v-icon>
+          </v-btn>
+          <v-select
+            dark
+            label="Page Number"
+            v-model="cpage"
+            :items="generatedPages"
+            :disabled="loading"
+            hide-details
+            single-line
+          />
+          <v-btn icon large @click="cpage < pages ? cpage++ : null" :disabled="loading">
+            <v-icon>fas fa-chevron-right</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -153,6 +176,7 @@
 <script>
 import MovieCard from "../../components/MovieCard";
 import { mapActions, mapGetters } from "vuex";
+import { getMoviesList } from "../../axios";
 
 export default {
   components: {
@@ -178,7 +202,7 @@ export default {
       const value = sessionStorage.getItem(key);
       return value !== null ? value : undefined;
     },
-    search(resetPages = false, defaultSearch = false) {
+    search(resetPages = false) {
       if (resetPages) this.cpage = 1;
 
       const params = {
@@ -192,17 +216,49 @@ export default {
       };
 
       this.loading = true;
-      this.loadMoviesList(defaultSearch ? {} : params)
+      this.loadMoviesList(params)
         .catch(err => {
           console.error(err);
           this.errors = err.message;
         })
         .finally(() => (this.loading = false));
     },
-    clearResults() {}
+    random() {
+      let params = {
+        query_term: this.query,
+        minimum_rating: (this.rating * 10) / 5,
+        order_by: this.order,
+        sort_by: this.sort,
+        genre: this.genre
+      };
+
+      this.loading = true;
+      getMoviesList(params)
+        .then(res => {
+          if (res.data.status !== "ok")
+            throw new Error(res.data.status_message);
+
+          const data = res.data.data;
+          const n = Math.round(Math.random() * (data.movie_count - 1) + 1);
+          if (data.movie_count === 0) params = {};
+
+          return getMoviesList({ ...params, limit: 1, page: n }).then(res => {
+            if (res.data.status !== "ok")
+              throw new Error(res.data.status_message);
+
+            this.$router.push("/movies/" + res.data.data.movies[0].id);
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.errors = err.message;
+        })
+        .finally(() => (this.loading = false));
+    }
   },
   watch: {
-    cpage() {
+    cpage(n) {
+      sessionStorage.setItem("mse.page", n);
       this.search();
     },
     pages(n) {
@@ -214,15 +270,29 @@ export default {
           text: `Page ${i + 1} Of ${n}`,
           value: i + 1
         });
-    }
+    },
+    query: n => sessionStorage.setItem("mse.query", n || ""),
+    rating: n => sessionStorage.setItem("mse.rating", n || 0),
+    limit: n => sessionStorage.setItem("mse.limit", n || 20),
+    order: n => sessionStorage.setItem("mse.order", n || "desc"),
+    sort: n => sessionStorage.setItem("mse.sort", n || "date_added"),
+    genre: n => sessionStorage.setItem("mse.genre", n || "all")
   },
   computed: {
     ...mapGetters(["page", "pages", "movies"])
   },
   created() {
+    const { readStorage } = this;
     document.title = "Live Torrent - Movies";
 
-    this.search(true, true);
+    this.query = readStorage("mse.query") || "";
+    this.rating = parseFloat(readStorage("mse.rating")) || 0;
+    this.limit = parseInt(readStorage("mse.limit")) || 20;
+    this.order = readStorage("mse.order") || "desc";
+    this.sort = readStorage("mse.sort") || "date_added";
+    this.genre = readStorage("mse.genre") || "all";
+
+    this.search(true);
   }
 };
 </script>

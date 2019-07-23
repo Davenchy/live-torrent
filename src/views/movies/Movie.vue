@@ -36,7 +36,7 @@
                 <div>MPA Rating: {{ movie.mpa_rating || 'Unknown' }}</div>
                 <div>IMDB Code: {{ movie.imdb_code }}</div>
                 <div>Year: {{ movie.year }}</div>
-                <div>Rating: {{ movie.rating }}</div>
+                <div>Rating: {{ movie.rating }} / 10</div>
                 <div>
                   Genres:
                   <span v-for="(g, i) in movie.genres" :key="i" class="mx-1">{{ g }}</span>
