@@ -8,6 +8,15 @@
             <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
           </v-btn>
           <v-btn color="blue" @click="$router.push('/explorer')">Back To Explorer</v-btn>
+          <v-btn
+            icon
+            tag="a"
+            target="_blank"
+            :href="`/api/stream/${torrentInfo.infoHash}/${file.index}`"
+            :download="file.name"
+          >
+            <v-icon color="green darken-2">fas fa-download</v-icon>
+          </v-btn>
         </v-card-title>
         <v-card-text>
           <h1 class="subheading">Share:</h1>

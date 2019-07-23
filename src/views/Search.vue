@@ -51,8 +51,10 @@
           :disabled="loading"
         ></v-text-field>
       </v-flex>
+
       <v-flex xs12 v-if="query && searchResults.length">
         <div class="subheading">Share:</div>
+
         <social-sharing
           :url="`${hostURL}/search?q=${query}&p=${provider}&l=${limit}&c=${category}`"
           :title="`Torrent search results for '${query}'`"
@@ -97,36 +99,36 @@
           </div>
         </social-sharing>
       </v-flex>
+
       <v-flex xs12 class="text-xs-right" v-if="searchResults.length">
         <v-btn color="red" @click="clearResults">Clear Results</v-btn>
       </v-flex>
+
       <v-flex xs12 class="mt-3">
-        <v-container fluid>
-          <v-layout justify-center row wrap>
-            <v-flex xs12 v-for="(result, i) in searchResults" :key="i">
-              <v-sheet color="#445064" class="pa-3 mb-3" style="overflow: auto;">
-                <div class="title mb-2">
-                  <a :href="`${hostURL}/explorer?torrentId=${result.magnet}`">{{ result.title }}</a>
-                  - Seeds/Peers: {{ result.seeds }}/{{ result.peers }} ::
-                  <a
-                    :href="result.link || result.desc"
-                    target="_blank"
-                  >{{ result.provider }}</a>
-                </div>
-                <v-layout row>
-                  <v-flex xs6>
-                    <div class="caption">Size: {{ result.size }}</div>
-                    <div class="caption">Hash: {{ result.hash }}</div>
-                  </v-flex>
-                  <v-flex xs6 class="text-xs-right">
-                    <div class="caption grey--text text--lighten-1">{{ result.time }}</div>
-                  </v-flex>
-                </v-layout>
-                <div class="subheading text-truncate mt-3" v-if="result.desc">{{ result.desc }}</div>
-              </v-sheet>
-            </v-flex>
-          </v-layout>
-        </v-container>
+        <v-layout justify-center row wrap>
+          <v-flex xs12 v-for="(result, i) in searchResults" :key="i">
+            <v-sheet color="#445064" class="pa-3 mb-3" style="overflow: auto;">
+              <div class="title mb-2">
+                <a :href="`${hostURL}/explorer?torrentId=${result.magnet}`">{{ result.title }}</a>
+                - Seeds/Peers: {{ result.seeds }}/{{ result.peers }} ::
+                <a
+                  :href="result.link || result.desc"
+                  target="_blank"
+                >{{ result.provider }}</a>
+              </div>
+              <v-layout row>
+                <v-flex xs6>
+                  <div class="caption">Size: {{ result.size }}</div>
+                  <div class="caption">Hash: {{ result.hash }}</div>
+                </v-flex>
+                <v-flex xs6 class="text-xs-right">
+                  <div class="caption grey--text text--lighten-1">{{ result.time }}</div>
+                </v-flex>
+              </v-layout>
+              <div class="subheading text-truncate mt-3" v-if="result.desc">{{ result.desc }}</div>
+            </v-sheet>
+          </v-flex>
+        </v-layout>
       </v-flex>
     </v-layout>
   </v-container>
@@ -135,6 +137,7 @@
 <script>
 import { searchEngine, searchProviders } from "../axios";
 import { mapActions, mapState, mapMutations } from "vuex";
+import { parse } from "path";
 
 export default {
   name: "search",
@@ -147,12 +150,11 @@ export default {
       loading: false,
       errors: "",
       providers: [],
-      categories: []
+      categories: [],
+      searchResults: []
     };
   },
   methods: {
-    ...mapActions(["searchTorrentProviders"]),
-    ...mapMutations(["setSearchResults"]),
     search() {
       const { query, provider, limit, category } = this;
       if (!query) return (this.errors = "Query is needed");
@@ -161,10 +163,10 @@ export default {
       if (provider && provider.name !== "All") params.provider = provider.name;
       this.errors = "";
 
-      this.searchTorrentProviders(params)
-        .then(() => {
-          if (this.searchResults.length === 0)
-            this.errors = "No results for " + this.query;
+      searchEngine(params)
+        .then(({ data }) => {
+          this.searchResults = data;
+          if (data.length === 0) this.errors = "No results for " + this.query;
         })
         .catch(err => {
           console.error(err);
@@ -173,22 +175,34 @@ export default {
         .finally(() => (this.loading = false));
     },
     clearResults() {
-      this.setSearchResults([]);
       this.query = "";
+      this.searchResults = [];
+    },
+    readStorage(key) {
+      const value = sessionStorage.getItem(key);
+      return value !== null ? value : undefined;
     }
   },
-  computed: {
-    ...mapState(["searchResults"])
+  watch: {
+    provider: x => sessionStorage.setItem("tse.provider", x.name || "All"),
+    query: x => sessionStorage.setItem("tse.query", x || ""),
+    category: x => sessionStorage.setItem("tse.category", x || "All"),
+    limit: x => sessionStorage.setItem("tse.limit", x || 10),
+    searchResults: x => sessionStorage.setItem("tse.results", JSON.stringify(x))
   },
   created() {
+    this.loading = true;
+    const { readStorage } = this;
     const { q, p, c, l } = this.$route.query;
-    if (p) this.provider = p || "1337x";
-    if (c) this.category = c || "All";
-    if (l) this.limit = c || 10;
-    if (q) {
-      this.query = q;
-      this.search();
-    }
+
+    this.provider = p ? p : readStorage("tse.provider") || "All";
+    this.category = c ? c : readStorage("tse.category") || "All";
+    this.limit = l ? l : readStorage("tse.limit") || 10;
+    this.query = q ? q : readStorage("tse.query") || "";
+    const results = readStorage("tse.results");
+    this.searchResults = results ? JSON.parse(results) : [];
+
+    if (q) this.search();
 
     document.title = "Live Torrent - Search Engine";
 
@@ -210,7 +224,6 @@ export default {
           },
           ...(res.data || [])
         ];
-        if (!this.provider) this.provider = this.providers[0].name;
         this.categories = this.providers.find(
           p => p.name === this.provider
         ).categories;
@@ -218,7 +231,8 @@ export default {
       .catch(err => {
         console.error(err);
         this.errors = err.message;
-      });
+      })
+      .finally(() => (this.loading = false));
   }
 };
 </script>

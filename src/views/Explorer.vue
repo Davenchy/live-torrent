@@ -131,7 +131,15 @@
                         item.type.startsWith('audio')
                     "
                   >
-                    <v-icon color="indigo lighten-2">remove_red_eye</v-icon>
+                    <v-icon color="indigo lighten-2">fas fa-play</v-icon>
+                  </v-btn>
+
+                  <v-btn
+                    icon
+                    v-if="item.type.startsWith('image')"
+                    @click="selectedImageFile = item"
+                  >
+                    <v-icon color="blue darken-2">fas fa-images</v-icon>
                   </v-btn>
 
                   <v-btn
@@ -141,7 +149,7 @@
                     :href="`/api/stream/${torrentInfo.infoHash}/${item.index}`"
                     :download="item.name"
                   >
-                    <v-icon color="green darken-2">cloud_download</v-icon>
+                    <v-icon color="green darken-2">fas fa-download</v-icon>
                   </v-btn>
                 </div>
               </template>
@@ -194,6 +202,28 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <!-- images dialog -->
+
+    <v-dialog
+      :value="selectedImageFile"
+      width="500"
+      v-if="selectedImageFile"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
+      <v-card light>
+        <v-card-title class="headline grey lighten-2" primary-title>{{ selectedImageFile.name }}</v-card-title>
+
+        <v-img :src="`${hostURL}/api/stream/${torrentInfo.infoHash}/${selectedImageFile.index}`"></v-img>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat @click="selectedImageFile = null">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
   <v-layout v-else justify-center align-center fill-height>
     <v-flex xs1 offset-xs>
@@ -210,6 +240,7 @@ export default {
   name: "explorer",
   data() {
     return {
+      selectedImageFile: null,
       tree: [],
       insensitive: true,
       filesOnly: true,

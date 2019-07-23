@@ -105,7 +105,7 @@ export default {
   },
   computed: {
     small() {
-      return this.$vuetify.breakpoint.xsOnly;
+      return this.$vuetify.breakpoint.smAndDown;
     }
   },
   created() {
