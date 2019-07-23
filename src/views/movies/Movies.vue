@@ -17,7 +17,7 @@
           v-model="query"
           @keydown.enter="search(true)"
           :error-messages="errors"
-          @click:clear="search(true)"
+          @click:clear="clearResults"
         />
       </v-flex>
 
@@ -36,6 +36,7 @@
               max="50"
               v-model="limit"
               :disabled="loading"
+              @keydown.enter="search(true)"
             />
           </v-flex>
           <v-flex xs12 sm4 lg4 pa-2>
@@ -142,11 +143,13 @@
           </v-btn>
         </v-layout>
       </v-flex>
-      <v-layout row wrap v-if="movies">
-        <v-flex xs12 sm4 md3 xl2 v-for="movie in movies" :key="movie.id" class="pa-3 double-ms">
-          <movie-card :movie="movie" />
-        </v-flex>
-      </v-layout>
+      <v-flex xs12 v-if="movies">
+        <v-layout row wrap>
+          <v-flex xs12 sm4 md3 xl2 v-for="movie in movies" :key="movie.id" class="pa-3 double-ms">
+            <movie-card :movie="movie" />
+          </v-flex>
+        </v-layout>
+      </v-flex>
       <v-flex class="text-xs-center" v-else>
         <h1 class="title">No Results.</h1>
       </v-flex>
@@ -254,6 +257,10 @@ export default {
           this.errors = err.message;
         })
         .finally(() => (this.loading = false));
+    },
+    clearResults() {
+      this.query = "";
+      this.search(true);
     }
   },
   watch: {
