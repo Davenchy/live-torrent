@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import movies from "./movies";
-import { getTorrentInfo, searchEngine } from "../axios";
+import { getTorrentInfo } from "../services/axios";
 
 Vue.use(Vuex);
 

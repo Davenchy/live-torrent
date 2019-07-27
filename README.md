@@ -54,7 +54,7 @@ npm run build
 
 ### Get torrent info
 
-| Method | path                | params               |
+| Method | path                | query                |
 | ------ | ------------------- | -------------------- |
 | GET    | /api/info           | torrentId [required] |
 | GET    | /api/info/:infoHash |
@@ -91,7 +91,7 @@ The File Object:
 
 ### Streaming
 
-| Method | path                             | params                                        |
+| Method | path                             | query                                         |
 | ------ | -------------------------------- | --------------------------------------------- |
 | GET    | /api/stream                      | torrentId [required], fileIndex [default = 0] |
 | GET    | /api/stream/:infoHash/:fileIndex |
@@ -106,46 +106,76 @@ torrentId can be:
 
 ### Download torrent as zip archive
 
-| Method | path                    | params               |
+| Method | path                    | query                |
 | ------ | ----------------------- | -------------------- |
 | GET    | /api/download           | torrentId [required] |
 | GET    | /api/download/:infoHash |
 
 ### Download torrent as playlist [.m3u]
 
-| Method | path                    | params               |
+| Method | path                    | query                |
 | ------ | ----------------------- | -------------------- |
 | GET    | /api/playlist           | torrentId [required] |
 | GET    | /api/playlist/:infoHash |
 
 ### Download torrent file [.torrent]
 
-| Method | path                       | params               |
+| Method | path                       | query                |
 | ------ | -------------------------- | -------------------- |
 | GET    | /api/torrentfile           | torrentId [required] |
 | GET    | /api/torrentfile/:infoHash |
 
 ### SRT to VTT [.vtt]
 
-| Method | path         | params          | body                             |
+| Method | path         | query           | body                             |
 | ------ | ------------ | --------------- | -------------------------------- |
 | GET    | /api/srt2vtt | path [required] |
 | POST   | /api/srt2vtt |                 | srt [srt file content][required] |
 
 ### Torrent Search Engine
 
-| Method | path                  | params                                                                 |
+| Method | path                  | query                                                                  |
 | ------ | --------------------- | ---------------------------------------------------------------------- |
 | GET    | /api/search           | query[required], provider, category[default="All"], limit[default=100] |
 | GET    | /api/search/providers |
 
 > if no provider will search using all providers [takes too long time]
 
+### Subtitles
+
+| Method | path                   | query |
+| ------ | ---------------------- | ----- |
+| GET    | /api/captions/:imdb-id |
+
+the first endpoint returns array of objects contains subtitle info and url
+
+```javascript
+[
+  {
+    "url": "...",
+    "langcode": "en",
+    "downloads": 105677,
+    "lang": "English",
+    "encoding": "UTF-8",
+    "id": "1954422981",
+    "filename": "X-Men.Days.of.Future.Past.2014.720p.BluRay.X264-AMIABLE.srt",
+    "date": "2014-10-04 16:22:07",
+    "score": 0.5,
+    "fps": 23.976,
+    "format": "srt",
+    "utf8": "...",
+    "vtt": "..."
+  },
+  ...
+]
+```
+
 ## Frontend API
 
 | Path      | params                          | description                                                                                    |
 | --------- | ------------------------------- | ---------------------------------------------------------------------------------------------- |
 | /         | [q]                             | [coming soon]                                                                                  |
+| /movies   | [query, limit, rating, genre]   | search movies                                                                                  |
 | /explorer | torrentId                       | explore torrent file using its torrent id (http/https torrent file or info hash or magnet uri) |
 | /player   | torrentId, fileIndex, [caption] | play video or audio file using torrentId and the file index, find more about captions below    |
 
@@ -155,4 +185,30 @@ to add captions to the player **you can use the gui or request params**
 
 send captions params as must as you need
 
-Caption Scheme: `caption={caption label}::{caption url}&...`
+Caption Scheme types:
+
+1. text
+2. url
+3. imdbid
+
+Caption Scheme can be:
+
+`caption={type}::{label}::{language-code}::{data}&...`
+
+or
+
+`caption={type}::{label}::{data}&...`
+
+or
+
+`caption={type}::{data}&...`
+
+---
+
+Examples:
+
+`caption=texy::English::en::{subtitle file content here...}`
+
+`caption=url::English::en::https://...`
+
+`caption=imdbid::1877832`

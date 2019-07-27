@@ -1,4 +1,8 @@
-import { getMoviesList, getSuggestedMovies, getMovieDetails } from "../axios";
+import {
+  getMoviesList,
+  getSuggestedMovies,
+  getMovieDetails
+} from "../services/axios";
 
 export default {
   state: {

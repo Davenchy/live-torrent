@@ -32,3 +32,6 @@ export const getMovieDetails = id =>
   );
 export const getSuggestedMovies = id =>
   backend.get(`https://yts.lt/api/v2/movie_suggestions.json?movie_id=${id}`);
+
+//  movies captions
+export const loadCaptions = imdbID => backend.get("/captions/" + imdbID);

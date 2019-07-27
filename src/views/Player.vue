@@ -4,7 +4,7 @@
       <v-card color="#445064">
         <v-card-title>
           {{ file.name }} - {{ file.size | size }} - Peers {{ torrentInfo.peers }}
-          <v-btn icon color="green" @click="reload">
+          <v-btn icon color="green" @click="refresh">
             <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
           </v-btn>
           <v-btn color="blue" @click="$router.push('/explorer')">Back To Explorer</v-btn>
@@ -84,6 +84,15 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
 
+          <v-alert
+            v-model="captionsError"
+            dismissible
+            transition="scale-transition"
+            type="error"
+            class="white--text"
+            light
+          >Failed to download captions.</v-alert>
+          <v-progress-linear v-if="loading" indeterminate></v-progress-linear>
           <video
             id="player"
             ref="player"
@@ -96,8 +105,17 @@
               kind="captions"
               :label="c.label"
               :src="c.url"
+              :srclang="c.lang || false"
             />
           </video>
+
+          <v-flex class="text-xs-center my-4" v-if="player">
+            <h1 class="title mb-3">Fix caption timing</h1>
+            <v-btn color="blue" @click="timeA = player.currentTime">Caption appears here</v-btn>
+            <v-btn color="blue" @click="timeB = player.currentTime">Caption should appears here</v-btn>
+            <br />
+            <v-btn color="green" @click="updateTime">Fix Caption Timing</v-btn>
+          </v-flex>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -112,14 +130,19 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import sizeFilter from "../mixins/sizeFilter";
-import backend from "axios";
+import Captions from "../services/captions";
 
 export default {
   name: "player",
   data() {
     return {
+      player: null,
       spin: false,
       fileIndex: null,
+      timeA: 0,
+      timeB: 0,
+      loading: false,
+      captionsError: false,
       captions: []
     };
   },
@@ -165,19 +188,26 @@ export default {
         "volume", // Volume control
         "captions", // Toggle captions
         "settings", // Settings menu
+        "pip", // Picture-in-picture (currently Safari only)
+        "airplay", // Airplay (currently Safari only)
         "fullscreen" // Toggle fullscreen
       ];
 
       try {
         const player = new window.Plyr(this.$refs.player, {
+          captions: {
+            active: true,
+            update: true
+          },
           controls
         });
         player.touch = true;
+        this.player = player;
       } catch (err) {
         console.error(err);
       }
     },
-    reload() {
+    refresh() {
       const { torrentInfo, loadTorrentInfo, $router } = this;
       this.spin = true;
       loadTorrentInfo(torrentInfo.infoHash)
@@ -188,6 +218,26 @@ export default {
         .finally(() => {
           setTimeout(() => (this.spin = false), 1000);
         });
+    },
+    updateTime() {
+      const time = this.timeB - this.timeA;
+      if (time === 0) return;
+
+      const node = this.player.captions.currentTrackNode;
+      if (!node) return;
+      const len = node.cues.length;
+
+      const fix = i => {
+        const cue = node.cues[i];
+        cue.startTime += time;
+        cue.endTime += time;
+      };
+
+      if (time > 0) for (let i = len - 1; i >= 0; i--) fix(i);
+      else for (let i = 0; i < len; i++) fix(i);
+
+      console.log("fixed timeing by: " + time);
+      this.timeA = this.timeB;
     }
   },
   computed: {
@@ -197,22 +247,33 @@ export default {
       return torrentInfo ? torrentInfo.files[this.fileIndex] : null;
     },
     shareURL() {
-      const { hostURL, torrentInfo, file, captions } = this;
+      const { hostURL, torrentInfo, file } = this;
+
+      let captions =
+        this.captions
+          .map(c => {
+            if (c.type === "imdbid") return;
+            return `&caption=${c.type}::${c.label}::${c.lang}::${
+              c.originalData
+            }`;
+          })
+          .join("") || "";
+
+      const imdbidCaption = this.captions.find(c => c.type === "imdbid");
+      if (imdbidCaption)
+        captions += `&caption=imdbid::${imdbidCaption.originalData}`;
+
       return `${hostURL}/player?torrentId=${torrentInfo.infoHash}&fileIndex=${
         file.index
-      }${captions.map(c => `&${c.label}::${c.url}`)}`;
+      }${captions}`;
     }
   },
   mounted() {
-    const self = this;
-    const { torrentId, fileIndex, caption } = this.$route.query;
+    const { torrentId, fileIndex } = this.$route.query;
     const id = torrentId;
     this.fileIndex = fileIndex;
-    let captions = [];
-    let label = "Unamed Caption";
-    let url = "";
-    let type = "url";
 
+    // load video from torrent file
     if (!this.torrentInfo) {
       if (!id) this.$router.push({ name: "home" });
       else {
@@ -225,47 +286,17 @@ export default {
       }
     } else this.checkIndex();
 
-    if (Array.isArray(caption)) captions = caption;
-    else captions = [caption];
-
-    const srt2vtt = l => `${this.hostURL}/api/srt2vtt?path=${l}`;
-
-    captions
-      .filter(a => a)
-      .forEach(async function(c) {
-        const cInfo = c.split("::");
-        const len = cInfo.length;
-
-        if (len === 1) {
-          url = srt2vtt(cInfo[0]);
-        } else if (len === 2) {
-          label = cInfo[0] || label;
-          url = srt2vtt(cInfo[1]);
-        } else if (len === 3) {
-          label = cInfo[0] || label;
-          type = cInfo[1];
-          const data = cInfo[2];
-
-          if (!data || !type) return;
-
-          if (type === "text") {
-            try {
-              const res = await backend.post("/srt2vtt", { srt: data });
-              const blob = new Blob([res.data.trim()], { type: "text/vtt" });
-              url = URL.createObjectURL(blob);
-              console.log("ready");
-            } catch (err) {
-              console.error(err);
-            }
-          }
-          //  else if (type === "zip") {
-          // } else if (type === "os") {
-          // } else if (type === "imdb") {}
-        }
-
-        if (!url) return;
-        self.captions.push({ label, url, type });
-      });
+    // load captions for the video
+    this.loading = true;
+    Captions(this.$route.query)
+      .then(captions => {
+        this.captions = captions.filter(a => a); // remove broken captions
+      })
+      .catch(err => {
+        console.error(err);
+        this.captionsError = true;
+      })
+      .finally(() => (this.loading = false));
   }
 };
 </script>

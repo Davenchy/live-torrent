@@ -140,7 +140,7 @@
 </template>
 
 <script>
-import { searchEngine, searchProviders } from "../axios";
+import { searchEngine, searchProviders } from "../services/axios";
 import { mapActions, mapState, mapMutations } from "vuex";
 import { parse } from "path";
 

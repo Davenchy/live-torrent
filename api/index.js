@@ -3,6 +3,7 @@ const playlistBuilder = require("./playlist-builder");
 const torrents = require("./torrents");
 const srt2vtt = require("./srt2vtt");
 const torrentSearchEngine = require("./torrent-search-engine");
+const captions = require("./captions");
 const yazl = require("yazl");
 const pump = require("pump");
 
@@ -115,5 +116,8 @@ router.use("/srt2vtt", srt2vtt);
 
 // torrent search engine
 router.use("/search", torrentSearchEngine);
+
+// movies captions
+router.use("/captions", captions);
 
 module.exports = router;

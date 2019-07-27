@@ -178,6 +178,43 @@
             </v-card>
           </v-expansion-panel-content>
         </v-expansion-panel>
+
+        <v-expansion-panel
+          :popout="$vuetify.breakpoint.mdAndUp || $vuetify.breakpoint.xsOnly"
+          :inset="$vuetify.breakpoint.smOnly"
+          light
+        >
+          <v-expansion-panel-content>
+            <template v-slot:header>
+              <div class="title">
+                <v-icon left>fas fa-closed-captioning</v-icon>Captions
+              </div>
+            </template>
+            <v-card>
+              <v-card-text style="text-wrap: wrap;">
+                <div v-if="loadingCaptions">Loading...</div>
+                <div v-else-if="!captions.length">No captions found for this movie.</div>
+                <div v-else>
+                  <a
+                    :href="c.utf8"
+                    :download="c.filename"
+                    target="blank"
+                    v-for="(c, i) in captions"
+                    :key="i"
+                    style="margin: 5px; display: inline-block"
+                  >{{ c.lang }}</a>.
+                </div>
+                <hr />
+                <div>
+                  You can help by making subtitles and uploading it to
+                  <a
+                    href="https://opensubtitles.org"
+                  >opensubtitles.org</a>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-flex>
 
       <v-flex xs12 mt-5>
@@ -210,7 +247,7 @@
                 <v-btn
                   color="purple"
                   tag="a"
-                  :href="`${hostURL}/player?torrentId=${torrent.hash}`"
+                  :href="`${hostURL}/player?torrentId=${torrent.hash}&caption=imdbid::${movie.imdb_code}`"
                 >Watch</v-btn>
                 <v-btn
                   color="blue"
@@ -248,6 +285,7 @@
 <script>
 import { mapActions } from "vuex";
 import MovieCard from "../../components/MovieCard";
+import { loadCaptions } from "../../services/axios";
 
 export default {
   name: "movie",
@@ -256,11 +294,22 @@ export default {
   },
   data() {
     return {
-      movie: null
+      movie: null,
+      captions: [],
+      loadingCaptions: false
     };
   },
   methods: {
-    ...mapActions(["loadMoviePage"])
+    ...mapActions(["loadMoviePage"]),
+    buildCaptionsQuery() {
+      const { captions } = this;
+      if (!captions.length) return "";
+      let c = captions
+        .map(c => `caption=url::${c.lang}::${c.langcode}::${c.utf8}`)
+        .join("&");
+      if (c.length) return "&" + c;
+      return "";
+    }
   },
   watch: {
     movie(n) {
@@ -269,9 +318,15 @@ export default {
   },
   created() {
     const { id } = this.$route.params;
+    this.loadingCaptions = true;
 
     this.loadMoviePage(id)
       .then(movie => (this.movie = movie))
+      .then(movie => {
+        return loadCaptions(movie.imdb_code)
+          .then(res => (this.captions = res.data))
+          .finally(() => (this.loadingCaptions = false));
+      })
       .catch(err => console.error(err));
   }
 };

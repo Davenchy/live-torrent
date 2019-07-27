@@ -1,10 +1,11 @@
 import Vue from "vue";
-import "./plugins/vuetify";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store/index";
+
+import "./plugins/vuetify";
 import "./registerServiceWorker";
-import "./axios";
+import "./services/axios";
 import SocialSharing from "vue-social-sharing";
 
 Vue.use(SocialSharing);

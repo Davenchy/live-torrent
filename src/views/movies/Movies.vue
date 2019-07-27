@@ -179,7 +179,7 @@
 <script>
 import MovieCard from "../../components/MovieCard";
 import { mapActions, mapGetters } from "vuex";
-import { getMoviesList } from "../../axios";
+import { getMoviesList } from "../../services/axios";
 
 export default {
   components: {
@@ -291,13 +291,17 @@ export default {
   created() {
     const { readStorage } = this;
     document.title = "Live Torrent - Movies";
+    const { query, genre, rating, limit } = this.$route.query;
+    const l = parseInt(limit);
 
-    this.query = readStorage("mse.query") || "";
-    this.rating = parseFloat(readStorage("mse.rating")) || 0;
-    this.limit = parseInt(readStorage("mse.limit")) || 20;
+    this.query = query || readStorage("mse.query") || "";
+    this.rating =
+      parseInt(rating) || parseFloat(readStorage("mse.rating")) || 0;
+    this.limit =
+      l <= 50 || l > 0 ? l : parseInt(readStorage("mse.limit")) || 20;
     this.order = readStorage("mse.order") || "desc";
     this.sort = readStorage("mse.sort") || "date_added";
-    this.genre = readStorage("mse.genre") || "all";
+    this.genre = genre || readStorage("mse.genre") || "all";
 
     this.search(true);
   }
