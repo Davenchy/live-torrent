@@ -217,6 +217,11 @@
         </v-expansion-panel>
       </v-flex>
 
+      <v-flex xs12 md10 offset-md1 mt-5 v-if="trailer">
+        <h1 class="title mb-4">Trailer:</h1>
+        <div id="player" data-plyr-provider="youtube" :data-plyr-embed-id="trailer"></div>
+      </v-flex>
+
       <v-flex xs12 mt-5>
         <h1 class="title mb-4">Screenshots:</h1>
         <v-carousel>
@@ -296,7 +301,8 @@ export default {
     return {
       movie: null,
       captions: [],
-      loadingCaptions: false
+      loadingCaptions: false,
+      trailer: null
     };
   },
   methods: {
@@ -323,11 +329,37 @@ export default {
     this.loadMoviePage(id)
       .then(movie => (this.movie = movie))
       .then(movie => {
+        movieTrailer(movie.title, movie.year)
+          .then(url => (this.trailer = url))
+          .catch(err => console.error(err));
+        return movie;
+      })
+      .then(movie => {
         return loadCaptions(movie.imdb_code)
           .then(res => (this.captions = res.data))
           .finally(() => (this.loadingCaptions = false));
       })
-      .catch(err => console.error(err));
+      .catch(err => console.error(err))
+      .finally(() => {
+        const controls = [
+          "play-large", // The large play button in the center
+          "rewind", // Rewind by the seek time (default 10 seconds)
+          "play", // Play/pause playback
+          "fast-forward", // Fast forward by the seek time (default 10 seconds)
+          "progress", // The progress bar and scrubber for playback and buffering
+          "current-time", // The current time of playback
+          "duration", // The full duration of the media
+          "mute", // Toggle mute
+          "volume", // Volume control
+          "settings", // Settings menu
+          "fullscreen" // Toggle fullscreen
+        ];
+
+        const player = new Plyr("#player", {
+          controls
+        });
+        player.touch = true;
+      });
   }
 };
 </script>
