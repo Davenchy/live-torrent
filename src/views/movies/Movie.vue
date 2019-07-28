@@ -217,9 +217,22 @@
         </v-expansion-panel>
       </v-flex>
 
-      <v-flex xs12 md10 offset-md1 mt-5 v-if="trailer">
+      <v-flex xs12 md10 offset-md1 mt-5>
         <h1 class="title mb-4">Trailer:</h1>
-        <div id="player" data-plyr-provider="youtube" :data-plyr-embed-id="trailer"></div>
+        <div class="my-3 text-xs-center">
+          <v-btn
+            tag="a"
+            target="_blank"
+            :href="`https://www.youtube.com/search?q=${movie.title} ${movie.year} trailer`"
+            color="red"
+          >
+            <v-icon left>fab fa-youtube</v-icon>Search Youtube for the trailer.
+          </v-btn>
+          <v-btn tag="a" target="_blank" :href="trailer" color="red" v-if="trailer">
+            <v-icon left>fab fa-youtube</v-icon>Watch trailer on Youtube
+          </v-btn>
+        </div>
+        <div id="player" data-plyr-provider="youtube" :data-plyr-embed-id="trailer" v-if="trailer"></div>
       </v-flex>
 
       <v-flex xs12 mt-5>
@@ -329,7 +342,8 @@ export default {
     this.loadMoviePage(id)
       .then(movie => (this.movie = movie))
       .then(movie => {
-        movieTrailer(movie.title, movie.year)
+        window
+          .movieTrailer(movie.title, movie.year)
           .then(url => (this.trailer = url))
           .catch(err => console.error(err));
         return movie;
@@ -355,7 +369,7 @@ export default {
           "fullscreen" // Toggle fullscreen
         ];
 
-        const player = new Plyr("#player", {
+        const player = new window.Plyr("#player", {
           controls
         });
         player.touch = true;

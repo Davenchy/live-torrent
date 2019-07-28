@@ -13,7 +13,7 @@ export default async function(query) {
       // parse caption information
       const info = c.split("::");
       const len = info.length;
-      let caption = { data: null, label: "Unknown", lang: "?", type: null };
+      let caption = { data: null, label: "Unknown", lang: false, type: null };
 
       if (len === 2) {
         caption.type = info[0];
@@ -71,6 +71,7 @@ export const loadURL = caption => {
       return loadText(caption);
     })
     .catch(err => {
+      console.error(err);
       console.error("Cannot load this caption:", caption);
       return undefined;
     });

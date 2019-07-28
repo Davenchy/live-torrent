@@ -109,13 +109,61 @@
             />
           </video>
 
-          <v-flex class="text-xs-center my-4" v-if="player">
-            <h1 class="title mb-3">Fix caption timing</h1>
-            <v-btn color="blue" @click="timeA = player.currentTime">Caption appears here</v-btn>
-            <v-btn color="blue" @click="timeB = player.currentTime">Caption should appears here</v-btn>
-            <br />
-            <v-btn color="green" @click="updateTime">Fix Caption Timing</v-btn>
-          </v-flex>
+          <v-expansion-panel popout dark class="my-5">
+            <v-expansion-panel-content style="background: #20252c !important">
+              <template v-slot:header>
+                <div class="title">
+                  <v-icon left>fas fa-closed-captioning</v-icon>Captions Options
+                </div>
+              </template>
+              <v-card color="#2b313b">
+                <v-card-text class="text-xs-center">
+                  <v-flex class="my-4">
+                    <h1 class="title mb-3">Upload Caption</h1>
+                    <input
+                      type="file"
+                      placeholder="Upload Caption"
+                      @change="uploadCaption"
+                      accept=".vtt, .srt"
+                    />
+                  </v-flex>
+                  <v-flex class="my-4">
+                    <h1 class="title mb-3">Load URL Caption</h1>
+                    <v-text-field type="url" label="Load Caption" v-model="loadCaptionInfo">
+                      <template v-slot:append>
+                        <div>
+                          <v-btn @click="loadCaption" color="blue">Load</v-btn>
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </v-flex>
+                  <v-flex class="my-4" v-if="player">
+                    <h1 class="title mb-3">Fix caption timing</h1>
+                    <v-btn color="blue" @click="timeA = player.currentTime">Caption appears here</v-btn>
+                    <v-btn
+                      color="blue"
+                      @click="timeB = player.currentTime"
+                    >Caption should appears here</v-btn>
+                    <br />
+                    <v-btn color="green" @click="updateTime">Fix Caption Timing</v-btn>
+                  </v-flex>
+                  <v-flex>
+                    <h1 class="title">Loaded Captions</h1>
+                    <div v-for="(c, i) in captions" :key="i">
+                      <a
+                        :href="c.url"
+                        :download="c.label"
+                        target="_blank"
+                      >{{c.label}} - {{c.lang || 'unknown lang'}}</a>
+                      <v-btn icon @click="captions.splice(i, 1)">
+                        <v-icon small color="red">fas fa-trash</v-icon>
+                      </v-btn>
+                    </div>
+                  </v-flex>
+                </v-card-text>
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-card-text>
       </v-card>
     </v-flex>
@@ -130,7 +178,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import sizeFilter from "../mixins/sizeFilter";
-import Captions from "../services/captions";
+import Captions, { loadText, loadURL } from "../services/captions";
 
 export default {
   name: "player",
@@ -143,12 +191,49 @@ export default {
       timeB: 0,
       loading: false,
       captionsError: false,
-      captions: []
+      captions: [],
+      loadCaptionInfo: ""
     };
   },
   mixins: [sizeFilter],
   methods: {
     ...mapActions(["loadTorrentInfo"]),
+    loadCaption() {
+      loadURL({
+        label: prompt("Caption Name:", "Unknown") || "Unknown",
+        lang: prompt("Caption Language short code:", "en") || "",
+        type: "url",
+        originalData: this.loadCaptionInfo,
+        data: this.loadCaptionInfo
+      })
+        .then(caption => this.captions.push(caption))
+        .catch(err => {
+          console.error(err);
+          alert(err.message);
+        });
+    },
+    uploadCaption(e) {
+      const files = e.target.files;
+      if (!files.length) return;
+      const file = files[0];
+      if (file.type !== "application/x-subrip" && file.type !== "text/vtt")
+        return alert("Only .vtt and .srt subtitles are supported");
+      if (window.File && window.FileReader && window.FileList && window.Blob) {
+        const reader = new FileReader();
+        reader.onload = data => {
+          loadText({
+            label: file.name,
+            type: "text",
+            lang: prompt("Caption Language short code:", "en") || "",
+            originalData: data.target.result,
+            data: data.target.result
+          }).then(caption => this.captions.push(caption));
+        };
+        reader.readAsText(file, "utf-8");
+      } else {
+        alert("The File APIs are not fully supported in this browser.");
+      }
+    },
     checkIndex() {
       const { fileIndex, $router, torrentInfo } = this;
       const ready = () => {
@@ -253,7 +338,7 @@ export default {
         this.captions
           .map(c => {
             if (c.type === "imdbid") return;
-            return `&caption=${c.type}::${c.label}::${c.lang}::${
+            return `&caption=${c.type}::${c.label || ""}::${c.lang || ""}::${
               c.originalData
             }`;
           })

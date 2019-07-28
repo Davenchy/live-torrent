@@ -272,9 +272,9 @@ export default {
           )
           .map(
             f =>
-              `${f.name}::${this.hostURL}/api/stream/${torrentInfo.infoHash}/${
-                f.index
-              }`
+              `url::${f.name}::${this.hostURL}/api/stream/${
+                torrentInfo.infoHash
+              }/${f.index}`
           );
       } catch (err) {
         console.error(err);
