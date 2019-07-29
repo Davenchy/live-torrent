@@ -11,6 +11,7 @@ import SocialSharing from "vue-social-sharing";
 Vue.use(SocialSharing);
 Vue.config.productionTip = false;
 Vue.prototype.hostURL = window.location.protocol + "//" + window.location.host;
+Vue.prototype.window = window;
 
 new Vue({
   router,

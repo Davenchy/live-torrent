@@ -2,7 +2,17 @@
   <v-container fluid fill-height>
     <v-layout raw wrap v-if="movie">
       <v-flex xs12 class="my-5 text-xs-center">
-        <h1>{{ movie.title }}</h1>
+        <h1>
+          {{ movie.title }}
+          <bookmark-button
+            v-if="movie"
+            :bookmarkInfo="{
+          name: `${movie.title} (${movie.year}) - Movie Page`,
+          id: `movie::${movie.imdb_code}`,
+          url: window.location.href
+          }"
+          />
+        </h1>
       </v-flex>
       <v-flex xs12 sm6 md5 lg3 offset-lg1>
         <v-img
@@ -304,18 +314,25 @@
 import { mapActions } from "vuex";
 import MovieCard from "../../components/MovieCard";
 import { loadCaptions } from "../../services/axios";
+import BookmarkButton from "../../components/BookmarkButton";
 
 export default {
   name: "movie",
   components: {
-    MovieCard
+    MovieCard,
+    BookmarkButton
   },
   data() {
     return {
       movie: null,
       captions: [],
       loadingCaptions: false,
-      trailer: null
+      trailer: null,
+      bookmarkInfo: {
+        id: "",
+        name: "",
+        url: ""
+      }
     };
   },
   methods: {

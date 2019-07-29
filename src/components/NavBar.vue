@@ -99,6 +99,7 @@ export default {
         { title: "Home", icon: "fas fa-home", path: "/" },
         { title: "Search", icon: "fab fa-searchengin", path: "/search" },
         { title: "Movies", icon: "fas fa-film", path: "/movies" },
+        { title: "Bookmarks", icon: "fas fa-bookmark", path: "/bookmarks" },
         { title: "About", icon: "info", path: "/about" }
       ]
     };
@@ -108,12 +109,18 @@ export default {
       return this.$vuetify.breakpoint.smAndDown;
     }
   },
+  watch: {
+    mini: n => localStorage.setItem("sidemenu.mini", n ? "true" : "false")
+  },
   created() {
     if (this.small) {
       this.drawer = false;
       this.mini = false;
     } else {
-      this.mini = true;
+      this.mini =
+        (localStorage.getItem("sidemenu.mini") || "true") === "true"
+          ? true
+          : false;
       this.drawer = true;
     }
   }

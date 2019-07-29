@@ -4,6 +4,14 @@
       <v-card color="#445064">
         <v-card-title>
           {{ file.name }} - {{ file.size | size }} - Peers {{ torrentInfo.peers }}
+          <bookmark-button
+            v-if="file"
+            :bookmarkInfo="{
+            name: `${file.name} - Video Player`,
+            id: 'player::' + torrentInfo.infoHash + '::' + file.path,
+            url: shareURL
+          }"
+          />
           <v-btn icon color="green" @click="refresh">
             <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
           </v-btn>
@@ -179,9 +187,13 @@
 import { mapState, mapActions } from "vuex";
 import sizeFilter from "../mixins/sizeFilter";
 import Captions, { loadText, loadURL } from "../services/captions";
+import BookmarkButton from "../components/BookmarkButton";
 
 export default {
   name: "player",
+  components: {
+    BookmarkButton
+  },
   data() {
     return {
       player: null,

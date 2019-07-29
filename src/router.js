@@ -6,6 +6,7 @@ import Player from "./views/Player.vue";
 import Search from "./views/Search.vue";
 import Movies from "./views/movies/Movies.vue";
 import Movie from "./views/movies/Movie.vue";
+import Bookmarks from "./views/Bookmarks.vue";
 
 Vue.use(Router);
 
@@ -42,6 +43,11 @@ export default new Router({
       path: "/movies/:id",
       name: "movie",
       component: Movie
+    },
+    {
+      path: "/bookmarks",
+      name: "bookmarks",
+      component: Bookmarks
     },
     {
       path: "/about",

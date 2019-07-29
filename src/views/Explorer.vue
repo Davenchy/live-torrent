@@ -7,6 +7,14 @@
             <div class="title mb-3">
               {{ torrentInfo.name }} - {{ torrentInfo.size | size }} - Peers:
               {{ torrentInfo.peers }}
+              <bookmark-button
+                v-if="torrentInfo"
+                :bookmarkInfo="{
+                name: `${torrentInfo.name} - Explorer Page`,
+                id: 'explorer::' + torrentInfo.infoHash,
+                url: hostURL + '/explorer?torrentId=' + torrentInfo.infoHash
+              }"
+              />
               <v-btn icon color="green" @click="reload">
                 <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
               </v-btn>
@@ -242,9 +250,13 @@
 <script>
 import { mapState, mapActions, mapGetters } from "vuex";
 import sizeFilter from "../mixins/sizeFilter";
+import BookmarkButton from "../components/BookmarkButton";
 
 export default {
   name: "explorer",
+  components: {
+    BookmarkButton
+  },
   data() {
     return {
       selectedImageFile: null,
@@ -253,7 +265,15 @@ export default {
       filesOnly: true,
       reverse: false,
       spin: false,
-      search: ""
+      search: "",
+      bookmarkInfo: this.torrentInfo
+        ? {
+            id: "explorer::" + this.torrentInfo.infoHash,
+            name: this.torrentInfo.name + " - Explorer Page",
+            url:
+              this.hostURL + "/explorer?torrentId=" + this.torrentInfo.infoHash
+          }
+        : { id: "", name: "", url: "" }
     };
   },
   methods: {
