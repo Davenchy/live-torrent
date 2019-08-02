@@ -12,7 +12,7 @@
                 :bookmarkInfo="{
                 name: `${torrentInfo.name} - Explorer Page`,
                 id: 'explorer::' + torrentInfo.infoHash,
-                url: hostURL + '/explorer?torrentId=' + torrentInfo.infoHash
+                url: shareURL
               }"
               />
               <v-btn icon color="green" @click="reload">
@@ -27,7 +27,13 @@
               :value="torrentInfo.infoHash"
               prepend-icon="info"
               color="blue"
-            />
+            >
+              <template v-slot:append>
+                <v-btn icon @click="$clipboard.copy(torrentInfo.infoHash)">
+                  <v-icon small>fas fa-copy</v-icon>
+                </v-btn>
+              </template>
+            </v-text-field>
 
             <v-text-field
               color="green"
@@ -36,10 +42,16 @@
               label="Share Link"
               :value="shareURL"
               prepend-icon="share"
-            />
+            >
+              <template v-slot:append>
+                <v-btn icon @click="$clipboard.copy(shareURL)">
+                  <v-icon small>fas fa-copy</v-icon>
+                </v-btn>
+              </template>
+            </v-text-field>
 
             <social-sharing
-              :url="`${hostURL}/explorer?torrentId=${torrentInfo.infoHash}`"
+              :url="shareURL"
               :title="`Explore '${torrentInfo.name}' torrent file`"
               description="Explore this torrent file"
               hashtags="live_torrent"
@@ -265,15 +277,7 @@ export default {
       filesOnly: true,
       reverse: false,
       spin: false,
-      search: "",
-      bookmarkInfo: this.torrentInfo
-        ? {
-            id: "explorer::" + this.torrentInfo.infoHash,
-            name: this.torrentInfo.name + " - Explorer Page",
-            url:
-              this.hostURL + "/explorer?torrentId=" + this.torrentInfo.infoHash
-          }
-        : { id: "", name: "", url: "" }
+      search: ""
     };
   },
   methods: {

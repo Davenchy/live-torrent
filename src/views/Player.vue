@@ -42,7 +42,13 @@
                     readonly
                     prepend-icon="share"
                     :value="shareURL"
-                  />
+                  >
+                    <template v-slot:append>
+                      <v-btn icon @click="$clipboard.copy(shareURL)">
+                        <v-icon small>fas fa-copy</v-icon>
+                      </v-btn>
+                    </template>
+                  </v-text-field>
 
                   <social-sharing
                     :url="shareURL"

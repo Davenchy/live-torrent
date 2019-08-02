@@ -9,6 +9,7 @@ export default {
   },
   mutations: {
     addBookmark(state, bookmark) {
+      if (state.bookmarks.findIndex(b => bookmark.id === b.id) !== -1) return;
       state.bookmarks.push({
         id: bookmark.id || uuid(),
         name: bookmark.name || "",
