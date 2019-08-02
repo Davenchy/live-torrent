@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid fill-height>
+  <v-container fluid fill-height style="overflow: hidden">
     <v-layout raw wrap v-if="movie">
       <v-flex xs12 class="my-5 text-xs-center">
         <h1>
@@ -248,9 +248,9 @@
       <v-flex xs12 mt-5>
         <h1 class="title mb-4">Screenshots:</h1>
         <v-carousel>
-          <v-carousel-item :src="movie.large_screenshot_image1"></v-carousel-item>
-          <v-carousel-item :src="movie.large_screenshot_image2"></v-carousel-item>
-          <v-carousel-item :src="movie.large_screenshot_image3"></v-carousel-item>
+          <v-carousel-item contain :src="movie.large_screenshot_image1"></v-carousel-item>
+          <v-carousel-item contain :src="movie.large_screenshot_image2"></v-carousel-item>
+          <v-carousel-item contain :src="movie.large_screenshot_image3"></v-carousel-item>
         </v-carousel>
       </v-flex>
 

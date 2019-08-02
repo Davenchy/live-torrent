@@ -1,5 +1,5 @@
 <template>
-  <a :href="`${hostURL}/movies/${movie.id}`" style="text-decoration: none">
+  <a :href="movieURL" style="text-decoration: none">
     <v-hover light>
       <v-card light :class="`elevation-${hover ? 24 : 2}`" slot-scope="{ hover }">
         <v-img
@@ -17,11 +17,25 @@
 
           <v-card-text>
             <v-layout row>
-              <v-flex xs6 v-if="movie.year === new Date().getUTCFullYear()">
-                <v-chip color="red" dark>New</v-chip>
+              <v-flex xs6>
+                <bookmark-button
+                  class="prevent-click"
+                  :bookmarkInfo="{
+                    name: `${movie.title} (${movie.year}) - Movie Page`,
+                    id: `movie::${movie.imdb_code}`,
+                    url: `${hostURL}/movies/${movie.id}`
+                  }"
+                  @mouseenter.native="hovered = true"
+                  @mouseleave.native="hovered = false"
+                />
               </v-flex>
-              <v-flex offset-xs6 xs6 class="text-xs-right">
-                <v-icon :color="movie.state === 'ok' ? 'green' : 'red'">fas fa-circle</v-icon>
+              <v-flex
+                class="text-xs-right"
+                xs6
+                offset-xs6
+                v-if="movie.year === new Date().getUTCFullYear()"
+              >
+                <v-chip color="red" dark>New</v-chip>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -38,11 +52,28 @@
 </template>
 
 <script>
+import BookmarkButton from "./BookmarkButton";
+
 export default {
+  components: {
+    BookmarkButton
+  },
   props: {
     movie: {
       required: true,
       type: Object
+    }
+  },
+  data() {
+    return {
+      hovered: false
+    };
+  },
+  computed: {
+    movieURL() {
+      const { hovered, hostURL, movie } = this;
+      if (!hovered) return `${hostURL}/movies/${movie.id}`;
+      return "javascript:void(0)";
     }
   }
 };

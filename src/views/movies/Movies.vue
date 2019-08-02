@@ -2,7 +2,17 @@
   <v-container fluid>
     <v-layout raw wrap xs12>
       <v-flex xs12 class="my-5 text-xs-center">
-        <h1>Torrent Movies</h1>
+        <h1>
+          Torrent Movies
+          <bookmark-button
+            v-if="query"
+            :bookmarkInfo="{
+              name: `Movies search results for ${query}`,
+              id: 'movies.results::' + query,
+              url: `${hostURL}/movies?query=${query}&genre=${genre}&rating=${rating}`
+            }"
+          />
+        </h1>
       </v-flex>
 
       <v-flex xs12 md8 offset-md2 mb-2>
@@ -23,46 +33,14 @@
 
       <v-flex xs12 mb-5>
         <v-layout row wrap>
-          <v-flex xs12 sm6 lg3 offset-lg3 pa-2>
-            <div class="subheading">Minimum Rating:</div>
-            <v-rating v-model="rating" color="yellow" half-increments hover :disabled="loading" />
-          </v-flex>
-          <v-flex xs12 sm6 lg3 pa-2>
-            <v-text-field
-              label="Results Per Page"
-              type="number"
-              hide-details
-              min="10"
-              max="50"
-              v-model="limit"
-              :disabled="loading"
-              @keydown.enter="search(true)"
-            />
-          </v-flex>
           <v-flex xs12 sm4 lg4 pa-2>
             <v-select
-              label="Orderd By"
-              v-model="order"
-              solo
-              suffix="Order"
-              :disabled="loading"
-              light
-              hide-details
-              single-line
-              :items="[
-                      { text: 'Ascending', value: 'asc' },
-                      { text: 'Descending', value: 'desc' }
-                      ]"
-            />
-          </v-flex>
-          <v-flex xs12 sm4 lg4 pa-2>
-            <v-select
-              label="Sort By"
               solo
               v-model="sort"
               :disabled="loading"
-              light
               hide-details
+              light
+              :menu-props="{light: true, top: true, offsetY: true, offsetOverflow: true}"
               single-line
               :items="[
                       { text: 'Title', value: 'title' },
@@ -74,15 +52,19 @@
                       { text: 'Popularity', value: 'likes_count' },
                       { text: 'Upload Date', value: 'date_added' }
                       ]"
-            />
+            >
+              <template v-slot:prepend-inner>
+                <div class="select-text">Order:</div>
+              </template>
+            </v-select>
           </v-flex>
           <v-flex xs12 sm4 lg4 pa-2>
             <v-select
-              label="Genre"
               solo
               v-model="genre"
               :disabled="loading"
               light
+              :menu-props="{light: true, top: true, offsetY: true, offsetOverflow: true}"
               hide-details
               single-line
               :items="[
@@ -110,7 +92,34 @@
                       { text: 'Documentary', value: 'documentary' },
                       { text: 'History', value: 'history' },
                       ]"
-            />
+            >
+              <template v-slot:prepend-inner>
+                <div class="select-text">Genre:</div>
+              </template>
+            </v-select>
+          </v-flex>
+          <v-flex xs12 sm4 lg4 pa-2>
+            <v-select
+              v-model="order"
+              solo
+              :menu-props="{light: true, top: true, offsetY: true, offsetOverflow: true}"
+              :disabled="loading"
+              light
+              hide-details
+              single-line
+              :items="[
+                      { text: 'Ascending', value: 'asc' },
+                      { text: 'Descending', value: 'desc' }
+                      ]"
+            >
+              <template v-slot:prepend-inner>
+                <div class="select-text">Sort:</div>
+              </template>
+            </v-select>
+          </v-flex>
+          <v-flex xs12 pa-2 my-3 class="text-xs-center">
+            <div class="subheading">Minimum Rating:</div>
+            <v-rating v-model="rating" color="yellow" half-increments hover :disabled="loading" />
           </v-flex>
           <v-flex xs12 class="text-xs-center">
             <v-btn color="green" @click="search(true)" :disabled="loading">
@@ -180,16 +189,17 @@
 import MovieCard from "../../components/MovieCard";
 import { mapActions, mapGetters } from "vuex";
 import { getMoviesList } from "../../services/axios";
+import BookmarkButton from "../../components/BookmarkButton";
 
 export default {
   components: {
-    MovieCard
+    MovieCard,
+    BookmarkButton
   },
   data() {
     return {
       query: "",
       rating: 0,
-      limit: 20,
       order: "desc",
       sort: "date_added",
       genre: "all",
@@ -211,7 +221,6 @@ export default {
       const params = {
         query_term: this.query,
         minimum_rating: (this.rating * 10) / 5,
-        limit: this.limit,
         order_by: this.order,
         sort_by: this.sort,
         genre: this.genre,
@@ -280,7 +289,6 @@ export default {
     },
     query: n => sessionStorage.setItem("mse.query", n || ""),
     rating: n => sessionStorage.setItem("mse.rating", n || 0),
-    limit: n => sessionStorage.setItem("mse.limit", n || 20),
     order: n => sessionStorage.setItem("mse.order", n || "desc"),
     sort: n => sessionStorage.setItem("mse.sort", n || "date_added"),
     genre: n => sessionStorage.setItem("mse.genre", n || "all")
@@ -291,14 +299,11 @@ export default {
   created() {
     const { readStorage } = this;
     document.title = "Live Torrent - Movies";
-    const { query, genre, rating, limit } = this.$route.query;
-    const l = parseInt(limit);
+    const { query, genre, rating } = this.$route.query;
 
     this.query = query || readStorage("mse.query") || "";
     this.rating =
       parseInt(rating) || parseFloat(readStorage("mse.rating")) || 0;
-    this.limit =
-      l <= 50 || l > 0 ? l : parseInt(readStorage("mse.limit")) || 20;
     this.order = readStorage("mse.order") || "desc";
     this.sort = readStorage("mse.sort") || "date_added";
     this.genre = genre || readStorage("mse.genre") || "all";
@@ -313,5 +318,9 @@ export default {
   @media only screen and (min-width: 400px) and (max-width: 799px) {
     max-width: 50%;
   }
+}
+
+.select-text {
+  color: #222;
 }
 </style>
