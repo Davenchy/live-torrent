@@ -3,6 +3,8 @@ const tsapi = require("torrent-search-api");
 
 tsapi.enablePublicProviders();
 tsapi.disableProvider("Torrent9");
+tsapi.disableProvider("TorrentProject");
+tsapi.disableProvider("Torrentz2");
 
 app.get("/providers", (req, res) => {
   res.send(
