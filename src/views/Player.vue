@@ -151,17 +151,27 @@
                       </template>
                     </v-text-field>
                   </v-flex>
-                  <v-flex class="my-4" v-if="player">
+                  <v-flex class="my-4" v-if="player && captions.length">
                     <h1 class="title mb-3">Fix caption timing</h1>
+                    <v-text-field
+                      label="Caption Delay"
+                      type="number"
+                      v-model="captionDelay"
+                      min="0"
+                      :max="player.duration"
+                    />
                     <v-btn color="blue" @click="timeA = player.currentTime">Caption appears here</v-btn>
                     <v-btn
                       color="blue"
                       @click="timeB = player.currentTime"
                     >Caption should appears here</v-btn>
                     <br />
-                    <v-btn color="green" @click="updateTime">Fix Caption Timing</v-btn>
+                    <v-btn
+                      color="green"
+                      @click="captionDelay += parseFloat(timeB - timeA)"
+                    >Fix Caption Timing</v-btn>
                   </v-flex>
-                  <v-flex>
+                  <v-flex v-if="captions.length">
                     <h1 class="title">Loaded Captions</h1>
                     <div v-for="(c, i) in captions" :key="i">
                       <a
@@ -207,6 +217,7 @@ export default {
       fileIndex: null,
       timeA: 0,
       timeB: 0,
+      captionDelay: 0,
       loading: false,
       captionsError: false,
       captions: [],
@@ -214,6 +225,27 @@ export default {
     };
   },
   mixins: [sizeFilter],
+  watch: {
+    captionDelay(delay) {
+      const node = this.player.captions.currentTrackNode;
+      if (!node) return;
+      const len = node.cues.length;
+      delay = parseFloat(delay) || 0;
+
+      for (let i = 0; i < len; i++) {
+        for (let id = 1; id <= len; id++) {
+          const cue = node.cues[i];
+          if (cue.id === "" + id) {
+            cue.startTimeTemp = cue.startTimeTemp || cue.startTime || 0;
+            cue.endTimeTemp = cue.endTimeTemp || cue.endTime || 0;
+
+            cue.startTime = cue.startTimeTemp + delay;
+            cue.endTime = cue.endTimeTemp + delay;
+          }
+        }
+      }
+    }
+  },
   methods: {
     ...mapActions(["loadTorrentInfo"]),
     loadCaption() {
@@ -321,26 +353,6 @@ export default {
         .finally(() => {
           setTimeout(() => (this.spin = false), 1000);
         });
-    },
-    updateTime() {
-      const time = this.timeB - this.timeA;
-      if (time === 0) return;
-
-      const node = this.player.captions.currentTrackNode;
-      if (!node) return;
-      const len = node.cues.length;
-
-      const fix = i => {
-        const cue = node.cues[i];
-        cue.startTime += time;
-        cue.endTime += time;
-      };
-
-      if (time > 0) for (let i = len - 1; i >= 0; i--) fix(i);
-      else for (let i = 0; i < len; i++) fix(i);
-
-      console.log("fixed timeing by: " + time);
-      this.timeA = this.timeB;
     }
   },
   computed: {

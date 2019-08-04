@@ -114,7 +114,7 @@ export default {
       }
 
       this.loadTorrentInfo(this.torrentId)
-        .then(res => {
+        .then(() => {
           this.$router.push({
             name: "explorer",
             query: {

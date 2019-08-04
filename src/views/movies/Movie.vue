@@ -219,7 +219,12 @@
                   You can help by making subtitles and uploading it to
                   <a
                     href="https://opensubtitles.org"
+                    title="open subtitles"
                   >opensubtitles.org</a>
+                </div>
+                <div>
+                  You can use
+                  <a href="https://amara.org/en/" title="amara subtitle editor">Amara</a> online editor to make amazing subtitles
                 </div>
               </v-card-text>
             </v-card>
