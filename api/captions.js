@@ -12,7 +12,7 @@ osapi.login().catch(err => console.error(err));
 app.get("/:imdbid", (req, res) => {
   const { imdbid } = req.params;
   osapi
-    .search({ imdbid: imdbid.replace("tt", "") })
+    .search({ imdbid: imdbid.replace("tt", ""), limit: "best" })
     .then(s => {
       const langs = [];
       const keys = Object.keys(s);

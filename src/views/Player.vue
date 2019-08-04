@@ -254,6 +254,7 @@ export default {
         lang: prompt("Caption Language short code:", "en") || "",
         type: "url",
         originalData: this.loadCaptionInfo,
+        encoding: prompt("Caption Encoding:", "utf8") || null,
         data: this.loadCaptionInfo
       })
         .then(caption => this.captions.push(caption))
@@ -275,11 +276,12 @@ export default {
             label: file.name,
             type: "text",
             lang: prompt("Caption Language short code:", "en") || "",
+            encoding: prompt("Caption Encoding:", "utf8") || null,
             originalData: data.target.result,
             data: data.target.result
           }).then(caption => this.captions.push(caption));
         };
-        reader.readAsText(file, "utf-8");
+        reader.readAsText(file);
       } else {
         alert("The File APIs are not fully supported in this browser.");
       }
@@ -369,8 +371,8 @@ export default {
           .map(c => {
             if (c.type === "imdbid") return;
             return `&caption=${c.type}::${c.label || ""}::${c.lang || ""}::${
-              c.originalData
-            }`;
+              c.encoding
+            }::${c.originalData}`;
           })
           .join("") || "";
 

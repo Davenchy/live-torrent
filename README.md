@@ -201,7 +201,7 @@ Caption Scheme types:
 
 Caption Scheme can be:
 
-`caption={type}::{label}::{language-code}::{encoding}::{data}&...` [soon]
+`caption={type}::{label}::{language-code}::{encoding}::{data}&...`
 
 or
 
@@ -219,7 +219,7 @@ or
 
 Examples:
 
-`caption=text::English::en::utf8::{subtitle file content here...}` [soon]
+`caption=text::English::en::utf8::{subtitle file content here...}`
 
 `caption=text::English::en::{subtitle file content here...}`
 

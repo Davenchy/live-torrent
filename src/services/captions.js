@@ -1,6 +1,7 @@
 import SRT2VTT from "srt-webvtt";
 import axios from "axios";
 import { loadCaptions } from "./axios";
+import iconv from "iconv-lite";
 
 export default async function(query) {
   let promises = [];
@@ -27,6 +28,12 @@ export default async function(query) {
         caption.label = info[1];
         caption.lang = info[2];
         caption.data = info[3];
+      } else if (len === 5) {
+        caption.type = info[0];
+        caption.label = info[1];
+        caption.lang = info[2];
+        caption.encoding = info[3];
+        caption.data = info[4];
       } else return;
 
       caption.originalData = caption.data;
@@ -50,25 +57,35 @@ export default async function(query) {
 }
 
 export const loadText = caption => {
-  return new Promise((resolve, reject) => {
-    const blob = new Blob([caption.data], { type: "text/vtt" });
-    const converter = new SRT2VTT(blob);
-    converter
-      .getURL()
-      .then(url => {
-        caption.url = url;
-        resolve(caption);
-      })
-      .catch(err => reject(err));
-  });
+  const blob = new Blob([caption.data]);
+  const url = URL.createObjectURL(blob);
+  caption.data = url;
+  return loadURL(caption);
 };
 
 export const loadURL = caption => {
   return axios
-    .get(caption.data)
+    .get(caption.data, { responseType: "arraybuffer" })
     .then(res => {
-      caption.data = res.data;
-      return loadText(caption);
+      let buffer = Buffer.from(res.data, "binary");
+
+      if (!caption.encoding)
+        caption.encoding =
+          window.jschardet.detect(buffer.toString()).encoding || "utf8";
+
+      console.log(caption);
+      buffer = iconv.decode(buffer, caption.encoding);
+      caption.data = buffer;
+      return caption;
+    })
+    .then(caption => {
+      const blob = new Blob([caption.data], { type: "text/vtt" });
+      const converter = new SRT2VTT(blob);
+      return converter.getURL();
+    })
+    .then(url => {
+      caption.url = url;
+      return caption;
     })
     .catch(err => {
       console.error(err);
@@ -82,7 +99,13 @@ export const loadIMDBID = caption => {
     let promises = [];
     res.data.forEach(s => {
       promises.push(
-        loadURL({ ...caption, label: s.lang, lang: s.langcode, data: s.utf8 })
+        loadURL({
+          ...caption,
+          label: s.lang,
+          lang: s.langcode,
+          data: s.url,
+          encoding: s.encoding
+        })
       );
     });
     return promises;
