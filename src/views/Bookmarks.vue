@@ -51,7 +51,10 @@ export default {
       this.bookmarks = Bookmarks.bookmarks;
     },
     share() {
-      const data = Bookmarks.toString(true);
+      const data = Bookmarks.toString()
+        .replace("+", "_")
+        .replace(",", "-")
+        .replace("/", ".");
       this.$clipboard.copy(this.hostURL + "/bookmarks?bookmarks=" + data);
     },
     btoa(text) {
@@ -87,6 +90,11 @@ export default {
       .filter(a => a)
       .forEach(b => {
         try {
+          b = b
+            .replace("_", "+")
+            .replace("-", "=")
+            .replace(".", "/");
+          console.log(b);
           b = JSON.parse(atob(b));
           b.forEach(a => bmsToAdd.push(a));
         } catch (e) {
