@@ -17,16 +17,41 @@ const reqParser = (req, res, next) => {
 const stream = (req, res) => {
   const { torrentId, fileIndex } = req;
   torrents.add(torrentId, (err, torrent) => {
-    if (err) res.sendStatus(500);
-    else {
+    if (err) {
+      console.error(err);
+      console.log(torrentId);
+      res.sendStatus(500);
+    } else {
       const len = torrent.files.length;
-      if (fileIndex < 0 || fileIndex >= len) res.sendStatus(400);
-      else torrents.serveFile(torrent.files[fileIndex], req, res);
+      const { servePath } = req;
+      let file;
+
+      if (fileIndex < 0 || fileIndex >= len) return res.sendStatus(400);
+      if (servePath)
+        file = torrent.files.find(f => f.path === torrent.name + servePath);
+      else file = torrent.files[fileIndex];
+
+      if (!file) return res.sendStatus(404);
+
+      torrents.serveFile(file, req, res);
     }
   });
 };
 
 router.get("/stream", reqParser, stream);
+router.get("/stream/serve/:infoHash", reqParser, (req, res) => {
+  res.redirect("/api/info/" + req.torrentId);
+});
+router.get(
+  "/stream/serve/:infoHash/*",
+  reqParser,
+  (req, res, next) => {
+    const path = "/" + req.params["0"];
+    if (path.length > 1) req.servePath = path;
+    next();
+  },
+  stream
+);
 router.get("/stream/:infoHash/:fileIndex", reqParser, stream);
 
 // download zip file

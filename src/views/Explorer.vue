@@ -175,7 +175,7 @@
                 <div :title="item.name">
                   <a
                     v-if="item.type !== 'folder'"
-                    :href="`/api/stream/${torrentInfo.infoHash}/${item.index}`"
+                    :href="`/api/stream/serve/${torrentInfo.infoHash}/${item.path.substr(torrentInfo.name.length + 1)}`"
                     target="_blank"
                     class="text-truncate wrap"
                   >{{ item.name }}&nbsp;</a>
@@ -354,7 +354,7 @@ export default {
         },
         {
           title: name + ".torrent",
-          link: this.hostURL + "/api/torrentfile/" + infoHash
+          link: this.hostURL + "/api/torrentFile/" + infoHash
         },
         {
           title: name + ".m3u",

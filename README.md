@@ -89,20 +89,28 @@ The File Object:
 
 ---
 
-### Streaming
+### Streaming And Serving
 
-| Method | path                             | query                                         |
-| ------ | -------------------------------- | --------------------------------------------- |
-| GET    | /api/stream                      | torrentId [required], fileIndex [default = 0] |
-| GET    | /api/stream/:infoHash/:fileIndex |
+| Method | path                                   | query                                         |
+| ------ | -------------------------------------- | --------------------------------------------- |
+| GET    | /api/stream                            | torrentId [required], fileIndex [default = 0] |
+| GET    | /api/stream/:infoHash/:fileIndex       |
+| GET    | /api/stream/serve/:infoHash/{filePath} |
+
+> supports ranges
+
+filePath examples:
+
+- /api/stream/serve/:infoHash/index.html
+- /api/stream/serve/:infoHash/assets/img/logo.png
+- /api/stream/serve/:infoHash/assets/js/script.js
+- /api/stream/serve/:infoHash/assets/css/master.css
 
 torrentId can be:
 
 - magnet-uri
 - http/https torrent file
 - torrent infoHash
-
-> supports ranges
 
 ### Download torrent as zip archive
 
@@ -122,8 +130,8 @@ torrentId can be:
 
 | Method | path                       | query                |
 | ------ | -------------------------- | -------------------- |
-| GET    | /api/torrentfile           | torrentId [required] |
-| GET    | /api/torrentfile/:infoHash |
+| GET    | /api/torrentFile           | torrentId [required] |
+| GET    | /api/torrentFile/:infoHash |
 
 ### SRT to VTT [.vtt]
 
@@ -193,6 +201,10 @@ Caption Scheme types:
 
 Caption Scheme can be:
 
+`caption={type}::{label}::{language-code}::{encoding}::{data}&...` [soon]
+
+or
+
 `caption={type}::{label}::{language-code}::{data}&...`
 
 or
@@ -207,7 +219,9 @@ or
 
 Examples:
 
-`caption=texy::English::en::{subtitle file content here...}`
+`caption=text::English::en::utf8::{subtitle file content here...}` [soon]
+
+`caption=text::English::en::{subtitle file content here...}`
 
 `caption=url::English::en::https://...`
 
