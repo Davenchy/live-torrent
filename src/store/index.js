@@ -1,15 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import movies from "./movies";
-import bookmarks from "./bookmarks";
-import { getTorrentInfo } from "../services/axios";
+import { getTorrentInfo } from "../utils/axios";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    movies,
-    bookmarks
+    movies
   },
   state: {
     torrentInfo: null

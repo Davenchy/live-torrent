@@ -202,7 +202,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import sizeFilter from "../mixins/sizeFilter";
-import Captions, { loadText, loadURL } from "../services/captions";
+import Captions, { loadText, loadURL } from "../utils/captions";
 import BookmarkButton from "../components/BookmarkButton";
 
 export default {

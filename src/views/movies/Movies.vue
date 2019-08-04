@@ -188,7 +188,7 @@
 <script>
 import MovieCard from "../../components/MovieCard";
 import { mapActions, mapGetters } from "vuex";
-import { getMoviesList } from "../../services/axios";
+import { getMoviesList } from "../../utils/axios";
 import BookmarkButton from "../../components/BookmarkButton";
 
 export default {

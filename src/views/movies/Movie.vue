@@ -318,7 +318,7 @@
 <script>
 import { mapActions } from "vuex";
 import MovieCard from "../../components/MovieCard";
-import { loadCaptions } from "../../services/axios";
+import { loadCaptions } from "../../utils/axios";
 import BookmarkButton from "../../components/BookmarkButton";
 
 export default {

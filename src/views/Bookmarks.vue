@@ -7,10 +7,10 @@
         </h1>
       </v-flex>
       <v-flex xs12 class="text-xs-center">
-        <v-btn @click="resetBookmarks" color="red" v-if="bookmarks.length">
+        <v-btn @click="$Bookmarks.reset()" color="red" v-if="bookmarks.length">
           <v-icon left>fas fa-trash</v-icon>Remove All
         </v-btn>
-        <v-btn @click="loadBookmarks" color="green">
+        <v-btn @click="refresh" color="green">
           <v-icon left>fas fa-sync</v-icon>Refresh
         </v-btn>
         <v-btn @click="share" color="teal">
@@ -19,7 +19,7 @@
       </v-flex>
       <v-flex xs8 ma-2 v-for="(bookmark, i) in bookmarks" :key="i">
         <a :href="bookmark.url">{{ bookmark.name }}</a>
-        <v-btn icon @click="remove(bookmark.id)">
+        <v-btn icon @click="$Bookmarks.remove(bookmark.id)">
           <v-icon small color="red">fas fa-trash</v-icon>
         </v-btn>
         <v-btn
@@ -37,42 +37,43 @@
 </template>
 
 <script>
-import { mapMutations, mapActions, mapGetters } from "vuex";
+import Bookmarks from "../utils/bookmarks";
 
 export default {
   name: "bookmarks",
+  data() {
+    return {
+      bookmarks: []
+    };
+  },
   methods: {
-    ...mapActions(["loadBookmarks", "saveBookmarks", "resetBookmarks"]),
-    ...mapMutations(["removeBookmark", "addBookmark"]),
-    remove(id) {
-      this.removeBookmark(id);
-      this.saveBookmarks();
+    refresh() {
+      this.bookmarks = Bookmarks.bookmarks;
     },
     share() {
-      const data = btoa(localStorage.getItem("live-torrent-bookmarks") || "");
+      const data = Bookmarks.toString(true);
       this.$clipboard.copy(this.hostURL + "/bookmarks?bookmarks=" + data);
     },
     btoa(text) {
       return btoa(text);
     }
   },
-  computed: {
-    ...mapGetters(["bookmarks"])
-  },
   created() {
+    this.$Bookmarks = Bookmarks;
     document.title = "Live Torrent - Bookmarks";
     const { bookmark, bookmarks } = this.$route.query;
-    this.loadBookmarks();
 
     let bm = [],
       bms = [],
       bmsToAdd = [];
 
+    // make sure that all queries are in form of arrays
     if (Array.isArray(bookmark)) bm = bookmark;
     else bm = [bookmark];
     if (Array.isArray(bookmarks)) bms = bookmarks;
     else bms = [bookmarks];
 
+    // add each bookmark into the array of bookmarks
     bm.filter(a => a).forEach(b => {
       try {
         bmsToAdd.push(JSON.parse(atob(b)));
@@ -81,6 +82,7 @@ export default {
       }
     });
 
+    // add bookmarks in the bookmarks collection into the array of bookmarks
     bms
       .filter(a => a)
       .forEach(b => {
@@ -92,9 +94,13 @@ export default {
         }
       });
 
-    bmsToAdd.forEach(b => this.addBookmark(b));
+    // add all bookmarks
+    bmsToAdd.forEach(b => Bookmarks.add(b, false));
+    Bookmarks.save();
 
-    this.saveBookmarks();
+    // refresh bookmarks
+    this.refresh();
+    Bookmarks.on("update", this.refresh);
   }
 };
 </script>

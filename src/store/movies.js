@@ -2,7 +2,7 @@ import {
   getMoviesList,
   getSuggestedMovies,
   getMovieDetails
-} from "../services/axios";
+} from "../utils/axios";
 
 export default {
   state: {

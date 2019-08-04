@@ -5,9 +5,9 @@ import store from "./store/index";
 
 import "./plugins/vuetify";
 import "./registerServiceWorker";
-import "./services/axios";
+import "./utils/axios";
 import SocialSharing from "vue-social-sharing";
-import clipboard from "./services/clipboard";
+import clipboard from "./utils/clipboard";
 
 Vue.use(SocialSharing);
 Vue.config.productionTip = false;
