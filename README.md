@@ -182,7 +182,7 @@ the first endpoint returns array of objects contains subtitle info and url
 
 | Path      | params                          | description                                                                                    |
 | --------- | ------------------------------- | ---------------------------------------------------------------------------------------------- |
-| /         | [q]                             | [coming soon]                                                                                  |
+| /         | [query]                         | quick way to add torrentId and explore it                                                      |
 | /movies   | [query, limit, rating, genre]   | search movies                                                                                  |
 | /explorer | torrentId                       | explore torrent file using its torrent id (http/https torrent file or info hash or magnet uri) |
 | /player   | torrentId, fileIndex, [caption] | play video or audio file using torrentId and the file index, find more about captions below    |

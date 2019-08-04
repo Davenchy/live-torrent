@@ -154,8 +154,12 @@ export default {
     }
   },
   created() {
-    const { q } = this.$route.params;
-    if (q) this.torrentId = q;
+    const { query } = this.$route.query;
+    if (query) {
+      this.torrentId = query;
+      this.loadInfo();
+    }
+
     document.title = "Live Torrent";
   }
 };
