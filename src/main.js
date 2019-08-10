@@ -6,6 +6,7 @@ import store from "./store/index";
 import "./plugins/vuetify";
 import "./registerServiceWorker";
 import "./utils/axios";
+import "./plugins/socket.io";
 import SocialSharing from "vue-social-sharing";
 import clipboard from "./utils/clipboard";
 

@@ -154,8 +154,16 @@
       </v-flex>
       <v-flex xs12 v-if="movies">
         <v-layout row wrap>
-          <v-flex xs12 sm4 md3 xl2 v-for="movie in movies" :key="movie.id" class="pa-3 double-ms">
-            <movie-card :movie="movie" />
+          <v-flex
+            xs12
+            sm4
+            md3
+            xl2
+            v-for="(movie, index) in movies"
+            :key="movie.id"
+            class="pa-3 double-ms"
+          >
+            <movie-card :movie="movie" :tabindex="index" class="my-card" />
           </v-flex>
         </v-layout>
       </v-flex>
@@ -322,5 +330,11 @@ export default {
 
 .select-text {
   color: #222;
+}
+
+.my-card {
+  &:focus {
+    border: 5px solid lightseagreen;
+  }
 }
 </style>

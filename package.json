@@ -3,19 +3,20 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
+    "start": "npm run torrent-server",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "npm run torrent-server",
-    "torrent-server": "node server.js",
-    "torrent-server-dev": "nodemon server.js"
+    "torrent-server": "NODE_ENV=production node server.js",
+    "torrent-server-dev": "NODE_ENV=development nodemon server.js",
+    "dev": "concurrently \"npm run torrent-server-dev\" \"npm run serve\""
   },
   "main": "server.js",
   "dependencies": {
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "clipboard-polyfill": "^2.8.1",
-    "connect-history-api-fallback": "^1.6.0",
+    "concurrently": "^4.1.1",
     "core-js": "^2.6.5",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
@@ -29,6 +30,7 @@
     "pump": "^3.0.0",
     "range-parser": "^1.2.1",
     "register-service-worker": "^1.6.2",
+    "socket.io": "^2.2.0",
     "srt-to-vtt": "^1.1.3",
     "srt-webvtt": "^1.0.1",
     "torrent-search-api": "^2.0.9",

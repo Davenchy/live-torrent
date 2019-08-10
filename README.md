@@ -12,9 +12,12 @@ Project is **Web Torrent** based.
 
 > Note: you can use .env file to setup vars
 
-| Var  | Default | Desc                  |
-| ---- | ------- | --------------------- |
-| PORT | 3000    | server listening port |
+| Var  | Default | Desc                              |
+| ---- | ------- | --------------------------------- |
+| PORT | 3000    | server listening port             |
+| OSUN |         | Opensubtitles.org login user name |
+| OSPS |         | Opensubtitles.org login password  |
+| OSUA |         | Opensubtitles.org User Agent      |
 
 ### For Users
 
@@ -37,17 +40,8 @@ npm run torrent-server
 # install dependencies
 npm install -D
 
-# run torrent api server
-npm run torrent-server-dev
-
-# compile and hot-reloads vue.js frontend
-npm run serve
-```
-
-#### To Build Frontend
-
-```bash
-npm run build
+# then run the dev server
+npm run dev
 ```
 
 ## Server API
@@ -180,18 +174,19 @@ the first endpoint returns array of objects contains subtitle info and url
 
 ## Frontend API
 
-| Path      | params                          | description                                                                                    |
-| --------- | ------------------------------- | ---------------------------------------------------------------------------------------------- |
-| /         | [query]                         | quick way to add torrentId and explore it                                                      |
-| /movies   | [query, limit, rating, genre]   | search movies                                                                                  |
-| /explorer | torrentId                       | explore torrent file using its torrent id (http/https torrent file or info hash or magnet uri) |
-| /player   | torrentId, fileIndex, [caption] | play video or audio file using torrentId and the file index, find more about captions below    |
+| Path      | query                              | description                                                                                                                                         |
+| --------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /         | [query]                            | quick way to add torrentId and explore it                                                                                                           |
+| /movies   | [query, limit, rating, genre]      | search movies                                                                                                                                       |
+| /search   | [query, limit, category, provider] | providers: [all, 1337x, ExtraTorrent, KickassTorrents, Rarbg, ThePirateBay], the most used categories: [All, Movies, TV, Music, Apps, Anime, Books] |
+| /explorer | torrentId                          | explore torrent file using its torrent id (http/https torrent file or info hash or magnet uri)                                                      |
+| /player   | torrentId, fileIndex, [caption]    | play video or audio file using torrentId and the file index, find more about captions below                                                         |
 
 ### Media player and Captions
 
-to add captions to the player **you can use the gui or request params**
+to add captions to the player **you can use the gui or url query**
 
-send captions params as must as you need
+send caption query as much as you need
 
 Caption Scheme types:
 

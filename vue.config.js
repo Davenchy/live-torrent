@@ -1,8 +1,13 @@
+// setup env vars
+require("dotenv").config();
+
+const PORT = process.env.PORT || 3000;
+
 module.exports = {
   devServer: {
     proxy: {
       "^/api": {
-        target: "http://localhost:3000"
+        target: "http://localhost:" + PORT
       }
     }
   }

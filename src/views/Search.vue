@@ -141,8 +141,6 @@
 
 <script>
 import { searchEngine, searchProviders } from "../utils/axios";
-import { mapActions, mapState, mapMutations } from "vuex";
-import { parse } from "path";
 
 export default {
   name: "search",
@@ -198,16 +196,14 @@ export default {
   created() {
     this.loading = true;
     const { readStorage } = this;
-    const { q, p, c, l } = this.$route.query;
+    const { query, provider, category, limit } = this.$route.query;
 
-    this.provider = p ? p : readStorage("tse.provider") || "All";
-    this.category = c ? c : readStorage("tse.category") || "All";
-    this.limit = l ? l : readStorage("tse.limit") || 10;
-    this.query = q ? q : readStorage("tse.query") || "";
+    this.provider = provider ? provider : readStorage("tse.provider") || "All";
+    this.category = category ? category : readStorage("tse.category") || "All";
+    this.limit = limit ? limit : readStorage("tse.limit") || 10;
+    this.query = query ? query : readStorage("tse.query") || "";
     const results = readStorage("tse.results");
     this.searchResults = results ? JSON.parse(results) : [];
-
-    if (q) this.search();
 
     document.title = "Live Torrent - Search Engine";
 
@@ -237,7 +233,10 @@ export default {
         console.error(err);
         this.errors = err.message;
       })
-      .finally(() => (this.loading = false));
+      .finally(() => {
+        this.loading = false;
+        if (this.query) this.search();
+      });
   }
 };
 </script>

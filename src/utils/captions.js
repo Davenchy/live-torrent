@@ -73,7 +73,6 @@ export const loadURL = caption => {
         caption.encoding =
           window.jschardet.detect(buffer.toString()).encoding || "utf8";
 
-      console.log(caption);
       buffer = iconv.decode(buffer, caption.encoding);
       caption.data = buffer;
       return caption;
