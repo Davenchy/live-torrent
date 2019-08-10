@@ -3,13 +3,13 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run torrent-server",
+    "start": "npm run live-torrent-server",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "torrent-server": "NODE_ENV=production node server.js",
-    "torrent-server-dev": "NODE_ENV=development nodemon server.js",
-    "dev": "concurrently \"npm run torrent-server-dev\" \"npm run serve\""
+    "live-torrent-server": "NODE_ENV=production node server.js",
+    "live-torrent-server-dev": "NODE_ENV=development nodemon server.js",
+    "dev": "concurrently \"npm run live-torrent-server-dev\" \"npm run serve\""
   },
   "main": "server.js",
   "dependencies": {

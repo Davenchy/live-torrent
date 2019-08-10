@@ -29,10 +29,10 @@ app.use("/api", cors(), require("./api"));
 // for production
 if (process.env.NODE_ENV === "production") {
   // handle static content
-  app.use(express.static("dist"));
+  app.use(express.static("./dist"));
 
   // handle SPA
-  app.get(/.*/, (req, res) => res.send(__dirname + "/dist"));
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + "/dist/index.html"));
 }
 
 const PORT = process.env.PORT || 3000;
