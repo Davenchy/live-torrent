@@ -133,6 +133,15 @@
               <v-card color="#2b313b">
                 <v-card-text class="text-xs-center">
                   <v-flex class="my-4">
+                    <h1 class="title mb-3">Caption Size [ {{ captionsFontSize }} ]</h1>
+                    <v-btn color="green" @click="adjustCaptionsSize(1)">
+                      <v-icon left small>fas fa-search-plus</v-icon>Increase
+                    </v-btn>
+                    <v-btn color="red" @click="adjustCaptionsSize(-1)">
+                      <v-icon left small>fas fa-search-minus</v-icon>Decrease
+                    </v-btn>
+                  </v-flex>
+                  <v-flex class="my-4">
                     <h1 class="title mb-3">Upload Caption</h1>
                     <input
                       type="file"
@@ -221,7 +230,8 @@ export default {
       loading: false,
       captionsError: false,
       captions: [],
-      loadCaptionInfo: ""
+      loadCaptionInfo: "",
+      captionsFontSize: 18
     };
   },
   mixins: [sizeFilter],
@@ -355,6 +365,15 @@ export default {
         .finally(() => {
           setTimeout(() => (this.spin = false), 1000);
         });
+    },
+    adjustCaptionsSize(value) {
+      const captionsElement = document.querySelector(".plyr__captions");
+      if (!captionsElement) return;
+      const currentSize =
+        parseInt(window.getComputedStyle(captionsElement).fontSize) || 18;
+      if (value < 0 && currentSize <= 5) return;
+      this.captionsFontSize = currentSize + value;
+      captionsElement.style.fontSize = `${this.captionsFontSize}px`;
     }
   },
   computed: {
@@ -380,9 +399,7 @@ export default {
       if (imdbidCaption)
         captions += `&caption=imdbid::${imdbidCaption.originalData}`;
 
-      return `${hostURL}/player?torrentId=${torrentInfo.infoHash}&fileIndex=${
-        file.index
-      }${captions}`;
+      return `${hostURL}/player?torrentId=${torrentInfo.infoHash}&fileIndex=${file.index}${captions}`;
     }
   },
   mounted() {
