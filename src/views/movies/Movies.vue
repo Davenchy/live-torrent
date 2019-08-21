@@ -331,10 +331,4 @@ export default {
 .select-text {
   color: #222;
 }
-
-.my-card {
-  &:focus {
-    border: 5px solid lightseagreen;
-  }
-}
 </style>
