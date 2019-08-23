@@ -18,22 +18,26 @@
         </v-flex>
         <v-flex xs10 offset-xs1>
           <v-text-field
-            v-model="torrentId"
-            label="Torrent ID -> http/https url, magnet uri, info hash"
-            @keydown.enter="loadInfo"
+            v-model="query"
+            label="Looking for something or you have a torrentID"
+            @keydown.enter="search"
             :error-messages="errors"
             :disabled="loading"
             solo
             light
             :loading="loading"
             persistent-hint
-            hint="torrentID can be torrent magnet uri, torrent HTTP/HTTPS url or torrent info hash"
+            hint="torrentID can be torrent magnet, torrent HTTP/HTTPS url or torrent info hash"
             clearable
             :autofocus="!$vuetify.breakpoint.xsOnly"
           />
           <div class="text-xs-center text-md-right mt-4">
             <v-btn color="success" :disabled="loading" @click="loadDemo">Demo</v-btn>
-            <v-btn color="info" @click="loadInfo" :loading="loading" :disabled="loading">Explore</v-btn>
+            <v-btn color="info" @click="search" :loading="loading" :disabled="loading">
+              {{
+              validateQuery.isTorrentId ? "Explore" : "Search"
+              }}
+            </v-btn>
           </div>
         </v-flex>
         <v-flex xs10 offset-xs1 class="mt-5">
@@ -94,61 +98,62 @@ export default {
   data() {
     return {
       loading: false,
-      torrentId: "",
+      query: "",
       errors: ""
     };
   },
   methods: {
     ...mapActions(["loadTorrentInfo"]),
-    loadInfo() {
+    search() {
       this.loading = true;
       this.errors = "";
 
-      const validation = this.validateInput();
-      if (!validation.isValid) {
-        if (validation.isEmpty) this.errors = "Please enter torrent ID";
-        else this.errors = "Invalid torrent ID";
-
+      const validation = this.validateQuery;
+      if (validation.isEmpty) {
+        this.errors = "Please enter torrent ID or Search Query";
         this.loading = false;
-        return;
+      } else if (validation.isTorrentId) {
+        this.$router.push({
+          name: "explorer",
+          query: {
+            torrentId: this.query
+          }
+        });
+      } else {
+        this.$router.push({
+          name: "search",
+          query: {
+            query: this.query
+          }
+        });
       }
-
-      this.loadTorrentInfo(this.torrentId)
-        .then(() => {
-          this.$router.push({
-            name: "explorer",
-            query: {
-              torrentId: this.$store.state.torrentInfo.infoHash
-            }
-          });
-        })
-        .catch(err => {
-          this.errors = "Can not access the server right now, Try again later!";
-          console.error(err);
-        })
-        .finally(() => (this.loading = false));
     },
     loadDemo() {
-      this.torrentId =
+      this.query =
         "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel";
-    },
-    validateInput() {
-      const input = this.torrentId.trim();
+    }
+  },
+  computed: {
+    validateQuery() {
+      const query = this.query.trim();
 
-      const isEmpty = input === "";
-      const isMagnet = input.match(
+      const isEmpty = query === "";
+      const isMagnet = query.match(
         /^magnet:\?xt=urn:[a-z0-9]+:[a-f0-9]{40}(&[a-z0-9]+=[a-z0-9]+)*$/i
       );
-      const isInfoHash = input.match(/[a-f0-9]{32}/i);
-      const isTorrentFile = input.match(/^https?:\/\/.+\.torrent$/i);
+      const isInfoHash = query.match(/[a-f0-9]{32}/i);
+      const isTorrentFile = query.match(/^https?:\/\/.+\.torrent$/i);
 
-      const isValid = !isEmpty && (isMagnet || isInfoHash || isTorrentFile);
+      const isTorrentId = !isEmpty && (isMagnet || isInfoHash || isTorrentFile);
+
+      const isSearchQuery = !isEmpty && !isTorrentId;
 
       return {
-        isValid,
+        isTorrentId,
         isMagnet,
         isInfoHash,
         isTorrentFile,
+        isSearchQuery,
         isEmpty
       };
     }
@@ -156,8 +161,8 @@ export default {
   created() {
     const { query } = this.$route.query;
     if (query) {
-      this.torrentId = query;
-      this.loadInfo();
+      this.query = query;
+      this.search();
     }
 
     document.title = "Live Torrent";

@@ -8,20 +8,12 @@ require("dotenv").config();
 
 const app = express();
 const server = require("http").createServer(app);
-const io = require("socket.io")(server, {
-  path: "/api/sockets"
-});
-
 // setup middle wares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-}
-
-// setup socket.io
-require("./remote")(io);
+// logs
+app.use(morgan("dev"));
 
 // server cors policy issue for backend api
 app.use("/api", cors(), require("./api"));
