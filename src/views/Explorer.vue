@@ -343,10 +343,10 @@ export default {
     torrentDownloadLinks() {
       const { name, infoHash } = this.torrentInfo;
       return [
-        {
-          title: name + ".zip",
-          link: this.hostURL + "/api/download/" + infoHash
-        },
+        // {
+        //   title: name + ".zip",
+        //   link: this.hostURL + "/api/download/" + infoHash
+        // },
         {
           title: name + ".torrent",
           link: this.hostURL + "/api/torrentFile/" + infoHash
