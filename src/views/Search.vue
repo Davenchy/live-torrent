@@ -52,8 +52,7 @@
 
       <v-flex xs12 mt-3 class="text-xs-center">
         <v-btn color="green" @click="search" :disabled="loading">
-          Search
-          <v-icon right>fas fa-search</v-icon>
+          <v-icon left>fas fa-search</v-icon>Search
         </v-btn>
       </v-flex>
 

@@ -125,9 +125,6 @@
               clearable
               transition
             />
-            <v-checkbox v-model="insensitive" dark hide-details label="Case Insensitive"></v-checkbox>
-            <v-checkbox v-model="filesOnly" dark hide-details label="Files Only"></v-checkbox>
-            <v-checkbox v-model="reverse" dark hide-details label="Reverse"></v-checkbox>
           </v-sheet>
           <v-card-text>
             <v-treeview
@@ -164,7 +161,7 @@
                     icon
                     tag="a"
                     target="_blank"
-                    :href="`/api/stream/${torrentInfo.infoHash}/${item.index}`"
+                    :href="`/api/stream/serve/${torrentInfo.infoHash}/${item.path.substr(torrentInfo.name.length + 1)}`"
                     :download="item.name"
                   >
                     <v-icon color="green darken-2">fas fa-download</v-icon>
@@ -233,7 +230,7 @@
         <v-card-title class="headline grey lighten-2" primary-title>{{ selectedImageFile.name }}</v-card-title>
 
         <v-img
-          :src="`${hostURL}/api/stream/${torrentInfo.infoHash}/${selectedImageFile.index}`"
+          :src="`${hostURL}/api/stream/serve/${torrentInfo.infoHash}/${item.path.substr(torrentInfo.name.length + 1)}`"
           min-height="200px"
         >
           <template v-slot:placeholder>
@@ -296,9 +293,7 @@ export default {
           )
           .map(
             f =>
-              `url::${f.name}::${this.hostURL}/api/stream/${
-                torrentInfo.infoHash
-              }/${f.index}`
+              `url::${f.name}::${this.hostURL}/api/stream/${torrentInfo.infoHash}/${f.index}`
           );
       } catch (err) {
         console.error(err);
