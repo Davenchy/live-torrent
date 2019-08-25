@@ -3,14 +3,31 @@ const OS = require("opensubtitles-api");
 
 const { OSUA, OSUN, OSPS } = process.env;
 const osapi = new OS({
-  username: OSUN,
-  password: OSPS,
-  useragent: OSUA
+  username: OSUN || "",
+  password: OSPS || "",
+  useragent: OSUA || ""
 });
-osapi.login().catch(err => console.error(err));
+let isLoggedIn = false;
+
+osapi
+  .login()
+  .then(() => (isLoggedIn = true))
+  .catch(err => {
+    console.log("opensubtitles.org login failed");
+    console.error(err);
+  });
+
+// is logged in middleware
+app.use((req, res, next) => {
+  if (!isLoggedIn) res.status(500).send("OpenSubtitles.org Login Failed!");
+  else next();
+});
+
+// app.get("/search/:query", (req, res))
 
 app.get("/:imdbid", (req, res) => {
   const { imdbid } = req.params;
+
   osapi
     .search({ imdbid: imdbid.replace("tt", ""), limit: "best" })
     .then(s => {
@@ -25,7 +42,7 @@ app.get("/:imdbid", (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      res.sendStatus(500);
+      res.status(500).send(err.message || "");
     });
 });
 
