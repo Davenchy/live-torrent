@@ -46,12 +46,186 @@ npm run dev
 
 ## Server API
 
+### Torrent API
+
+`/api/torrent/...`
+
+Use Torrent API in 3 easy steps
+
+1. select method
+
+2. add torrent id
+
+3. add selectors
+
+#### Select Method
+
+There are 5 methods
+
+1. info `// Get information about the torrent or any file(s) inside it`
+
+2. serve `// Serve file from inside the torrent`
+
+3. download `// Download(.zip) all the files or some of them from inside the torrent`
+
+4. playlist `// Download(.m3u) playlist file for all the files or some of them from inside the torrent`
+
+5. torrentfile `// Download(.torrent) file`
+
+#### Add Torrent Id
+
+> torrent id can be an info hash or magnet uri or http/https torrent url
+
+the end point can be:
+
+1. `/api/torrent/{the selected method}/{info hash}`
+
+2. `/api/torrent/{the selected method}?torrentId={the torrent id}`
+
+#### Add Selectors
+
+Query key words:
+
+1. fileIndex -> the file index in the torrent
+2. filePath -> the file path in the torrent
+3. fileType -> file(s) type can be (video, audio, text, ...etc) or (.mp3, .mp4, .txt, .jpg, .vtt, .srt, ...etc)
+
+Some Examples:
+
+```
+Files Tree
+
+\
+|-[0]- /poster.jpg
+|-[1]- /movie.mp4
+|-[2]- /subtitles/subtitle.en.srt
+|-[3]- /subtitles/subtitle.en.vtt
+|-[4]- /subtitles/subtitle.ar.srt
+|-[5]- /subtitles/subtitle.ar.vtt
+|-[6]- /subtitles/subtitle.fr.srt
+|-[7]- /subtitles/subtitle.fr.vtt
+|-[8]- /subtitles/subtitle.de.srt
+|-[9]- /subtitles/subtitle.de.vtt
+/
+```
+
+To get info of the movie and the english (.vtt) subtitle files [using indexes only]
+
+`/api/torrent/info/{infoHash}?fileIndex=1&fileIndex=3`
+
+OR
+
+`/api/torrent/info/{infoHash}/1,3`
+
+To get info of the movie and the english (.vtt) subtitle files [using paths only]
+
+`/api/torrent/info/{infoHash}?filePath=movie.mp4&filePath=subtitles/subtitle.en.vtt`
+
+OR
+
+`/api/torrent/info/{infoHash}/movie.mp4,subtitles/subtitle.en.vtt`
+
+To serve the first video in the torrent
+
+`/api/torrent/serve/{infoHash}?fileType=video`
+
+OR
+
+`/api/torrent/serve/{infoHash}?fileType=.mp4`
+
+OR
+
+`/api/torrent/serve/{infoHash}/:video`
+
+OR
+
+`/api/torrent/serve/{infoHash}/:.mp4`
+
+#### Real Examples
+
+torrent info hash: `08ada5a7a6183aae1e09d831df6748d566095a10`
+torrent id: `magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel`
+
+> both gives the same results
+
+you can use them like this
+
+`/api/torrent/info/08ada5a7a6183aae1e09d831df6748d566095a10`
+
+OR
+
+`/api/torrent/info?torrentId=08ada5a7a6183aae1e09d831df6748d566095a10`
+
+OR
+
+`/api/torrent/info?torrentId=magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel`
+
+---
+
+```
+Files Tree
+
+\
+|-[0]- /Sintel.de.srt
+|-[1]- /Sintel.en.srt
+|-[2]- /Sintel.es.srt
+|-[3]- /Sintel.fr.srt
+|-[4]- /Sintel.it.srt
+|-[5]- /Sintel.mp4
+|-[6]- /Sintel.nl.srt
+|-[7]- /Sintel.pl.srt
+|-[8]- /Sintel.pt.srt
+|-[9]- /Sintel.ru.srt
+|-[10]- /poster.jpg
+/
+```
+
+- Serve files
+
+`/api/torrent/info?torrentId=08ada5a7a6183aae1e09d831df6748d566095a10/Sintel.en.srt`
+
+`/api/torrent/info?torrentId=08ada5a7a6183aae1e09d831df6748d566095a10/Sintel.mp4`
+
+`/api/torrent/info?torrentId=08ada5a7a6183aae1e09d831df6748d566095a10/poster.jpg`
+
+- Get Info
+
+`/api/torrent/info/08ada5a7a6183aae1e09d831df6748d566095a10/1,5,10`
+
+OR
+
+`/api/torrent/info/08ada5a7a6183aae1e09d831df6748d566095a10/Sintel.en.srt,Sintel.mp4,poster.jpg`
+
+- Download all (.srt) files in torrent as a (.zip) file
+
+`/api/torrent/download/08ada5a7a6183aae1e09d831df6748d566095a10/:.srt`
+
+OR
+
+`/api/torrent/download/08ada5a7a6183aae1e09d831df6748d566095a10?fileType=.srt`
+
+OR
+
+`/api/torrent/download?torrentId=08ada5a7a6183aae1e09d831df6748d566095a10&fileType=.srt`
+
+- Download playlist (.m3u)
+
+`/api/torrent/playlist/08ada5a7a6183aae1e09d831df6748d566095a10`
+
+- Download torrent file (.torrent)
+
+`/api/torrent/torrentfile/08ada5a7a6183aae1e09d831df6748d566095a10`
+
+OR
+
+`/api/torrent/torrentfile?torrentId=08ada5a7a6183aae1e09d831df6748d566095a10`
+
 ### Get torrent info
 
-| Method | path                | query                |
-| ------ | ------------------- | -------------------- |
-| GET    | /api/info           | torrentId [required] |
-| GET    | /api/info/:infoHash |
+| Method | path                        | query                |
+| ------ | --------------------------- | -------------------- |
+| GET    | /api/torrent/info           | torrentId [required] |
+| GET    | /api/torrent/info/:infoHash |
 
 response:
 
@@ -70,55 +244,53 @@ The File Object:
 
 ```javascript
 
-{
-  name: String,
-  index: Number,
-  path: String,
-  size: Number,
-  downloaded: Number,
-  type: String // file mime type e.g.: video/mp4 image/jpg
-}
+[
+  {
+    name: String,
+    index: Number,
+    path: String,
+    size: Number,
+    downloaded: Number,
+    type: String // file mime type e.g.: video/mp4 image/jpg
+  },
+  ...
+]
 
 ```
 
 ---
 
-### Streaming And Serving
+### Serving
 
-| Method | path                                   | query                                         |
-| ------ | -------------------------------------- | --------------------------------------------- |
-| GET    | /api/stream                            | torrentId [required], fileIndex [default = 0] |
-| GET    | /api/stream/:infoHash/:fileIndex       |
-| GET    | /api/stream/serve/:infoHash/{filePath} |
+| Method | path                                                 | query                 |
+| ------ | ---------------------------------------------------- | --------------------- |
+| GET    | /api/torrent/serve/:infoHash                         | fileIndex or filePath |
+| GET    | /api/torrent/serve/:infoHash/{fileIndex or filePath} |                       |
 
 > supports ranges
 
-filePath examples:
-
-- /api/stream/serve/:infoHash/index.html
-- /api/stream/serve/:infoHash/assets/img/logo.png
-- /api/stream/serve/:infoHash/assets/js/script.js
-- /api/stream/serve/:infoHash/assets/css/master.css
-
-torrentId can be:
-
-- magnet-uri
-- http/https torrent file
-- torrent infoHash
-
 ### Download torrent as zip archive
 
-| Method | path                    | query                |
-| ------ | ----------------------- | -------------------- |
-| GET    | /api/download           | torrentId [required] |
-| GET    | /api/download/:infoHash |
+| Method | path                               | query                             | Desc                                                                                            |
+| ------ | ---------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| GET    | /api/torrent/download              | torrentId [required]              | download all the files                                                                          |
+| GET    | /api/torrent/download/:infoHash    |                                   | download all the files                                                                          |
+| GET    | /api/torrent/download/:infoHash/\* | filePath or fileIndex or fileType | you can add as much as you need or use fileType to download all files with a specific file type |
+
+examples on file types:
+
+`/api/torrent/download?torrentId={...}&fileType=video`
+
+`/api/torrent/download/:infoHash/fileType=.vtt`
+
+`/api/torrent/download/:infoHash/fileType=.mp3`
 
 ### Download torrent as playlist [.m3u]
 
-| Method | path                    | query                |
-| ------ | ----------------------- | -------------------- |
-| GET    | /api/playlist           | torrentId [required] |
-| GET    | /api/playlist/:infoHash |
+| Method | path                            | query                |
+| ------ | ------------------------------- | -------------------- |
+| GET    | /api/torrent/playlist           | torrentId [required] |
+| GET    | /api/torrent/playlist/:infoHash |
 
 ### Download torrent file [.torrent]
 
@@ -126,13 +298,6 @@ torrentId can be:
 | ------ | -------------------------- | -------------------- |
 | GET    | /api/torrentFile           | torrentId [required] |
 | GET    | /api/torrentFile/:infoHash |
-
-### SRT to VTT [.vtt]
-
-| Method | path         | query           | body                             |
-| ------ | ------------ | --------------- | -------------------------------- |
-| GET    | /api/srt2vtt | path [required] |
-| POST   | /api/srt2vtt |                 | srt [srt file content][required] |
 
 ### Torrent Search Engine
 
@@ -171,6 +336,8 @@ the first endpoint returns array of objects contains subtitle info and url
   ...
 ]
 ```
+
+---
 
 ## Frontend API
 

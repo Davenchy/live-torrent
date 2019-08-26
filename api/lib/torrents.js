@@ -5,7 +5,7 @@ const mime = require("mime");
 const client = new WebTorrent();
 const trackers = require("../utils/torrent-trackers");
 
-const fileToJSON = (file, index, torrentName) => ({
+const fileToJSON = (file, index) => ({
   name: file.name,
   index,
   path: file.cleanPath,
