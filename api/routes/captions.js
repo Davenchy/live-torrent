@@ -1,12 +1,7 @@
 const app = require("express")();
 const OS = require("opensubtitles-api");
 
-const { OSUA, OSUN, OSPS } = process.env;
-const osapi = new OS({
-  username: OSUN || "",
-  password: OSPS || "",
-  useragent: OSUA || ""
-});
+const osapi = new OS(process.env.OSUA || "TemporaryUserAgent");
 let isLoggedIn = false;
 
 osapi
@@ -14,7 +9,7 @@ osapi
   .then(() => (isLoggedIn = true))
   .catch(err => {
     console.log("opensubtitles.org login failed");
-    console.error(err);
+    // console.error(err);
   });
 
 // is logged in middleware
@@ -23,26 +18,20 @@ app.use((req, res, next) => {
   else next();
 });
 
-// app.get("/search/:query", (req, res))
-
-app.get("/:imdbid", (req, res) => {
-  const { imdbid } = req.params;
+app.get("/search", (req, res) => {
+  const sublanguageid = req.query.lang || "all";
+  const query = req.query.query;
+  const limit = req.query.limit || "best";
+  const season = req.query.season;
+  const episode = req.query.episode;
+  const imdbid = req.query.imdbid;
 
   osapi
-    .search({ imdbid: imdbid.replace("tt", ""), limit: "best" })
-    .then(s => {
-      const langs = [];
-      const keys = Object.keys(s);
-      keys.forEach(key => {
-        const lang = s[key];
-        langs.push(lang);
-      });
-      res.status(200);
-      res.send(langs);
-    })
+    .search({ sublanguageid, query, limit, season, episode, imdbid })
+    .then(data => res.send(data))
     .catch(err => {
       console.error(err);
-      res.status(500).send(err.message || "");
+      res.status(400).send(err.message || "try again later");
     });
 });
 

@@ -308,11 +308,11 @@ examples on file types:
 
 > if no provider will search using all providers [takes too long time]
 
-### Subtitles
+### Captions
 
-| Method | path                   | query |
-| ------ | ---------------------- | ----- |
-| GET    | /api/captions/:imdb-id |
+| Method | path                 | query                                       | desc                                     |
+| ------ | -------------------- | ------------------------------------------- | ---------------------------------------- |
+| GET    | /api/captions/search | query, lang, limit, imdbid, season, episode | for more info check opensubtitle.org api |
 
 the first endpoint returns array of objects contains subtitle info and url
 
