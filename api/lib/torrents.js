@@ -5,20 +5,27 @@ const mime = require("mime");
 const client = new WebTorrent();
 const trackers = require("../utils/torrent-trackers");
 
-const setToJSON = (torrent, cb) => {
+const fileToJSON = (file, index, torrentName) => ({
+  name: file.name,
+  index,
+  path: file.cleanPath,
+  size: file.length,
+  type: file.type,
+  downloaded: file.downloaded
+});
+
+const addOns = (torrent, cb) => {
+  torrent.files.forEach((f, i) => {
+    f.toJSON = () => fileToJSON(f, i, torrent.name);
+    f.type = mime.getType(f.name) || "";
+    f.cleanPath = f.path.substr(torrent.name.length);
+  });
   torrent.toJSON = () => ({
     name: torrent.name,
     infoHash: torrent.infoHash,
     size: torrent.length,
     peers: torrent.numPeers,
-    files: torrent.files.map((f, i) => ({
-      name: f.name,
-      index: i,
-      path: f.path.substr(torrent.name.length),
-      size: f.length,
-      type: mime.getType(f.name) || "",
-      downloaded: f.downloaded
-    }))
+    files: torrent.files.map(f => f.toJSON())
   });
   cb(null, torrent);
 };
@@ -27,10 +34,10 @@ function request(torrentId, cb) {
   const torrent = client.add(torrentId, { announce: trackers });
   torrent.on("error", e => {
     if (e.message.indexOf("Cannot add duplicate torrent") !== -1) {
-      setToJSON(client.get(torrent.infoHash), cb);
+      addOns(client.get(torrent.infoHash), cb);
     } else cb(e);
   });
-  torrent.on("ready", () => setToJSON(torrent, cb));
+  torrent.on("ready", () => addOns(torrent, cb));
 }
 
 // serveFile from inside webtorrent createServer method
@@ -86,5 +93,6 @@ function serveFile(file, req, res) {
 module.exports = {
   client,
   request,
-  serveFile
+  serveFile,
+  fileToJSON
 };
