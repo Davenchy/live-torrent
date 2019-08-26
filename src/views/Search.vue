@@ -165,6 +165,8 @@ export default {
       if (provider && provider.name !== "All") params.provider = provider.name;
       this.errors = "";
 
+      this.searchResults = [];
+
       searchEngine(params)
         .then(({ data }) => {
           this.searchResults = data;

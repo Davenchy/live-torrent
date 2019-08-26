@@ -348,7 +348,28 @@ export default {
           },
           controls
         });
-        player.touch = true;
+
+        // pause the video while playing on click
+        // for more info https://github.com/sampotts/plyr/issues/718#issuecomment-451906473
+        const { wrapper, container } = player.elements;
+        if (!container._clickListener) {
+          container._clickListener = event => {
+            const targets = [container, wrapper];
+
+            // Ignore if click if not container or in video wrapper
+            if (
+              !targets.includes(event.target) &&
+              !wrapper.contains(event.target)
+            ) {
+              return;
+            }
+
+            if (player.touch) player.togglePlay();
+          };
+          container.addEventListener("click", container._clickListener);
+        }
+        // end //
+
         this.player = player;
       } catch (err) {
         console.error(err);

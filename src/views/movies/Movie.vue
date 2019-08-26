@@ -274,7 +274,13 @@
 
               <v-card-text>
                 Seeds/Peers: {{ torrent.seeds }}/{{ torrent.peers }}
-                <v-text-field label="Hash" :value="torrent.hash" readonly />
+                <v-text-field label="Hash" :value="torrent.hash" readonly>
+                  <template v-slot:append>
+                    <v-btn icon @click="$clipboard.copy(torrent.hash)">
+                      <v-icon small>fas fa-copy</v-icon>
+                    </v-btn>
+                  </template>
+                </v-text-field>
 
                 <v-btn color="green" tag="a" :href="torrent.url">Download (.torrent)</v-btn>
                 <v-btn
@@ -394,7 +400,27 @@ export default {
         const player = new window.Plyr("#player", {
           controls
         });
-        player.touch = true;
+
+        // pause the video while playing on click
+        // for more info https://github.com/sampotts/plyr/issues/718#issuecomment-451906473
+        const { wrapper, container } = player.elements;
+        if (!container._clickListener) {
+          container._clickListener = event => {
+            const targets = [container, wrapper];
+
+            // Ignore if click if not container or in video wrapper
+            if (
+              !targets.includes(event.target) &&
+              !wrapper.contains(event.target)
+            ) {
+              return;
+            }
+
+            if (player.touch) player.togglePlay();
+          };
+          container.addEventListener("click", container._clickListener);
+        }
+        // end //
       });
   }
 };
