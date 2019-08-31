@@ -1,10 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout row wrap>
-      <v-flex class="my-5 text-xs-center">
-        <h1>Torrent Search Engine</h1>
-      </v-flex>
-      <v-flex xs12 md8 offset-md2 mb-4>
+      <v-flex xs12>
         <v-text-field
           placeholder="Looking for..."
           solo
@@ -16,7 +13,9 @@
           v-model="query"
           @keydown.enter="search"
           :error-messages="errors"
+          append-icon="search"
           @click:clear="clearResults"
+          @click:append="search"
         />
       </v-flex>
       <v-flex sm2 offset-sm1 xs12>
@@ -48,12 +47,6 @@
           type="number"
           :disabled="loading"
         ></v-text-field>
-      </v-flex>
-
-      <v-flex xs12 mt-3 class="text-xs-center">
-        <v-btn color="green" @click="search" :disabled="loading">
-          <v-icon left>fas fa-search</v-icon>Search
-        </v-btn>
       </v-flex>
 
       <v-flex xs12 v-if="query && searchResults.length">

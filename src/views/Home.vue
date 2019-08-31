@@ -30,15 +30,19 @@
             hint="torrentID can be torrent magnet, torrent HTTP/HTTPS url or torrent info hash"
             clearable
             :autofocus="!$vuetify.breakpoint.xsOnly"
-          />
-          <div class="text-xs-center text-md-right mt-4">
-            <v-btn color="success" :disabled="loading" @click="loadDemo">Demo</v-btn>
-            <v-btn color="info" @click="search" :loading="loading" :disabled="loading">
-              {{
-              validateQuery.isTorrentId ? "Explore" : "Search"
-              }}
-            </v-btn>
-          </div>
+          >
+            <template v-slot:append>
+              <v-btn icon @click="loadDemo">
+                <v-icon color="purple">fas fa-vial</v-icon>
+              </v-btn>
+              <v-btn icon v-if="validateQuery.isTorrentId" @click="search">
+                <v-icon color="teal">fas fa-eye</v-icon>
+              </v-btn>
+              <v-btn icon v-else @click="search">
+                <v-icon color="blue">fas fa-search</v-icon>
+              </v-btn>
+            </template>
+          </v-text-field>
         </v-flex>
         <v-flex xs10 offset-xs1 class="mt-5">
           <div class="mb-3">Share Live Torrent:</div>
@@ -135,7 +139,7 @@ export default {
   },
   computed: {
     validateQuery() {
-      const query = this.query.trim();
+      const query = (this.query || "").trim();
 
       const isEmpty = query === "";
       const isMagnet = query.match(

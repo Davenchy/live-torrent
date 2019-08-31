@@ -97,7 +97,6 @@ export default {
       mini: false,
       items: [
         { title: "Home", icon: "fas fa-home", path: "/" },
-        { title: "Search", icon: "fab fa-searchengin", path: "/search" },
         { title: "Movies", icon: "fas fa-film", path: "/movies" },
         { title: "Bookmarks", icon: "fas fa-bookmark", path: "/bookmarks" },
         { title: "About", icon: "info", path: "/about" }
