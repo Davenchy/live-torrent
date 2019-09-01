@@ -17,7 +17,7 @@ app.get("/providers", (req, res) => {
 app.get("/", async (req, res) => {
   const { category, provider, query, limit } = req.query;
 
-  if (!query) return res.sendStatus(400);
+  if (!query) return res.status(400).send("query is needed!");
 
   try {
     let results = [];
@@ -46,7 +46,7 @@ app.get("/", async (req, res) => {
     res.send(results);
   } catch (err) {
     console.error(err);
-    res.sendStatus(500);
+    res.status(500).send(err.message || "");
   }
 });
 

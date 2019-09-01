@@ -348,9 +348,10 @@ export default {
           },
           controls
         });
+        this.player = player;
 
-        // pause the video while playing on click
-        // for more info https://github.com/sampotts/plyr/issues/718#issuecomment-451906473
+        // pause the video on click
+        // more info https://github.com/sampotts/plyr/issues/718#issuecomment-451906473
         const { wrapper, container } = player.elements;
         if (!container._clickListener) {
           container._clickListener = event => {
@@ -368,9 +369,7 @@ export default {
           };
           container.addEventListener("click", container._clickListener);
         }
-        // end //
-
-        this.player = player;
+        // end
       } catch (err) {
         console.error(err);
       }

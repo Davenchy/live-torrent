@@ -3,36 +3,41 @@ const pump = require("pump");
 const rangeParser = require("range-parser");
 const mime = require("mime");
 const client = new WebTorrent();
-const trackers = require("./torrent-trackers");
+const trackers = require("../utils/torrent-trackers");
 
-const toJSONInit = (torrent, cb) => {
-  torrent.toJson = () => ({
+const fileToJSON = (file, index) => ({
+  name: file.name,
+  index,
+  path: file.cleanPath,
+  size: file.length,
+  type: file.type,
+  downloaded: file.downloaded
+});
+
+const addOns = (torrent, cb) => {
+  torrent.files.forEach((f, i) => {
+    f.toJSON = () => fileToJSON(f, i, torrent.name);
+    f.type = mime.getType(f.name) || "";
+    f.cleanPath = f.path.substr(torrent.name.length);
+  });
+  torrent.toJSON = () => ({
     name: torrent.name,
     infoHash: torrent.infoHash,
     size: torrent.length,
     peers: torrent.numPeers,
-    files: [
-      ...torrent.files.map((f, i) => ({
-        name: f.name,
-        index: i,
-        path: f.path,
-        size: f.length,
-        type: mime.getType(f.name) || "",
-        downloaded: f.downloaded
-      }))
-    ]
+    files: torrent.files.map(f => f.toJSON())
   });
   cb(null, torrent);
 };
 
-function add(torrentId, cb) {
+function request(torrentId, cb) {
   const torrent = client.add(torrentId, { announce: trackers });
   torrent.on("error", e => {
     if (e.message.indexOf("Cannot add duplicate torrent") !== -1) {
-      toJSONInit(client.get(torrent.infoHash), cb);
+      addOns(client.get(torrent.infoHash), cb);
     } else cb(e);
   });
-  torrent.on("ready", () => toJSONInit(torrent, cb));
+  torrent.on("ready", () => addOns(torrent, cb));
 }
 
 // serveFile from inside webtorrent createServer method
@@ -87,6 +92,7 @@ function serveFile(file, req, res) {
 
 module.exports = {
   client,
-  add,
-  serveFile
+  request,
+  serveFile,
+  fileToJSON
 };
