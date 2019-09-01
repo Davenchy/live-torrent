@@ -45,6 +45,11 @@
             </template>
           </v-text-field>
         </v-flex>
+        <v-flex class="text-xs-center">
+          <v-btn color="purple" href="https://www.surveymonkey.com/r/3CSJCQR" target="_blank">
+            <v-icon left>fas fa-comments</v-icon>Feedback
+          </v-btn>
+        </v-flex>
         <v-flex xs10 offset-xs1 class="mt-5">
           <div class="mb-3">Share Live Torrent:</div>
           <social-sharing
