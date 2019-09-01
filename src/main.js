@@ -4,7 +4,7 @@ import router from "./router";
 import store from "./store/index";
 
 import "./plugins/vuetify";
-import "./plugins/sweetalert2";
+import "./utils/sweetalert2";
 import "./registerServiceWorker";
 import "./utils/axios";
 import SocialSharing from "vue-social-sharing";
