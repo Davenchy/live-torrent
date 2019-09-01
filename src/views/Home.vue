@@ -1,5 +1,6 @@
 <template>
   <v-layout align-center justify-center fill-height>
+    <div ref="feedback"></div>
     <v-flex xs12>
       <v-layout row wrap>
         <v-flex xs12 mb-5>
@@ -170,6 +171,17 @@ export default {
     }
 
     document.title = "Live Torrent";
+  },
+  mounted() {
+    const tag = document.createElement("script");
+    tag.type = "text/javascript";
+    tag.id = "smcx-sdk";
+    tag.async = true;
+    tag.src = [
+      "https:" === location.protocol ? "https://" : "http://",
+      "widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdyvFhC7sq8eqCvG9QaH9oQuDYDFvXYG3OXspPZvZQC2E.js"
+    ].join("");
+    this.$refs.feedback.appendChild(tag);
   }
 };
 </script>
