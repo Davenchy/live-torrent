@@ -20,7 +20,7 @@
             icon
             tag="a"
             target="_blank"
-            :href="`/api/stream/${torrentInfo.infoHash}/${file.index}`"
+            :href="`/api/torrent/serve/${torrentInfo.infoHash}/${file.path.substr(1)}`"
             :download="file.name"
           >
             <v-icon color="green darken-2">fas fa-download</v-icon>
@@ -110,7 +110,7 @@
           <video
             id="player"
             ref="player"
-            :src="`/api/stream/${torrentInfo.infoHash}/${fileIndex}`"
+            :src="`/api/torrent/serve/${torrentInfo.infoHash}/${file.path.substr(1)}`"
             controls
           >
             <track
@@ -293,7 +293,11 @@ export default {
         };
         reader.readAsText(file);
       } else {
-        alert("The File APIs are not fully supported in this browser.");
+        this.Swal(
+          "Oops!!",
+          "The File APIs are not fully supported in this browser.",
+          "error"
+        );
       }
     },
     checkIndex() {
