@@ -1,6 +1,5 @@
 <template>
   <v-layout align-center justify-center fill-height>
-    <div ref="feedback"></div>
     <v-flex xs12>
       <v-layout row wrap>
         <v-flex xs12 mb-5>
@@ -33,17 +32,15 @@
             :autofocus="!$vuetify.breakpoint.xsOnly"
           >
             <template v-slot:append>
-              <v-btn icon @click="loadDemo" v-show="!query">
+              <v-btn icon @click="loadDemo" v-if="!query">
                 <v-icon color="purple">fas fa-vial</v-icon>
               </v-btn>
-              <v-btn icon @click="uploadTorrent" v-show="!query">
+              <v-btn icon @click="uploadTorrent" v-if="!query">
                 <v-icon color="green">fas fa-upload</v-icon>
               </v-btn>
-              <v-btn icon v-if="validateQuery.isTorrentId" @click="search">
-                <v-icon color="teal">fas fa-eye</v-icon>
-              </v-btn>
-              <v-btn icon v-else @click="search">
-                <v-icon color="blue">fas fa-search</v-icon>
+              <v-btn icon @click="search">
+                <v-icon color="teal" v-if="validateQuery.isTorrentId">fas fa-eye</v-icon>
+                <v-icon color="blue" v-else>fas fa-search</v-icon>
               </v-btn>
             </template>
           </v-text-field>
@@ -122,11 +119,12 @@ export default {
       this.loading = true;
       this.errors = "";
 
-      const validation = this.validateQuery;
-      if (validation.isEmpty) {
+      const { isEmpty, isTorrentId } = this.validateQuery;
+
+      if (isEmpty) {
         this.errors = "Please enter torrent ID or Search Query";
         this.loading = false;
-      } else if (validation.isTorrentId) {
+      } else if (isTorrentId) {
         this.$router.push({
           name: "explorer",
           query: {

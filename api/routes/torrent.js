@@ -62,9 +62,7 @@ function playList(req, res) {
   (custom ? selectedFiles : torrent.files).forEach(file => {
     if (file.type.indexOf("video") === -1 && file.type.indexOf("audio") === -1)
       return;
-    m3uStr += `#EXTINF:-1,${file.name}\n${host}/api/torrent/serve/${
-      torrent.infoHash
-    }${file.cleanPath}\n`;
+    m3uStr += `#EXTINF:-1,${file.name}\n${host}/api/torrent/serve/${torrent.infoHash}${file.cleanPath}\n`;
   });
 
   res.setHeader(

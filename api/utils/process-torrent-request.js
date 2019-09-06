@@ -64,7 +64,7 @@ function parseSelectors(req, res, next) {
   // find the selected files
   selections.forEach(q => {
     const num = parseInt(q);
-    const isNum = Number.isInteger(num);
+    const isNum = Number.isInteger(num) && `${num}` === q;
 
     if (isNum) {
       // query is index

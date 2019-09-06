@@ -290,7 +290,11 @@ export default {
       loadTorrentInfo(torrentInfo.infoHash)
         .catch(err => {
           console.error(err);
-          $router.push({ name: "home" });
+          this.Swal.fire({
+            type: "error",
+            title: "Reload Failed!!",
+            confirmButtonText: "Go To Home"
+          }).then(() => this.$router.push({ name: "home" }));
         })
         .finally(() => {
           setTimeout(() => (this.spin = false), 1000);
@@ -301,20 +305,8 @@ export default {
     ...mapState(["torrentInfo"]),
     ...mapGetters(["filesTree"]),
     filter() {
-      return (item, search, name) => {
-        const { filesOnly, insensitive, reverse } = this;
-
-        if (item.type === "folder" && filesOnly) return;
-
-        name = item[name];
-        if (insensitive) {
-          name = name.toLowerCase();
-          search = search.toLowerCase();
-        }
-
-        const v = name.toLowerCase().indexOf(search.toLowerCase()) > -1;
-        return reverse ? !v : v;
-      };
+      return (item, search, name) =>
+        item[name].toLowerCase().indexOf(search.toLowerCase()) > -1;
     },
     torrentDownloadLinks() {
       const { name, infoHash } = this.torrentInfo;
@@ -356,7 +348,15 @@ export default {
 
     if (!id) invalidTorrentId();
     else {
-      this.loadTorrentInfo(decodeURI(id))
+      this.loadTorrentInfo(
+        decodeURI(
+          id
+            .split("%3A")
+            .join(":")
+            .split("%2F")
+            .join("/")
+        )
+      )
         .then(setTitle)
         .catch(err => {
           console.error(err);
