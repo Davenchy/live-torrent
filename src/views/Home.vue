@@ -33,8 +33,11 @@
             :autofocus="!$vuetify.breakpoint.xsOnly"
           >
             <template v-slot:append>
-              <v-btn icon @click="loadDemo">
+              <v-btn icon @click="loadDemo" v-show="!query">
                 <v-icon color="purple">fas fa-vial</v-icon>
+              </v-btn>
+              <v-btn icon @click="uploadTorrent" v-show="!query">
+                <v-icon color="green">fas fa-upload</v-icon>
               </v-btn>
               <v-btn icon v-if="validateQuery.isTorrentId" @click="search">
                 <v-icon color="teal">fas fa-eye</v-icon>
@@ -102,6 +105,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import uploadTorrentFile from "../utils/uploadTorrentFile";
 
 export default {
   name: "home",
@@ -141,6 +145,12 @@ export default {
     loadDemo() {
       this.query =
         "magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel";
+    },
+    uploadTorrent() {
+      uploadTorrentFile.run(infoHash => {
+        this.query = infoHash;
+        this.search();
+      });
     }
   },
   computed: {
@@ -151,7 +161,7 @@ export default {
       const isMagnet = query.match(
         /^magnet:\?xt=urn:[a-z0-9]+:[a-f0-9]{40}(&[a-z0-9]+=[a-z0-9]+)*$/i
       );
-      const isInfoHash = query.match(/[a-f0-9]{32}/i);
+      const isInfoHash = query.match(/^[a-f0-9]{40}$/i);
       const isTorrentFile = query.match(/^https?:\/\/.+\.torrent$/i);
 
       const isTorrentId = !isEmpty && (isMagnet || isInfoHash || isTorrentFile);
@@ -168,25 +178,22 @@ export default {
       };
     }
   },
+  watch: {
+    query(n) {
+      window.sessionStorage["home-query"] = n || "";
+    }
+  },
   created() {
+    document.title = "Live Torrent";
     const { query } = this.$route.query;
     if (query) {
       this.query = query;
       this.search();
     }
-
-    document.title = "Live Torrent";
   },
   mounted() {
-    const tag = document.createElement("script");
-    tag.type = "text/javascript";
-    tag.id = "smcx-sdk";
-    tag.async = true;
-    tag.src = [
-      "https:" === location.protocol ? "https://" : "http://",
-      "widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdyvFhC7sq8eqCvG9QaH9oQuDYDFvXYG3OXspPZvZQC2E.js"
-    ].join("");
-    this.$refs.feedback.appendChild(tag);
+    this.query =
+      window.sessionStorage["home-query"] || this.$route.query.query || "";
   }
 };
 </script>

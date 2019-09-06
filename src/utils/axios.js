@@ -7,7 +7,7 @@ export default backend;
 
 // torrent service
 export const getTorrentInfo = torrentId =>
-  backend.get("/info?torrentId=" + torrentId);
+  backend.get("/torrent/info?torrentId=" + torrentId);
 export const searchProviders = () => backend.get("/search/providers");
 export const searchEngine = params => backend.get(`/search`, { params });
 
@@ -34,4 +34,5 @@ export const getSuggestedMovies = id =>
   backend.get(`https://yts.lt/api/v2/movie_suggestions.json?movie_id=${id}`);
 
 //  movies captions
-export const loadCaptions = imdbID => backend.get("/captions/" + imdbID);
+export const loadCaptions = imdbID =>
+  backend.get(`/captions/search?imdbid=${imdbID}`);

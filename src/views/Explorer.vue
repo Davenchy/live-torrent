@@ -136,43 +136,11 @@
               open-on-click
               style="max-width: 100%; overflow: auto;"
             >
-              <template v-slot:append="{ item }">
-                <div v-if="item.type !== 'folder'">
-                  <v-btn
-                    icon
-                    @click="watch(item)"
-                    v-if="
-                      item.type.startsWith('video') ||
-                        item.type.startsWith('audio')
-                    "
-                  >
-                    <v-icon color="indigo lighten-2">fas fa-play</v-icon>
-                  </v-btn>
-
-                  <v-btn
-                    icon
-                    v-if="item.type.startsWith('image')"
-                    @click="selectedImageFile = item"
-                  >
-                    <v-icon color="blue darken-2">fas fa-images</v-icon>
-                  </v-btn>
-
-                  <v-btn
-                    icon
-                    tag="a"
-                    target="_blank"
-                    :href="`/api/stream/serve/${torrentInfo.infoHash}/${item.path.substr(torrentInfo.name.length + 1)}`"
-                    :download="item.name"
-                  >
-                    <v-icon color="green darken-2">fas fa-download</v-icon>
-                  </v-btn>
-                </div>
-              </template>
               <template v-slot:label="{ item, open }">
                 <div :title="item.name">
                   <a
                     v-if="item.type !== 'folder'"
-                    :href="`/api/stream/serve/${torrentInfo.infoHash}/${item.path.substr(torrentInfo.name.length + 1)}`"
+                    :href="`/api/torrent/serve/${torrentInfo.infoHash}/${item.path.substr(1)}`"
                     target="_blank"
                     class="text-truncate wrap"
                   >{{ item.name }}&nbsp;</a>
@@ -212,42 +180,39 @@
                 ></i>
                 <i v-else class="fas fa-file"></i>
               </template>
+              <template v-slot:append="{ item }">
+                <div v-if="item.type !== 'folder'">
+                  <v-btn
+                    icon
+                    @click="openPlayer(item)"
+                    v-if="
+                      item.type.startsWith('video') ||
+                        item.type.startsWith('audio')
+                    "
+                  >
+                    <v-icon color="indigo lighten-2">fas fa-play</v-icon>
+                  </v-btn>
+
+                  <v-btn icon v-if="item.type.startsWith('image')" @click="showImage(item)">
+                    <v-icon color="blue darken-2">fas fa-images</v-icon>
+                  </v-btn>
+
+                  <v-btn
+                    icon
+                    tag="a"
+                    target="_blank"
+                    :href="`/api/torrent/serve/${torrentInfo.infoHash}/${item.path.substr(1)}`"
+                    :download="item.name"
+                  >
+                    <v-icon color="green darken-2">fas fa-download</v-icon>
+                  </v-btn>
+                </div>
+              </template>
             </v-treeview>
           </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
-
-    <!-- images dialog -->
-
-    <v-dialog
-      :value="selectedImageFile"
-      width="500"
-      v-if="selectedImageFile"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-    >
-      <v-card light>
-        <v-card-title class="headline grey lighten-2" primary-title>{{ selectedImageFile.name }}</v-card-title>
-
-        <v-img
-          :src="`${hostURL}/api/stream/serve/${torrentInfo.infoHash}/${item.path.substr(torrentInfo.name.length + 1)}`"
-          min-height="200px"
-        >
-          <template v-slot:placeholder>
-            <v-layout fill-height align-center justify-center ma-0>
-              <v-progress-circular indeterminate color="blue"></v-progress-circular>
-            </v-layout>
-          </template>
-        </v-img>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" flat @click="selectedImageFile = null">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-container>
   <v-layout v-else justify-center align-center fill-height>
     <v-flex class="text-xs-center">
@@ -268,7 +233,6 @@ export default {
   },
   data() {
     return {
-      selectedImageFile: null,
       tree: [],
       insensitive: true,
       filesOnly: true,
@@ -279,7 +243,17 @@ export default {
   },
   methods: {
     ...mapActions(["loadTorrentInfo"]),
-    watch(item) {
+    showImage(image) {
+      this.Swal.fire({
+        title: image.name,
+        imageUrl: `/api/torrent/serve/${
+          this.torrentInfo.infoHash
+        }/${image.path.substr(1)}`,
+        showConfirmButton: false,
+        showCloseButton: true
+      });
+    },
+    openPlayer(item) {
       const { $router, torrentInfo } = this;
       let captions = [];
 
@@ -293,7 +267,9 @@ export default {
           )
           .map(
             f =>
-              `url::${f.name}::${this.hostURL}/api/stream/${torrentInfo.infoHash}/${f.index}`
+              `url::${f.name}::${this.hostURL}/api/torrent/serve/${
+                torrentInfo.infoHash
+              }/${f.path.substr(1)}`
           );
       } catch (err) {
         console.error(err);
@@ -343,17 +319,19 @@ export default {
     torrentDownloadLinks() {
       const { name, infoHash } = this.torrentInfo;
       return [
-        // {
-        //   title: name + ".zip",
-        //   link: this.hostURL + "/api/download/" + infoHash
-        // },
+        {
+          title:
+            name +
+            ".zip [BETA - early access] [No Download Resume Support] [No Download File Size Support]",
+          link: this.hostURL + "/api/torrent/download/" + infoHash
+        },
         {
           title: name + ".torrent",
-          link: this.hostURL + "/api/torrentFile/" + infoHash
+          link: this.hostURL + "/api/torrent/torrentfile/" + infoHash
         },
         {
           title: name + ".m3u",
-          link: this.hostURL + "/api/playlist/" + infoHash
+          link: this.hostURL + "/api/torrent/playlist/" + infoHash
         }
       ];
     },
@@ -363,20 +341,28 @@ export default {
   },
   created() {
     const id = this.$route.query.torrentId;
+
     const setTitle = () =>
       (document.title = "Live Torrent - Explorer - " + this.torrentInfo.name);
 
-    if (!this.torrentInfo) {
-      if (!id) this.$router.push({ name: "home" });
-      else {
-        this.loadTorrentInfo(id)
-          .then(setTitle)
-          .catch(err => {
-            console.error(err);
-            this.$router.push({ name: "home" });
-          });
-      }
-    } else setTitle();
+    const invalidTorrentId = () => {
+      this.Swal.fire({
+        type: "error",
+        title: "Invalid Torrent ID",
+        text: "Sorry, that torrent id is invalid",
+        confirmButtonText: "Go To Home"
+      }).then(() => this.$router.push({ name: "home" }));
+    };
+
+    if (!id) invalidTorrentId();
+    else {
+      this.loadTorrentInfo(decodeURI(id))
+        .then(setTitle)
+        .catch(err => {
+          console.error(err);
+          invalidTorrentId();
+        });
+    }
   },
   mixins: [sizeFilter]
 };

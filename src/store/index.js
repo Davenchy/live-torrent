@@ -51,6 +51,7 @@ export default new Vuex.Store({
   },
   actions: {
     loadTorrentInfo({ commit }, torrentId) {
+      commit("setTorrentInfo", null);
       return getTorrentInfo(torrentId).then(res => {
         commit("setTorrentInfo", res.data);
       });
