@@ -271,11 +271,11 @@ The File Object:
 
 ### Download torrent as zip archive
 
-| Method | path                               | query                             | Desc                                                                                            |
-| ------ | ---------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------- |
-| GET    | /api/torrent/download              | torrentId [required]              | download all the files                                                                          |
-| GET    | /api/torrent/download/:infoHash    |                                   | download all the files                                                                          |
-| GET    | /api/torrent/download/:infoHash/\* | filePath or fileIndex or fileType | you can add as much as you need or use fileType to download all files with a specific file type |
+| Method | path                               | query                                                      | Desc                                                                                            |
+| ------ | ---------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| GET    | /api/torrent/download              | torrentId [required], fullPath [default=true]              | download all the files                                                                          |
+| GET    | /api/torrent/download/:infoHash    | fullPath [default=true]                                    | download all the files                                                                          |
+| GET    | /api/torrent/download/:infoHash/\* | filePath or fileIndex or fileType, fullPath [default=true] | you can add as much as you need or use fileType to download all files with a specific file type |
 
 examples on file types:
 

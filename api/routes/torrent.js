@@ -30,7 +30,7 @@ function serve(req, res) {
 function download(req, res) {
   const { torrent, selectedFiles, custom } = req;
   // add all selected files with full path
-  const fullPath = req.query.full_path !== false;
+  const fullPath = req.query.fullPath !== false;
 
   // add headers
   res.attachment(`${torrent.name}.zip`);
@@ -45,7 +45,7 @@ function download(req, res) {
   (custom ? selectedFiles : torrent.files).forEach(file => {
     zipFile.addReadStream(
       file.createReadStream(),
-      fullPath ? file.name : file.path
+      fullPath ? file.path : file.name
     );
   });
 
