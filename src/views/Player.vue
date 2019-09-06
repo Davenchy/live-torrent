@@ -15,7 +15,7 @@
           <v-btn icon color="green" @click="refresh">
             <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
           </v-btn>
-          <v-btn color="blue" @click="$router.push('/explorer')">Back To Explorer</v-btn>
+          <!-- <v-btn color="blue" @click="$router.push('/explorer')">Back To Explorer</v-btn> -->
           <v-btn
             icon
             tag="a"

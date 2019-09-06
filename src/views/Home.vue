@@ -149,6 +149,7 @@ export default {
     uploadTorrent() {
       uploadTorrentFile.run(infoHash => {
         this.query = infoHash;
+        window.sessionStorage["home-query"] = infoHash;
         this.search();
       });
     }
@@ -180,7 +181,16 @@ export default {
   },
   watch: {
     query(n) {
-      window.sessionStorage["home-query"] = n || "";
+      if (!n) n = "";
+      if (n.indexOf("%3A") !== -1 || n.indexOf("%2F") !== -1)
+        this.query = decodeURI(
+          n
+            .split("%3A")
+            .join(":")
+            .split("%2F")
+            .join("/")
+        );
+      window.sessionStorage["home-query"] = n;
     }
   },
   created() {
