@@ -286,11 +286,13 @@ udp://retracker.akado-ural.ru:80/announce
 udp://retracker.maxnet.ua:80/announce
 udp://bt.dy20188.com:80/announce
 http://0d.kebhana.mx:443/announce
+ahttp://0d.kebhana.mx:443/announce
 http://tracker.files.fm:6969/announce
 udp://tr.cili001.com:8070/announce
 udp://open.demonii.si:1337/announce
 udp://retracker.netbynet.ru:2710/announce
 http://opentracker.h4ck.me:6969/announce
+https://opentracker.xyz:443/announce
 udp://tracker.openbittorrent.com:80/announce
 http://web4.obit.ru:80/announce
 udp://torrentclub.tech:6969/announce
@@ -315,6 +317,7 @@ http://retracker.goodline.info:80/announce
 https://3.tracker.eu.org:443/announce
 http://mail2.zelenaya.net:80/announce
 http://torrent.nwps.ws:80/announce
+udp://tracker.port443.xyz:6969/announce
 udp://tracker.cyberia.is:6969/announce
 udp://tracker.skynetcloud.tk:6969/announce
 http://vps02.net.orel.ru:80/announce

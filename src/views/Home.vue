@@ -159,7 +159,7 @@ export default {
 
       const isEmpty = query === "";
       const isMagnet = query.match(
-        /^magnet:\?xt=urn:[a-z0-9]+:[a-f0-9]{40}(&[a-z0-9]+=[a-z0-9]+)*$/i
+        /^magnet:\?xt=urn:[a-z0-9]+:[a-f0-9]{40}(&.+=.+)*$/i
       );
       const isInfoHash = query.match(/^[a-f0-9]{40}$/i);
       const isTorrentFile = query.match(/^https?:\/\/.+\.torrent$/i);
