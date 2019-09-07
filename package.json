@@ -54,7 +54,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.12.0",
-    "nodemon": "^1.19.1",
+    "nodemon": "^1.19.2",
     "popper.js": "^1.15.0",
     "portal-vue": "^2.1.4",
     "sass-loader": "^7.1.0",
