@@ -379,7 +379,13 @@ export default {
       .then(movie => {
         return loadCaptions(movie.imdb_code)
           .then(res => (this.captions = res.data))
-          .finally(() => (this.loadingCaptions = false));
+          .catch(err => console.error(err))
+          .finally(() => {
+            this.loadingCaptions = false;
+            if (this.captions) {
+              this.captions = Object.values(this.captions);
+            }
+          });
       })
       .catch(err => console.error(err))
       .finally(() => {
@@ -404,6 +410,7 @@ export default {
         // pause the video while playing on click
         // for more info https://github.com/sampotts/plyr/issues/718#issuecomment-451906473
         const { wrapper, container } = player.elements;
+        if (!container || !wrapper) return;
         if (!container._clickListener) {
           container._clickListener = event => {
             const targets = [container, wrapper];

@@ -96,7 +96,7 @@ export const loadURL = caption => {
 export const loadIMDBID = caption => {
   return loadCaptions(caption.data).then(res => {
     let promises = [];
-    res.data.forEach(s => {
+    Object.values(res.data).forEach(s => {
       promises.push(
         loadURL({
           ...caption,

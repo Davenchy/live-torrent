@@ -1,15 +1,18 @@
 const app = require("express")();
 const OS = require("opensubtitles-api");
 
-const osapi = new OS(process.env.OSUA || "TemporaryUserAgent");
+const OpenSubtitles = new OS(process.env.OSUA || "TemporaryUserAgent");
 let isLoggedIn = false;
 
-osapi
-  .login()
-  .then(() => (isLoggedIn = true))
+OpenSubtitles.api
+  .LogIn()
+  .then(() => {
+    console.log("OpenSubtitles.org: Logged In");
+    isLoggedIn = true;
+  })
   .catch(err => {
-    console.log("opensubtitles.org login failed");
-    // console.error(err);
+    console.log("OpenSubtitles.org: Login Failed!!");
+    console.error(err);
   });
 
 // is logged in middleware
@@ -26,8 +29,7 @@ app.get("/search", (req, res) => {
   const episode = req.query.episode;
   const imdbid = req.query.imdbid;
 
-  osapi
-    .search({ sublanguageid, query, limit, season, episode, imdbid })
+  OpenSubtitles.search({ sublanguageid, query, limit, season, episode, imdbid })
     .then(data => res.send(data))
     .catch(err => {
       console.error(err);
