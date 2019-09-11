@@ -2,12 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const morgan = require("morgan");
+const liveTorrentBackend = require("live-torrent-backend");
 
 // setup env vars
 require("dotenv").config();
 
 const app = express();
-const server = require("http").createServer(app);
 // setup middle wares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,8 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // logs
 app.use(morgan("dev"));
 
-// server cors policy issue for backend api
-app.use("/api", cors(), require("./api"));
+// server cors policy for backend api
+app.use("/api", cors(), liveTorrentBackend(true));
 
 // for production
 if (process.env.NODE_ENV === "production") {
@@ -28,6 +28,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () =>
+app.listen(PORT, () =>
   console.log(`server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
 );

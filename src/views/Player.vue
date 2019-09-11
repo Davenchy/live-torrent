@@ -387,6 +387,7 @@ export default {
           $router.push({ name: "home" });
         })
         .finally(() => {
+          this.setPlayer();
           setTimeout(() => (this.spin = false), 1000);
         });
     },
