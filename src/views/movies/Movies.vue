@@ -15,20 +15,25 @@
         </h1>
       </v-flex>
 
-      <v-flex xs12 md8 offset-md2 mb-2>
-        <v-text-field
-          placeholder="Looking for..."
+      <v-flex xs12>
+        <v-autocomplete
           solo
           light
+          v-model="query"
+          placeholder="Looking for"
           :loading="loading"
           clearable
           :disabled="loading"
           :autofocus="!$vuetify.breakpoint.xsOnly"
-          v-model="query"
-          @keydown.enter="search(true)"
+          :search-input.sync="suggestionsKeyword"
+          @keydown.enter.native="search(true)"
+          @change="search(true)"
           :error-messages="errors"
           @click:clear="clearResults"
-        />
+          :items="suggestions"
+          @input.native="updateSuggestions"
+          item-text="title"
+        ></v-autocomplete>
       </v-flex>
 
       <v-flex xs12 mb-5>
@@ -214,7 +219,8 @@ export default {
       loading: false,
       errors: "",
       cpage: 1,
-      generatedPages: []
+      generatedPages: [],
+      suggestions: []
     };
   },
   methods: {
@@ -222,6 +228,21 @@ export default {
     readStorage(key) {
       const value = sessionStorage.getItem(key);
       return value !== null ? value : undefined;
+    },
+    updateSuggestions() {
+      getMoviesList({ query_term: this.suggestionsKeyword })
+        .then(res => {
+          if (res.data.status !== "ok")
+            throw new Error(res.data.status_message);
+
+          const data = res.data.data;
+          if (data.movie_count === 0) return;
+          this.suggestions = data.movies;
+        })
+        .catch(err => {
+          console.log(err);
+          this.errors = err.message;
+        });
     },
     search(resetPages = false) {
       if (resetPages) this.cpage = 1;
