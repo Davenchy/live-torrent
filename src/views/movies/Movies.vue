@@ -19,20 +19,25 @@
         <v-autocomplete
           solo
           light
-          v-model="query"
-          placeholder="Looking for"
-          :loading="loading"
+          cache-items
+          return-object
+          hide-no-data
           clearable
+          placeholder="Looking for"
+          item-text="title"
+          item-value="title"
+          v-model="kajo"
+          :loading="thinking || loading"
           :disabled="loading"
           :autofocus="!$vuetify.breakpoint.xsOnly"
-          :search-input.sync="suggestionsKeyword"
-          @keydown.enter.native="search(true)"
-          @change="search(true)"
           :error-messages="errors"
-          @click:clear="clearResults"
+          :search-input.sync="query"
           :items="suggestions"
+          @click:clear="clearResults"
           @input.native="updateSuggestions"
-          item-text="title"
+          @change="openSuggestion($event)"
+          @keydown.enter.native="search(true)"
+          ref="autocomplete"
         ></v-autocomplete>
       </v-flex>
 
@@ -217,6 +222,7 @@ export default {
       sort: "date_added",
       genre: "all",
       loading: false,
+      thinking: false,
       errors: "",
       cpage: 1,
       generatedPages: [],
@@ -229,8 +235,12 @@ export default {
       const value = sessionStorage.getItem(key);
       return value !== null ? value : undefined;
     },
+    openSuggestion(item) {
+      this.$router.push("/movies/" + item.id);
+    },
     updateSuggestions() {
-      getMoviesList({ query_term: this.suggestionsKeyword })
+      this.thinking = true;
+      getMoviesList({ query_term: this.query })
         .then(res => {
           if (res.data.status !== "ok")
             throw new Error(res.data.status_message);
@@ -242,7 +252,8 @@ export default {
         .catch(err => {
           console.log(err);
           this.errors = err.message;
-        });
+        })
+        .finally(() => (this.thinking = false));
     },
     search(resetPages = false) {
       if (resetPages) this.cpage = 1;
@@ -330,6 +341,7 @@ export default {
     document.title = "Live Torrent - Movies";
     const { query, genre, rating } = this.$route.query;
 
+    this.$nextTick(() => console.log((this.$refs.autocomplete.value = "done")));
     this.query = query || readStorage("mse.query") || "";
     this.rating =
       parseInt(rating) || parseFloat(readStorage("mse.rating")) || 0;
