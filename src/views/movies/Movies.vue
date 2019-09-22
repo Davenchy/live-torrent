@@ -32,12 +32,16 @@
               <v-avatar :size="45">
                 <img :src="item.small_cover_image" :alt="`${item.title}'s cover`" />
               </v-avatar>
-              <span class="mx-3">{{ item.title }} - {{ item.year }}</span>
-              <span>
+              <span class="mx-3">
+                <span v-html="maskSuggestion(item.title)"></span>
+                - {{ item.year }}
+              </span>
+              <span v-if="$vuetify.breakpoint.mdAndUp">
                 <v-chip
                   v-for="(genre, i) in item.genres"
                   :key="i"
                   label
+                  small
                   class="mx-2"
                   color="primary"
                 >{{ genre }}</v-chip>
@@ -327,6 +331,13 @@ export default {
     clearResults() {
       this.query = "";
       this.search(true);
+    },
+    maskSuggestion(text) {
+      return text.replace(
+        new RegExp(this.query, "gi"),
+        a =>
+          `<span style="background-color: #494949; color: rgba(255, 255, 255, 0.5);">${a}</span>`
+      );
     }
   },
   watch: {
