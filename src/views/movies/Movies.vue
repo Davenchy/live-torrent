@@ -16,29 +16,27 @@
       </v-flex>
 
       <v-flex xs12>
-        <v-autocomplete
+        <v-combobox
           solo
           light
-          cache-items
-          return-object
-          hide-no-data
           clearable
-          placeholder="Looking for"
+          cache-items
+          hide-no-data
+          return-object
           item-text="title"
+          loader-height="5"
           item-value="title"
-          v-model="kajo"
-          :loading="thinking || loading"
+          placeholder="Looking for"
           :disabled="loading"
-          :autofocus="!$vuetify.breakpoint.xsOnly"
-          :error-messages="errors"
-          :search-input.sync="query"
           :items="suggestions"
+          :loading="thinking || loading"
+          :autofocus="!$vuetify.breakpoint.xsOnly"
+          :search-input.sync="query"
           @click:clear="clearResults"
-          @input.native="updateSuggestions"
           @change="openSuggestion($event)"
           @keydown.enter.native="search(true)"
-          ref="autocomplete"
-        ></v-autocomplete>
+          @input.native="updateSuggestions"
+        ></v-combobox>
       </v-flex>
 
       <v-flex xs12 mb-5>
@@ -133,12 +131,10 @@
           </v-flex>
           <v-flex xs12 class="text-xs-center">
             <v-btn color="green" @click="search(true)" :disabled="loading">
-              Search
-              <v-icon right>fas fa-search</v-icon>
+              <v-icon left>fas fa-search</v-icon>Search
             </v-btn>
             <v-btn color="blue" @click="random" :disabled="loading">
-              Random
-              <v-icon right>fas fa-dice</v-icon>
+              <v-icon left>fas fa-dice</v-icon>Random
             </v-btn>
           </v-flex>
         </v-layout>
@@ -236,6 +232,7 @@ export default {
       return value !== null ? value : undefined;
     },
     openSuggestion(item) {
+      sessionStorage.setItem("mse.query", item.title || "");
       this.$router.push("/movies/" + item.id);
     },
     updateSuggestions() {
@@ -340,8 +337,6 @@ export default {
     const { readStorage } = this;
     document.title = "Live Torrent - Movies";
     const { query, genre, rating } = this.$route.query;
-
-    this.$nextTick(() => console.log((this.$refs.autocomplete.value = "done")));
     this.query = query || readStorage("mse.query") || "";
     this.rating =
       parseInt(rating) || parseFloat(readStorage("mse.rating")) || 0;
