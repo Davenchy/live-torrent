@@ -24,7 +24,7 @@
         </v-btn>
         <v-btn
           icon
-          @click="$clipboard.copy(`${hostURL}/bookmarks?bookmark=${btoa(JSON.stringify(bookmark))}`)"
+          @click="$copy(`${hostURL}/bookmarks?bookmark=${btoa(JSON.stringify(bookmark))}`)"
         >
           <v-icon small>fas fa-copy</v-icon>
         </v-btn>
@@ -55,7 +55,7 @@ export default {
         .replace("+", "_")
         .replace(",", "-")
         .replace("/", ".");
-      this.$clipboard.copy(this.hostURL + "/bookmarks?bookmarks=" + data);
+      this.$copy(this.hostURL + "/bookmarks?bookmarks=" + data);
     },
     btoa(text) {
       return btoa(text);

@@ -1,4 +1,5 @@
 import { Toast } from "./sweetalert2";
+import Vue from "vue";
 
 export const copy = (text, msg = "Copied") => {
   let dom = document.createElement("textarea");
@@ -15,6 +16,4 @@ export const copy = (text, msg = "Copied") => {
   });
 };
 
-export default {
-  copy
-};
+Vue.prototype.$copy = copy;

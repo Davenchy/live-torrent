@@ -276,7 +276,22 @@
                 Seeds/Peers: {{ torrent.seeds }}/{{ torrent.peers }}
                 <v-text-field label="Hash" :value="torrent.hash" readonly>
                   <template v-slot:append>
-                    <v-btn icon @click="$clipboard.copy(torrent.hash)">
+                    <v-btn icon @click="$copy(torrent.hash)">
+                      <v-icon small>fas fa-copy</v-icon>
+                    </v-btn>
+                  </template>
+                </v-text-field>
+
+                <v-text-field
+                  label="Stream"
+                  :value="`${hostURL}/api/torrent/serve/${torrent.hash}/:video`"
+                  readonly
+                >
+                  <template v-slot:append>
+                    <v-btn
+                      icon
+                      @click="$copy(`${hostURL}/api/torrent/serve/${torrent.hash}/:video`)"
+                    >
                       <v-icon small>fas fa-copy</v-icon>
                     </v-btn>
                   </template>
@@ -293,6 +308,13 @@
                   tag="a"
                   :href="`${hostURL}/explorer?torrentId=${torrent.hash}`"
                 >Explore</v-btn>
+                <v-btn
+                  color="orange"
+                  tag="a"
+                  target="_blank"
+                  :download="`${movie.slug}.mp4`"
+                  :href="`${hostURL}/api/torrent/serve/${torrent.hash}/:video`"
+                >Download Movie (.mp4)</v-btn>
               </v-card-text>
             </v-card>
           </v-flex>

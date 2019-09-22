@@ -29,7 +29,7 @@
               color="blue"
             >
               <template v-slot:append>
-                <v-btn icon @click="$clipboard.copy(torrentInfo.infoHash)">
+                <v-btn icon @click="$copy(torrentInfo.infoHash)">
                   <v-icon small>fas fa-copy</v-icon>
                 </v-btn>
               </template>
@@ -44,7 +44,7 @@
               prepend-icon="share"
             >
               <template v-slot:append>
-                <v-btn icon @click="$clipboard.copy(shareURL)">
+                <v-btn icon @click="$copy(shareURL)">
                   <v-icon small>fas fa-copy</v-icon>
                 </v-btn>
               </template>
@@ -306,7 +306,7 @@ export default {
     ...mapGetters(["filesTree"]),
     filter() {
       return (item, search, name) =>
-        item[name].toLowerCase().indexOf(search.toLowerCase()) > -1;
+        (item[name] || "").toLowerCase().indexOf(search.toLowerCase()) > -1;
     },
     torrentDownloadLinks() {
       const { name, infoHash } = this.torrentInfo;
