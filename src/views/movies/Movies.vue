@@ -2,17 +2,7 @@
   <v-container fluid>
     <v-layout raw wrap xs12>
       <v-flex xs12 class="my-5 text-xs-center">
-        <h1>
-          Torrent Movies
-          <bookmark-button
-            v-if="query"
-            :bookmarkInfo="{
-              name: `Movies search results for ${query}`,
-              id: 'movies.results::' + query,
-              url: `${hostURL}/movies?query=${query}&genre=${genre}&rating=${rating}`
-            }"
-          />
-        </h1>
+        <h1>Torrent Movies</h1>
       </v-flex>
 
       <v-flex xs12>
@@ -36,7 +26,25 @@
           @change="openSuggestion($event)"
           @keydown.enter.native="search(true)"
           @input.native="updateSuggestions"
-        ></v-combobox>
+        >
+          <template v-slot:item="{item}">
+            <div>
+              <v-avatar :size="45">
+                <img :src="item.small_cover_image" :alt="`${item.title}'s cover`" />
+              </v-avatar>
+              <span class="mx-3">{{ item.title }} - {{ item.year }}</span>
+              <span>
+                <v-chip
+                  v-for="(genre, i) in item.genres"
+                  :key="i"
+                  label
+                  class="mx-2"
+                  color="primary"
+                >{{ genre }}</v-chip>
+              </span>
+            </div>
+          </template>
+        </v-combobox>
       </v-flex>
 
       <v-flex xs12 mb-5>
@@ -77,28 +85,32 @@
               single-line
               :items="[
                       { text: 'All', value: 'all' },
-                      { text: 'Comedy', value: 'comedy' },
-                      { text: 'Sci-Fi', value: 'sci-fi' },
-                      { text: 'Horror', value: 'horror' },
-                      { text: 'Romance', value: 'romance' },
                       { text: 'Action', value: 'action' },
-                      { text: 'Thriller', value: 'thriller' },
-                      { text: 'Drama', value: 'drama' },
-                      { text: 'Mystery', value: 'mystery' },
-                      { text: 'Crime', value: 'crime' },
-                      { text: 'Animation', value: 'animation' },
                       { text: 'Adventure', value: 'adventure' },
-                      { text: 'Fantasy', value: 'fantasy' },
+                      { text: 'Animation', value: 'animation' },
                       { text: 'Biography', value: 'biography' },
-                      { text: 'War', value: 'war' },
-                      { text: 'News', value: 'news' },
+                      { text: 'Comedy', value: 'comedy' },
+                      { text: 'Crime', value: 'crime' },
+                      { text: 'Documentary', value: 'documentary' },
+                      { text: 'Drama', value: 'drama' },
+                      { text: 'Family', value: 'family' },
+                      { text: 'Fantasy', value: 'fantasy' },
+                      { text: 'Film-Noir', value: 'film-noir' },
+                      { text: 'Game-Show', value: 'game-show' },
+                      { text: 'History', value: 'history' },
+                      { text: 'Horror', value: 'horror' },
                       { text: 'Music', value: 'music' },
                       { text: 'Musical', value: 'musical' },
+                      { text: 'Mystery', value: 'mystery' },
+                      { text: 'News', value: 'news' },
                       { text: 'Reality Tv', value: 'reality-tv' },
-                      { text: 'Western', value: 'western' },
+                      { text: 'Romance', value: 'romance' },
+                      { text: 'Sci-Fi', value: 'sci-fi' },
                       { text: 'Sport', value: 'sport' },
-                      { text: 'Documentary', value: 'documentary' },
-                      { text: 'History', value: 'history' },
+                      { text: 'Talk-Show', value: 'talk-show' },
+                      { text: 'Thriller', value: 'thriller' },
+                      { text: 'War', value: 'war' },
+                      { text: 'Western', value: 'western' },
                       ]"
             >
               <template v-slot:prepend-inner>
@@ -219,7 +231,6 @@ export default {
       genre: "all",
       loading: false,
       thinking: false,
-      errors: "",
       cpage: 1,
       generatedPages: [],
       suggestions: []
@@ -232,8 +243,8 @@ export default {
       return value !== null ? value : undefined;
     },
     openSuggestion(item) {
-      sessionStorage.setItem("mse.query", item.title || "");
-      this.$router.push("/movies/" + item.id);
+      sessionStorage.setItem("mse.query", item.title || item || "");
+      if (typeof item !== "string") this.$router.push("/movies/" + item.id);
     },
     updateSuggestions() {
       this.thinking = true;
@@ -248,7 +259,10 @@ export default {
         })
         .catch(err => {
           console.log(err);
-          this.errors = err.message;
+          this.Toast.fire({
+            title: err.message,
+            type: "error"
+          });
         })
         .finally(() => (this.thinking = false));
     },
@@ -268,7 +282,10 @@ export default {
       this.loadMoviesList(params)
         .catch(err => {
           console.error(err);
-          this.errors = err.message;
+          this.Toast.fire({
+            title: err.message,
+            type: "error"
+          });
         })
         .finally(() => (this.loading = false));
     },
@@ -300,7 +317,10 @@ export default {
         })
         .catch(err => {
           console.log(err);
-          this.errors = err.message;
+          this.Toast.fire({
+            title: err.message,
+            type: "error"
+          });
         })
         .finally(() => (this.loading = false));
     },
