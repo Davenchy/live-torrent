@@ -27,7 +27,7 @@
     "parse-torrent": "^7.0.1",
     "register-service-worker": "^1.6.2",
     "srt-webvtt": "^1.0.1",
-    "sweetalert2": "^8.17.1",
+    "sweetalert2": "^8.18.3",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
