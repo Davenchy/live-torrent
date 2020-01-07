@@ -140,7 +140,7 @@
                 <div :title="item.name">
                   <a
                     v-if="item.type !== 'folder'"
-                    :href="`/api/torrent/serve/${torrentInfo.infoHash}/${item.path.substr(1)}`"
+                    :href="`/api/torrent/serve/${torrentInfo.infoHash}/${item.path.substr(1) || item.index}`"
                     target="_blank"
                     class="text-truncate wrap"
                   >{{ item.name }}&nbsp;</a>
@@ -201,7 +201,7 @@
                     icon
                     tag="a"
                     target="_blank"
-                    :href="`/api/torrent/serve/${torrentInfo.infoHash}/${item.path.substr(1)}`"
+                    :href="`/api/torrent/serve/${torrentInfo.infoHash}/${item.path.substr(1) || item.index}`"
                     :download="item.name"
                   >
                     <v-icon color="green darken-2">fas fa-download</v-icon>
@@ -311,12 +311,6 @@ export default {
     torrentDownloadLinks() {
       const { name, infoHash } = this.torrentInfo;
       return [
-        {
-          title:
-            name +
-            ".zip [BETA - early access] [No Download Resume Support] [No Download File Size Support]",
-          link: this.hostURL + "/api/torrent/download/" + infoHash
-        },
         {
           title: name + ".torrent",
           link: this.hostURL + "/api/torrent/torrentfile/" + infoHash
