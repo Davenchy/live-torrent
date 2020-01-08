@@ -22,7 +22,7 @@
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "iconv-lite": "^0.5.0",
-    "live-torrent-backend": "^1.0.1",
+    "live-torrent-backend": "^1.0.3",
     "morgan": "^1.9.1",
     "parse-torrent": "^7.0.1",
     "register-service-worker": "^1.6.2",
