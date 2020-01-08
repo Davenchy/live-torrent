@@ -9,8 +9,10 @@ import "./registerServiceWorker";
 import "./utils/axios";
 import "./utils/clipboard";
 import SocialSharing from "vue-social-sharing";
+import ShareButtons from "./components/ShareButtons.vue";
 
 Vue.use(SocialSharing);
+Vue.component("share-buttons", ShareButtons);
 Vue.config.productionTip = false;
 Vue.prototype.hostURL = window.location.protocol + "//" + window.location.host;
 Vue.prototype.window = window;

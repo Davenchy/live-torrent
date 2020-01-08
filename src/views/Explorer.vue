@@ -10,13 +10,13 @@
               <bookmark-button
                 v-if="torrentInfo"
                 :bookmarkInfo="{
-                name: `${torrentInfo.name} - Explorer Page`,
-                id: 'explorer::' + torrentInfo.infoHash,
-                url: shareURL
-              }"
+                  name: `${torrentInfo.name} - Explorer Page`,
+                  id: 'explorer::' + torrentInfo.infoHash,
+                  url: shareURL
+                }"
               />
               <v-btn icon color="green" @click="reload">
-                <v-icon>fas fa-sync {{ spin ? 'fa-spin' : '' }}</v-icon>
+                <v-icon>fas fa-sync {{ spin ? "fa-spin" : "" }}</v-icon>
               </v-btn>
             </div>
 
@@ -50,49 +50,11 @@
               </template>
             </v-text-field>
 
-            <social-sharing
+            <share-buttons
               :url="shareURL"
               :title="`Explore '${torrentInfo.name}' torrent file`"
-              description="Explore this torrent file"
-              hashtags="live_torrent"
-              twitter-user="fadi_davenchy"
-              network-tag="a"
-              class="my-3"
-              inline-template
-            >
-              <div>
-                <network network="facebook" class="blue--text text--darken-2 ma-3">
-                  <i class="fab fa-facebook"></i> Facebook
-                </network>
-                <network network="reddit" class="red--text text--lighten-1 ma-3">
-                  <i class="fab fa-reddit-alien"></i> Reddit
-                </network>
-                <network network="twitter" class="blue--text text--lighten-4 ma-3">
-                  <i class="fab fa-twitter"></i> Twitter
-                </network>
-                <network network="telegram" class="blue--text text--lighten-2 ma-3">
-                  <i class="fab fa-telegram"></i> Telegram
-                </network>
-                <network network="skype" class="blue--text ma-3">
-                  <i class="fab fa-skype"></i> Skype
-                </network>
-                <network network="sms" class="yellow--text ma-3">
-                  <i class="fas fa-sms"></i> SMS
-                </network>
-                <network network="email" class="orange--text ma-3">
-                  <i class="fas fa-envelope"></i> Email
-                </network>
-                <network network="vk" class="blue--text text--darken-3 ma-3">
-                  <i class="fab fa-vk"></i> VKontakte
-                </network>
-                <network network="weibo" class="red--text text--darken-1 ma-3">
-                  <i class="fab fa-weibo"></i> Weibo
-                </network>
-                <network network="whatsapp" class="green--text text--lighten-2 ma-3">
-                  <i class="fab fa-fw fa-whatsapp"></i> Whatsapp
-                </network>
-              </div>
-            </social-sharing>
+              desc="Explore this torrent file"
+            />
 
             <v-menu offset-y>
               <template v-slot:activator="{ on }">
@@ -140,12 +102,19 @@
                 <div :title="item.name">
                   <a
                     v-if="item.type !== 'folder'"
-                    :href="`/api/torrent/serve/${torrentInfo.infoHash}/${item.path.substr(1) || item.index}`"
+                    :href="
+                      `/api/torrent/serve/${
+                        torrentInfo.infoHash
+                      }/${item.path.substr(1) || item.index}`
+                    "
                     target="_blank"
                     class="text-truncate wrap"
-                  >{{ item.name }}&nbsp;</a>
+                    >{{ item.name }}&nbsp;
+                  </a>
                   <span v-else>{{ item.name }}</span>
-                  <span v-if="item.type !== 'folder'" class="green--text">- {{ item.size | size }}</span>
+                  <span v-if="item.type !== 'folder'" class="green--text">
+                    - {{ item.size | size }}
+                  </span>
                 </div>
               </template>
               <template v-slot:prepend="{ item, open }">
