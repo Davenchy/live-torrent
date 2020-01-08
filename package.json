@@ -30,7 +30,7 @@
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
-    "vue-social-sharing": "^2.4.5",
+    "vue-social-sharing": "^2.4.7",
     "vuetify": "^1.5.16",
     "vuex": "^3.0.1"
   },
