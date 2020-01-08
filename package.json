@@ -28,7 +28,7 @@
     "srt-webvtt": "^1.0.1",
     "sweetalert2": "^8.19.0",
     "uuid": "^3.3.2",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-router": "^3.0.3",
     "vue-social-sharing": "^2.4.5",
     "vuetify": "^1.5.16",
@@ -55,7 +55,7 @@
     "stylus-loader": "^3.0.1",
     "vue-cli-plugin-bootstrap-vue": "^0.4.0",
     "vue-cli-plugin-vuetify": "^0.5.0",
-    "vue-template-compiler": "^2.6.10",
+    "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.0.5"
   }
 }
