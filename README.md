@@ -37,39 +37,9 @@ for more information about the OpenSubtitles.org api user agent from [here](http
 
 ## Docker
 
-### Build
+- Docker repo: `live-torrent`
 
-```
-# create image
-# docker build -t <image-name> .
-docker build -t live-torrent
-
-# create container
-# docker container create --name <container-name> -p <port>:8080 -e "OSUA=<opensubtitles-useragent>" <image-name>
-docker container create --name live-torrent -p 8080:8080 live-torrent
-```
-
-### Install
-
-```
-# docker run --name <container-name> -p <port>:8080 -e "OSUA=<opensubtitles-useragent>" -d davenchy/live-torrent
-docker run --name live-torrent -p 8080:8080 -d davenchy/live-torrent
-```
-
-### Use it
-
-```
-# start live-torrent server
-# docker start <container-name>
-docker start live-torrent
-
-# stop live-torrent server
-# docker stop <container-name>
-docker stop live-torrent
-
-# check running processes
-docker ps
-```
+`docker run --name live-torrent -d -p <PORT>:8080 -e "OSUA=<your opensubtitles user agent>" live-torrent`
 
 ## Frontend API
 
