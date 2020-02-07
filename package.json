@@ -2,16 +2,15 @@
   "name": "live-torrent",
   "version": "3.1.0",
   "private": true,
+  "main": "server.js",
   "scripts": {
-    "start": "npm run live-torrent-server",
+    "start": "NODE_ENV=production node server.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "live-torrent-server": "NODE_ENV=production node server.js",
-    "live-torrent-server-dev": "NODE_ENV=development nodemon server.js",
-    "dev": "concurrently \"npm run live-torrent-server-dev\" \"npm run serve\""
+    "dev-server": "NODE_ENV=development nodemon server.js",
+    "dev": "concurrently \"npm run dev-server\" \"npm run serve\""
   },
-  "main": "server.js",
   "dependencies": {
     "axios": "^0.19.1",
     "body-parser": "^1.19.0",
