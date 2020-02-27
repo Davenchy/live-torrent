@@ -29,7 +29,7 @@
     "sweetalert2": "^8.19.0",
     "uuid": "^3.4.0",
     "vue": "^2.6.11",
-    "vue-router": "^3.1.5",
+    "vue-router": "^3.1.6",
     "vue-social-sharing": "^2.4.7",
     "vuetify": "^1.5.22",
     "vuex": "^3.1.2"
