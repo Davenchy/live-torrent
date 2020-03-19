@@ -1,0 +1,33 @@
+{
+  "name": "Live Torrent",
+  "description": "Search, explore, serve and download torrent files and watch online YTS torrent movies with subtitles",
+  "repository": "https://github.com/Davenchy/live-torrent",
+  "logo": "https://github.com/Davenchy/live-torrent/raw/master/public/img/logo.png",
+  "keywords": [
+    "frontend",
+    "live-torrent",
+    "torrent",
+    "webtorrent",
+    "stream",
+    "yts",
+    "movies",
+    "subtitle",
+    "opensubtitles.org",
+    "search",
+    "download",
+    "serve",
+    "vue.js"
+  ],
+  "env": {
+    "OSUA": {
+      "description": "OpenSubtitles User Agent [without it no subtitles support]",
+      "required": false,
+      "value": "TemporaryUserAgent"
+    }
+  },
+  "image": "davenchy/live-torrent",
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "npm run build"
+  }
+}
