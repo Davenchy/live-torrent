@@ -48,15 +48,6 @@
             </template>
           </v-text-field>
         </v-flex>
-        <v-flex class="text-xs-center">
-          <v-btn
-            color="purple"
-            href="https://www.surveymonkey.com/r/3CSJCQR"
-            target="_blank"
-          >
-            <v-icon left>fas fa-comments</v-icon>Feedback
-          </v-btn>
-        </v-flex>
         <v-flex xs10 offset-xs1 class="mt-5">
           <div class="mb-3">Share Live Torrent:</div>
           <share-buttons
@@ -64,6 +55,22 @@
             title="Explore, download or watch torrent files online"
             desc="Live Torrent is a web app to explore, download or watch torrent files online"
           />
+        </v-flex>
+        <v-flex xs3 offset-xs4 class="text-xs-center mt-5">
+          <a
+            href="https://brave.com/liv970"
+            target="_blank"
+            title="Support us and a faster and safer web by downloading Brave browser"
+          >
+            <v-img
+              src="/img/brave.png"
+              alt="Proud to support a faster, safer web"
+              min-height="100px"
+              max-width="300px"
+              class="black--text text--lighten-2"
+            >
+            </v-img>
+          </a>
         </v-flex>
       </v-layout>
     </v-flex>

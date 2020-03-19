@@ -53,7 +53,7 @@
           v-for="item in items"
           :key="item.title"
           :to="item.path"
-          @click="drawer = !drawer;"
+          @click="drawer = !drawer"
         >
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
@@ -87,7 +87,6 @@
     </v-navigation-drawer>
   </div>
 </template>
-
 
 <script>
 export default {
