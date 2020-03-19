@@ -40,14 +40,23 @@
                 <v-icon color="green">fas fa-upload</v-icon>
               </v-btn>
               <v-btn icon @click="search">
-                <v-icon color="teal" v-if="validateQuery.isTorrentId"
-                  >fas fa-eye</v-icon
-                >
+                <v-icon color="teal" v-if="validateQuery.isTorrentId">fas fa-eye</v-icon>
                 <v-icon color="blue" v-else>fas fa-search</v-icon>
               </v-btn>
             </template>
           </v-text-field>
         </v-flex>
+
+        <v-flex class="text-xs-center mt-5">
+          <v-btn
+            color="blue"
+            href="mailto:firon1222@gmail.com?Subject=Live%20Torrent%20-%20Feedback"
+            target="blank"
+          >
+            <v-icon left>fas fa-comments</v-icon>Feedback
+          </v-btn>
+        </v-flex>
+
         <v-flex xs10 offset-xs1 class="mt-5">
           <div class="mb-3">Share Live Torrent:</div>
           <share-buttons
@@ -68,8 +77,7 @@
               min-height="100px"
               max-width="300px"
               class="black--text text--lighten-2"
-            >
-            </v-img>
+            ></v-img>
           </a>
         </v-flex>
       </v-layout>

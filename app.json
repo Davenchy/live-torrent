@@ -26,8 +26,5 @@
     }
   },
   "image": "davenchy/live-torrent",
-  "success_url": "/",
-  "scripts": {
-    "postdeploy": "npm run build"
-  }
+  "success_url": "/"
 }
