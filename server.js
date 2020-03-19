@@ -17,6 +17,7 @@ app.use(morgan("dev"));
 
 // server cors policy for backend api
 app.use("/api", cors(), liveTorrentBackend(true));
+app.use("/api/yts", cors(), require("./yts-api.js"));
 
 // for production
 if (process.env.NODE_ENV === "production") {

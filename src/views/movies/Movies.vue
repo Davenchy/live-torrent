@@ -27,7 +27,7 @@
           @keydown.enter.native="search(true)"
           @input.native="updateSuggestions"
         >
-          <template v-slot:item="{item}">
+          <template v-slot:item="{ item }">
             <div>
               <v-avatar :size="45">
                 <img :src="item.small_cover_image" :alt="`${item.title}'s cover`" />
@@ -60,18 +60,23 @@
               :disabled="loading"
               hide-details
               light
-              :menu-props="{light: true, top: true, offsetY: true, offsetOverflow: true}"
+              :menu-props="{
+                light: true,
+                top: true,
+                offsetY: true,
+                offsetOverflow: true
+              }"
               single-line
               :items="[
-                      { text: 'Title', value: 'title' },
-                      { text: 'Year', value: 'year' },
-                      { text: 'Rating', value: 'rating' },
-                      { text: 'Peers', value: 'peers' },
-                      { text: 'Seeds', value: 'seeds' },
-                      { text: 'Downloads', value: 'download_count' },
-                      { text: 'Popularity', value: 'likes_count' },
-                      { text: 'Upload Date', value: 'date_added' }
-                      ]"
+                { text: 'Title', value: 'title' },
+                { text: 'Year', value: 'year' },
+                { text: 'Rating', value: 'rating' },
+                { text: 'Peers', value: 'peers' },
+                { text: 'Seeds', value: 'seeds' },
+                { text: 'Downloads', value: 'download_count' },
+                { text: 'Popularity', value: 'likes_count' },
+                { text: 'Upload Date', value: 'date_added' }
+              ]"
             >
               <template v-slot:prepend-inner>
                 <div class="select-text">Order:</div>
@@ -84,38 +89,43 @@
               v-model="genre"
               :disabled="loading"
               light
-              :menu-props="{light: true, top: true, offsetY: true, offsetOverflow: true}"
+              :menu-props="{
+                light: true,
+                top: true,
+                offsetY: true,
+                offsetOverflow: true
+              }"
               hide-details
               single-line
               :items="[
-                      { text: 'All', value: 'all' },
-                      { text: 'Action', value: 'action' },
-                      { text: 'Adventure', value: 'adventure' },
-                      { text: 'Animation', value: 'animation' },
-                      { text: 'Biography', value: 'biography' },
-                      { text: 'Comedy', value: 'comedy' },
-                      { text: 'Crime', value: 'crime' },
-                      { text: 'Documentary', value: 'documentary' },
-                      { text: 'Drama', value: 'drama' },
-                      { text: 'Family', value: 'family' },
-                      { text: 'Fantasy', value: 'fantasy' },
-                      { text: 'Film-Noir', value: 'film-noir' },
-                      { text: 'Game-Show', value: 'game-show' },
-                      { text: 'History', value: 'history' },
-                      { text: 'Horror', value: 'horror' },
-                      { text: 'Music', value: 'music' },
-                      { text: 'Musical', value: 'musical' },
-                      { text: 'Mystery', value: 'mystery' },
-                      { text: 'News', value: 'news' },
-                      { text: 'Reality Tv', value: 'reality-tv' },
-                      { text: 'Romance', value: 'romance' },
-                      { text: 'Sci-Fi', value: 'sci-fi' },
-                      { text: 'Sport', value: 'sport' },
-                      { text: 'Talk-Show', value: 'talk-show' },
-                      { text: 'Thriller', value: 'thriller' },
-                      { text: 'War', value: 'war' },
-                      { text: 'Western', value: 'western' },
-                      ]"
+                { text: 'All', value: 'all' },
+                { text: 'Action', value: 'action' },
+                { text: 'Adventure', value: 'adventure' },
+                { text: 'Animation', value: 'animation' },
+                { text: 'Biography', value: 'biography' },
+                { text: 'Comedy', value: 'comedy' },
+                { text: 'Crime', value: 'crime' },
+                { text: 'Documentary', value: 'documentary' },
+                { text: 'Drama', value: 'drama' },
+                { text: 'Family', value: 'family' },
+                { text: 'Fantasy', value: 'fantasy' },
+                { text: 'Film-Noir', value: 'film-noir' },
+                { text: 'Game-Show', value: 'game-show' },
+                { text: 'History', value: 'history' },
+                { text: 'Horror', value: 'horror' },
+                { text: 'Music', value: 'music' },
+                { text: 'Musical', value: 'musical' },
+                { text: 'Mystery', value: 'mystery' },
+                { text: 'News', value: 'news' },
+                { text: 'Reality Tv', value: 'reality-tv' },
+                { text: 'Romance', value: 'romance' },
+                { text: 'Sci-Fi', value: 'sci-fi' },
+                { text: 'Sport', value: 'sport' },
+                { text: 'Talk-Show', value: 'talk-show' },
+                { text: 'Thriller', value: 'thriller' },
+                { text: 'War', value: 'war' },
+                { text: 'Western', value: 'western' }
+              ]"
             >
               <template v-slot:prepend-inner>
                 <div class="select-text">Genre:</div>
@@ -126,15 +136,20 @@
             <v-select
               v-model="order"
               solo
-              :menu-props="{light: true, top: true, offsetY: true, offsetOverflow: true}"
+              :menu-props="{
+                light: true,
+                top: true,
+                offsetY: true,
+                offsetOverflow: true
+              }"
               :disabled="loading"
               light
               hide-details
               single-line
               :items="[
-                      { text: 'Ascending', value: 'asc' },
-                      { text: 'Descending', value: 'desc' }
-                      ]"
+                { text: 'Ascending', value: 'asc' },
+                { text: 'Descending', value: 'desc' }
+              ]"
             >
               <template v-slot:prepend-inner>
                 <div class="select-text">Sort:</div>
@@ -252,7 +267,7 @@ export default {
     },
     updateSuggestions() {
       this.thinking = true;
-      getMoviesList({ query_term: this.query })
+      getMoviesList({ query: this.query })
         .then(res => {
           if (res.data.status !== "ok")
             throw new Error(res.data.status_message);
@@ -274,10 +289,10 @@ export default {
       if (resetPages) this.cpage = 1;
 
       const params = {
-        query_term: this.query,
-        minimum_rating: (this.rating * 10) / 5,
-        order_by: this.order,
-        sort_by: this.sort,
+        query: this.query,
+        rate: (this.rating * 10) / 5,
+        order: this.order,
+        sort: this.sort,
         genre: this.genre,
         page: this.cpage
       };
@@ -295,10 +310,10 @@ export default {
     },
     random() {
       let params = {
-        query_term: this.query,
-        minimum_rating: (this.rating * 10) / 5,
-        order_by: this.order,
-        sort_by: this.sort,
+        query: this.query,
+        rate: (this.rating * 10) / 5,
+        order: this.order,
+        sort: this.sort,
         genre: this.genre
       };
 
