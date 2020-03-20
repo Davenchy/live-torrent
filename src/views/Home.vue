@@ -40,7 +40,9 @@
                 <v-icon color="green">fas fa-upload</v-icon>
               </v-btn>
               <v-btn icon @click="search">
-                <v-icon color="teal" v-if="validateQuery.isTorrentId">fas fa-eye</v-icon>
+                <v-icon color="teal" v-if="validateQuery.isTorrentId"
+                  >fas fa-eye</v-icon
+                >
                 <v-icon color="blue" v-else>fas fa-search</v-icon>
               </v-btn>
             </template>
@@ -48,6 +50,20 @@
         </v-flex>
 
         <v-flex class="text-xs-center mt-5">
+          <v-btn
+            color="gray"
+            href="https://github.com/Davenchy/live-torrent"
+            target="blank"
+          >
+            <v-icon left>fab fa-github</v-icon>Github
+          </v-btn>
+          <v-btn
+            color="gray"
+            href="https://github.com/Davenchy/live-torrent/issues"
+            target="blank"
+          >
+            <v-icon left>fas fa-exclamation-circle</v-icon>Github Issues
+          </v-btn>
           <v-btn
             color="blue"
             href="mailto:firon1222@gmail.com?Subject=Live%20Torrent%20-%20Feedback"
@@ -71,7 +87,10 @@
             target="_blank"
             title="Support us and a faster and safer web by downloading Brave browser"
           >
-            <img src="/img/brave.png" alt="Proud to support a faster, safer web" />
+            <img
+              src="/img/brave.png"
+              alt="Proud to support a faster, safer web"
+            />
           </a>
         </v-flex>
       </v-layout>
