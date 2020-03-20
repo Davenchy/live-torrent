@@ -19,5 +19,4 @@ export const getSuggestedMovies = id =>
   backend.get(`/yts/movie/${id}/suggestions`);
 
 //  movies captions
-export const loadCaptions = imdbID =>
-  backend.get(`/captions/search?imdbid=${imdbID}`);
+export const loadCaptions = imdbID => backend.get(`/captions?imdbid=${imdbID}`);
