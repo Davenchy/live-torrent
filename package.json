@@ -22,7 +22,7 @@
     "iconv-lite": "^0.5.1",
     "live-torrent-backend": "^1.3.0",
     "morgan": "^1.9.1",
-    "parse-torrent": "^7.0.1",
+    "parse-torrent": "^7.1.2",
     "register-service-worker": "^1.7.1",
     "request": "^2.88.2",
     "request-promise-core": "^1.1.3",
