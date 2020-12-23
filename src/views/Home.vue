@@ -52,7 +52,7 @@
         <v-flex class="text-xs-center mt-5">
           <v-btn
             color="gray"
-            href="https://github.com/Davenchy/live-torrent"
+            href="https://github.com/riyas-rawther/live-torrent"
             target="blank"
           >
             <v-icon left>fab fa-github</v-icon>Github
