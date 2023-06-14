@@ -8,13 +8,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/mime": "^3.0.1",
+    "@types/pump": "^1.1.1",
+    "@types/range-parser": "^1.2.4",
+    "@types/webtorrent": "^0.109.3",
+    "mime": "^3.0.0",
     "next": "^13.4.5",
+    "pump": "^3.0.0",
+    "range-parser": "^1.2.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "webtorrent": "^2.1.0"
   },
   "devDependencies": {
     "@types/node": "20.3.1",
     "@types/react": "18.2.12",
+    "eslint": "8.42.0",
+    "eslint-config-next": "13.4.5",
     "typescript": "5.1.3"
   }
 }
