@@ -1,5 +1,6 @@
 import { usePath } from "core/hooks/path"
 import useTorrentInfo from "core/hooks/torrent"
+import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { TorrentFileInfo } from "types"
 
@@ -29,8 +30,13 @@ function getFiles(path: string, files: TorrentFileInfo[]): TorrentFileInfo[] {
 	return files.filter((f: TorrentFileInfo) => f.path === `${path}/${f.name}`)
 }
 
-function File({ file }: { file: TorrentFileInfo }) {
-	return <li>{file.name}</li>
+function File({
+	file, onClick
+	}: { file: TorrentFileInfo, onClick: (file: TorrentFileInfo) => void }) {
+
+	return <li style={{
+		cursor: 'pointer'
+	}} onClick={() => onClick(file)}>{file.name}</li>
 }
 
 function Directory({ name, onClick }: { name: string, onClick: () => void }) {
@@ -48,11 +54,16 @@ export default function FileExplorer({
 	const {path, open, back} = usePath(initPath)
 	const [dirs, setDirs] = useState<string[]>([])
 	const [files, setFiles] = useState<TorrentFileInfo[]>([])
+	const router = useRouter()
 
 	useEffect(() => {
 		setDirs(torrent ? getDirs(path, torrent.files) : [])
 		setFiles(torrent ? getFiles(path, torrent.files) : [])
 	}, [path, torrent])
+
+	const openFile = (file: TorrentFileInfo) => {
+		router.push(`/api/torrent/${infohash}${file.path}`)
+	}
 
 	if (isLoading) return <div>Loading...</div>
 	if (error || !torrent) return <div>Failed to fetch torrent files!</div>
@@ -76,7 +87,8 @@ export default function FileExplorer({
 				}
 				{
 					/* the files */
-					files.map(file => <File key={file.path} file={file}/>)
+					files.map(file =>
+						<File key={file.path} file={file} onClick={openFile}/>)
 				}
 			</ul>
 		</div>
