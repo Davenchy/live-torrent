@@ -1,22 +1,30 @@
-# live-torrent
+# Live Torrent V4
 
-Search, explore and download torrent files online.
+### Live Torrent with __React.js__ flavor ❤️
 
-Watch online YTS movies with subtitles.
+Search, explore, download and stream torrent files online.
 
-the backend package is [live-torrent-backend](https://github.com/Davenchy/live-torrent-backend)
+Watch online YTS movies with subtitles in any language.
+
+Now all in one fullstack package.
 
 ## Install and Build
 
 ```
 # clone the project
-git clone https://github.com/Davenchy/live-torrent && cd live-torrent
+git clone --depth=1 https://github.com/Davenchy/live-torrent.git
+
+# change working directory
+cd live-torrent
 
 # then install dependencies
 npm install
 
-# build frontend
+# now lets's build our project
 npm run build
+
+# finally get ready
+npm start
 
 #######################################################################
 
@@ -33,25 +41,19 @@ PORT=???? OSUA=?????????? npm start
 
 ```
 
-### The .ENV file
+### Environment Variables
 
-Live torrent needs some environment variables you can define them in the terminal or in a `.env` file
+Live Torrent depends on other services like OpenSubtitles,
+So to use subtitles on your own build,
+you will need to request OpenSubtitles API key from opensubtitles.org
 
 | Variable Name | Default Value      | Description                          |
 | ------------- | ------------------ | ------------------------------------ |
 | PORT          | 3000               | the server listening port            |
 | OSUA          | TemporaryUserAgent | the opensubtitles.org api user agent |
 
-for more information about the backend from [here](https://github.com/Davenchy/live-torrent-backend/wiki/How-to-use#environment-variables).
-
-for more information about the OpenSubtitles.org api user agent from [here](https://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst)
-
 ## Docker
 
 - Docker repo: `davenchy/live-torrent`
 
 `docker run --name live-torrent -d -p <PORT>:8080 -e "OSUA=<your opensubtitles user agent>" live-torrent`
-
-## Frontend API
-
-> Soon
