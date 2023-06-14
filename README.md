@@ -1,6 +1,6 @@
 # Live Torrent V4
 
-### Live Torrent with __React.js__ flavor ❤️
+### Live Torrent with __Next.js ❤️__ flavor.
 
 Search, explore, download and stream torrent files online.
 
@@ -25,35 +25,4 @@ npm run build
 
 # finally get ready
 npm start
-
-#######################################################################
-
-# create the .env file more information in the .ENV section below
-echo "PORT=<your port>\nOSUA=<your opensubtitles user agent>" > .env
-
-# run the server
-npm start
-
-################################ OR ###################################
-
-# run the server with env vars
-PORT=???? OSUA=?????????? npm start
-
 ```
-
-### Environment Variables
-
-Live Torrent depends on other services like OpenSubtitles,
-So to use subtitles on your own build,
-you will need to request OpenSubtitles API key from opensubtitles.org
-
-| Variable Name | Default Value      | Description                          |
-| ------------- | ------------------ | ------------------------------------ |
-| PORT          | 3000               | the server listening port            |
-| OSUA          | TemporaryUserAgent | the opensubtitles.org api user agent |
-
-## Docker
-
-- Docker repo: `davenchy/live-torrent`
-
-`docker run --name live-torrent -d -p <PORT>:8080 -e "OSUA=<your opensubtitles user agent>" live-torrent`
