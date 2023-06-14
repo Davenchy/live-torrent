@@ -18,7 +18,7 @@ export const torrentToJson = (torrent: WebTorrent.Torrent): TorrentInfo => ({
 	downloaded: Math.max(torrent.downloaded, 0),
 	files: torrent.files.map(file => ({
 		name: file.name,
-		path: file.path,
+		path: '/' + file.path,
 		size: Math.max(file.length, 0),
 		type: mime.getType(file.name) || "application/octet-stream",
 		downloaded: Math.max(file.downloaded, 0)
