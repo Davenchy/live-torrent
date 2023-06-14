@@ -1,9 +1,10 @@
 import { trackers } from 'core/utils/torrent-trackers'
-import rangeParser from 'range-parser'
+import rangeParser, { Range, Ranges, Result } from 'range-parser'
 import WebTorrent from 'webtorrent'
 import mime from 'mime'
 import pump from 'pump'
 import { TorrentInfo } from 'types'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 const client = new WebTorrent()
 
@@ -36,65 +37,65 @@ export const requestTorrent = async (torrentId: string):
 				resolve(client.get(torrent.infoHash) as WebTorrent.Torrent)
 			reject(err)
 		})
-		torrent.on('ready', () => {
+		torrent.on("metadata", () => {
 			torrent.pause()
 			for (let file of torrent.files)
 				file.deselect()
-			resolve(torrent)
 		})
+		torrent.on('ready', () => resolve(torrent))
 	})
 
 /**
- * serveFile if a function from inside webtorrent createServer method
- *
- * @function
- * @param {object} file
- * @param {Object} req - express middleware req
- * @param {Object} res - express middleware res
+ * stream file and support continues downloading
  */
-export const serveFile = (file: WebTorrent.TorrentFile, req, res) => {
+export const streamFile = (
+	file: WebTorrent.TorrentFile | undefined,
+	req: NextApiRequest,
+	res: NextApiResponse
+) => {
   if (!file) {
-    res.statusCode = 404;
-    return res.send();
+		res.status(404).json({error: 'file not found'})
+    return
   }
 
-  res.statusCode = 200;
-  res.setHeader("Content-Type", mime.getType(file.name));
+	res.statusCode = 200
+  res.setHeader("Content-Type", mime.getType(file.name) || "");
 
   // Support range-requests
   res.setHeader("Accept-Ranges", "bytes");
 
   // Set name of file (for "Save Page As..." dialog)
-  // res.setHeader("Content-Disposition", `inline; filename*=UTF-8''${file.name}`);
-  res.attachment(file.name);
+	res.setHeader("Content-Disposition", `attachment; filename=${file.name}`)
 
   // `rangeParser` returns an array of ranges, or an error code (number) if
   // there was an error parsing the range.
-  let range = rangeParser(file.length, req.headers.range || "");
+  let range: Range | Ranges | Result | null = rangeParser(
+		file.length, req.headers.range || "application/octet-stream");
 
   if (Array.isArray(range)) {
     res.statusCode = 206; // indicates that range-request was understood
 
     // no support for multi-range request, just use the first range
     // @ts-ignore
-    range = range[0];
+    range = range[0] as Range;
 
     res.setHeader(
       "Content-Range",
-      // @ts-ignore
       `bytes ${range.start}-${range.end}/${file.length}`
     );
-    // @ts-ignore
     res.setHeader("Content-Length", range.end - range.start + 1);
   } else {
     range = null;
     res.setHeader("Content-Length", file.length);
   }
 
-  if (req.method === "HEAD") {
+  if (req.method === "HEAD")
     return res.end();
-  }
 
-  // @ts-ignore
-  pump(file.createReadStream(range), res);
+  pump(
+		file.createReadStream(
+			range ? { start: range.start, end: range.end} : undefined
+		),
+		res
+	);
 }
