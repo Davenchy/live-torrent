@@ -1,5 +1,5 @@
 "use client"
-import FileExplorer from 'core/components/file_explorer'
+import FileExplorer from 'components/file_explorer'
 import useTorrentInfo from 'core/hooks/torrent'
 import Link from 'next/link'
 

@@ -1,5 +1,5 @@
 "use client"
-import Movies from 'core/components/movies'
+import Movies from 'components/movies'
 import { useRouter } from 'next/navigation'
 import React, { ChangeEvent, useState } from 'react'
 

@@ -36,7 +36,8 @@ function File({
 
 	return <li style={{
 		cursor: 'pointer'
-	}} onClick={() => onClick(file)}>{file.name}</li>
+	}} onClick={() => onClick(file)}>
+		{file.name} - {Math.round(file.downloaded / file.size * 100)}%</li>
 }
 
 function Directory({ name, onClick }: { name: string, onClick: () => void }) {

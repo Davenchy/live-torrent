@@ -33,5 +33,5 @@ export const formatSize = (bytes: number): string => {
 export const calculateAvailability =
 	(seeders: number, leechers: number): string =>
 	!seeders
-		? "0.00%"
-		: Math.min(Math.abs(1 - leechers/seeders), 1).toFixed(2) + '%'
+		? "0%"
+		: (Math.min(Math.abs(1 - leechers/seeders), 1) * 100).toFixed() + '%'
