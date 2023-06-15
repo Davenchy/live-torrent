@@ -12,7 +12,7 @@ Now all in one fullstack package.
 
 ```
 # clone the project
-git clone --depth=1 --single-branch -b nextjs-reimplement https://github.com/Davenchy/live-torrent.git
+git clone --depth=1 --single-branch https://github.com/Davenchy/live-torrent.git
 
 # change working directory
 cd live-torrent
