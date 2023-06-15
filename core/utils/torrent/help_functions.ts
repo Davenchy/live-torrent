@@ -42,7 +42,12 @@ export const requestTorrent = async (torrentId: string):
 			for (let file of torrent.files)
 				file.deselect()
 		})
-		torrent.on('ready', () => resolve(torrent))
+		torrent.on('ready', () => {
+			torrent.pause()
+			for (let file of torrent.files)
+				file.deselect()
+			resolve(torrent)
+		})
 	})
 
 /**

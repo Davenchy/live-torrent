@@ -36,7 +36,8 @@ export default function Movies() {
 	const updateQuery = (e: ChangeEvent<HTMLInputElement>) =>
 		setQuery(e.target.value)
 
-	const openMovie = (movie: YtsMovie) => router.push(`/movie/${movie.slug}`)
+	const openMovie = (movie: YtsMovie) =>
+		router.push(`/movie/${movie.imdb_code}`)
 
 	return <div>
 		<h1>Movies</h1>
@@ -56,7 +57,9 @@ export default function Movies() {
 							movie={movie}
 							onClick={() => openMovie(movie)} />
 					)
-				: null
+				: query
+					? <p>No results found for {query}</p>
+					: <p>Please Wait...</p>
 			}
 		</div>
 		<br />

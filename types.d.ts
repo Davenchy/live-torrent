@@ -41,12 +41,15 @@ export interface YtsSearchResult {
 	movies: YtsMovie[]
 }
 
+export interface YtsMovieResult {
+	movie: YtsMovie
+}
+
 export interface YtsMovie {
 	id: number
 	url: string
 	imdb_code: string
 	title: string
-	slug: string
 	year: number
 	rating: number
 	runtime: number
@@ -67,6 +70,7 @@ export interface YtsTorrent {
 	hash: string
 	quality: YtsTorrentQuality
 	size: number
+	size_bytes: number
 	type: YtsTorrentType
 	seeds: number
 	peers: number

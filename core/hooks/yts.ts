@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { YtsMovie, YtsResponse, YtsSearchResult } from "types"
+import useSWR from "swr"
+import { YtsMovie, YtsMovieResult, YtsResponse, YtsSearchResult } from "types"
 
 const fetcher = <T> (url: string) =>
 	fetch(`https://yts.mx/api/v2/${url}`)
@@ -21,7 +22,7 @@ export function useMovies() {
 			.then(res => {
 				if (res?.status !== "ok")
 					return
-				setMovies(movies => [...movies, ...res.data.movies])
+				setMovies(movies => [...movies, ...(res.data?.movies ?? [])])
 			})
 			.catch(() => setError("Failed to fetch movies"))
 			.finally(() => setIsLoading(false))
@@ -50,5 +51,16 @@ export function useMovies() {
 		reload,
 		loadMore,
 		search,
+	}
+}
+
+export function useMovie(id: string) {
+	const {data, isLoading, error} = useSWR(`movie_details.json?imdb_id=${id}`,
+		fetcher<YtsMovieResult>)
+
+	return {
+		movie: data?.data.movie,
+		isLoading,
+		error,
 	}
 }
