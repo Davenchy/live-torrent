@@ -1,6 +1,6 @@
 # Live Torrent V4
 
-### Live Torrent with __Next.js ❤️__ flavor.
+### Reimplementing Live Torrent with __Next.js ❤️__ flavor.
 
 Search, explore, download and stream torrent files online.
 
