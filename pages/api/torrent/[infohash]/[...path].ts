@@ -8,6 +8,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	requestTorrent(infohash)
 		.then(torrent => {
 			const file = torrent.files.filter(f => f.path === path)[0]
+			file.select()
 			streamFile(file, req, res)
 		})
 		.catch(_ => res.status(400).json({error: 'failed to fetch torrent'}))
