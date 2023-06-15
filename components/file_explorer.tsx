@@ -31,13 +31,27 @@ function getFiles(path: string, files: TorrentFileInfo[]): TorrentFileInfo[] {
 }
 
 function File({
-	file, onClick
-	}: { file: TorrentFileInfo, onClick: (file: TorrentFileInfo) => void }) {
+	file, onClick, onWatch
+	}: {
+		file: TorrentFileInfo,
+		onClick: (file: TorrentFileInfo) => void,
+		onWatch: (path: string) => void
+}) {
 
-	return <li style={{
-		cursor: 'pointer'
-	}} onClick={() => onClick(file)}>
-		{file.name} - {Math.round(file.downloaded / file.size * 100)}%</li>
+	return <li>
+		<span onClick={() => onClick(file)} style={{cursor: 'pointer'}}>
+			{file.name}</span>
+		<span
+			style={{marginLeft: '12px'}}>
+			{Math.round(file.downloaded / file.size * 100)}%</span>
+		{
+			file.type.startsWith('video')
+				? <span
+					onClick={() => onWatch(file.path)}
+					style={{marginLeft: '16px', cursor: 'pointer'}}>watch</span>
+				: null
+		}
+	</li>
 }
 
 function Directory({ name, onClick }: { name: string, onClick: () => void }) {
@@ -62,9 +76,11 @@ export default function FileExplorer({
 		setFiles(torrent ? getFiles(path, torrent.files) : [])
 	}, [path, torrent])
 
-	const openFile = (file: TorrentFileInfo) => {
+	const openFile = (file: TorrentFileInfo) =>
 		router.push(`/api/torrent/${infohash}${file.path}`)
-	}
+
+	const watchVideo = (path: string) =>
+		router.push(`/player/${infohash}${path}`)
 
 	if (isLoading) return <div>Loading...</div>
 	if (error || !torrent) return <div>Failed to fetch torrent files!</div>
@@ -89,7 +105,11 @@ export default function FileExplorer({
 				{
 					/* the files */
 					files.map(file =>
-						<File key={file.path} file={file} onClick={openFile}/>)
+						<File
+							key={file.path}
+							file={file}
+							onClick={openFile}
+							onWatch={watchVideo}/>)
 				}
 			</ul>
 		</div>

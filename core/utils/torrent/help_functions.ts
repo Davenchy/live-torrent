@@ -37,16 +37,34 @@ export const requestTorrent = async (torrentId: string):
 				resolve(client.get(torrent.infoHash) as WebTorrent.Torrent)
 			reject(err)
 		})
-		torrent.on("metadata", () => {
-			torrent.pause()
-			for (let file of torrent.files)
-				file.deselect()
-		})
 		torrent.on('ready', () => {
 			torrent.pause()
 			for (let file of torrent.files)
 				file.deselect()
 			resolve(torrent)
+		})
+	})
+
+/** requests torrent files info and destroy the torrent */
+export const requestTorrentInfo = async (torrentId: string):
+	Promise<TorrentInfo> =>
+	new Promise((resolve, reject) => {
+		const torrent = client.add(torrentId, { announce: trackers })
+		torrent.on('error', (err: Error) => {
+			if (err.message.indexOf("Cannot add duplicate torrent") !== -1) {
+				const t = client.get(torrent.infoHash)
+				if (!t)
+					reject(err)
+				else
+					resolve(torrentToJson(t))
+			}
+			reject(err)
+		})
+		torrent.on("metadata", () => {
+			torrent.pause()
+			for (let file of torrent.files)
+				file.deselect()
+			resolve(torrentToJson(torrent))
 		})
 	})
 
