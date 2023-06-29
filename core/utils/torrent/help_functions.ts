@@ -82,10 +82,10 @@ export const streamFile = (
   }
 
 	res.statusCode = 200
-  res.setHeader("Content-Type", mime.getType(file.name) || "");
+  res.setHeader("Content-Type", mime.getType(file.name) || "")
 
   // Support range-requests
-  res.setHeader("Accept-Ranges", "bytes");
+  res.setHeader("Accept-Ranges", "bytes")
 
   // Set name of file (for "Save Page As..." dialog)
 	res.setHeader("Content-Disposition", `attachment; filename=${file.name}`)
@@ -93,32 +93,32 @@ export const streamFile = (
   // `rangeParser` returns an array of ranges, or an error code (number) if
   // there was an error parsing the range.
   let range: Range | Ranges | Result | null = rangeParser(
-		file.length, req.headers.range || "application/octet-stream");
+		file.length, req.headers.range || "application/octet-stream")
 
   if (Array.isArray(range)) {
-    res.statusCode = 206; // indicates that range-request was understood
+    res.statusCode = 206 // indicates that range-request was understood
 
     // no support for multi-range request, just use the first range
     // @ts-ignore
-    range = range[0] as Range;
+    range = range[0] as Range
 
     res.setHeader(
       "Content-Range",
       `bytes ${range.start}-${range.end}/${file.length}`
-    );
-    res.setHeader("Content-Length", range.end - range.start + 1);
+    )
+    res.setHeader("Content-Length", range.end - range.start + 1)
   } else {
-    range = null;
-    res.setHeader("Content-Length", file.length);
+    range = null
+    res.setHeader("Content-Length", file.length)
   }
 
   if (req.method === "HEAD")
-    return res.end();
+    return res.end()
 
   pump(
 		file.createReadStream(
 			range ? { start: range.start, end: range.end} : undefined
 		),
 		res
-	);
+	)
 }
