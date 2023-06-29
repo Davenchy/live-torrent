@@ -1,19 +1,31 @@
 import { useMovies } from "core/hooks/yts";
 import MovieCard from "./movie_card";
-import { CSSProperties, ChangeEvent, useEffect, useState } from "react";
-import { YtsMovie } from "types";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 
-const moviesListStyle: CSSProperties = {
-	display: 'flex',
-	flexWrap: 'wrap',
-	justifyContent: 'center'
+const searchInfoTW = 'text-xl font-bold m-24'
+
+function debounce(callback: Function, delay: number) {
+	let timer: NodeJS.Timeout;
+	return function(...args: unknown[]) {
+		if (timer)
+			clearTimeout(timer)
+		timer = setTimeout(() => {
+			callback(...args)
+		}, delay)
+	}
 }
 
-export default function Movies() {
-	const router = useRouter()
-	const [ query, setQuery ] = useState("")
-	const { movies, isLoading, loadMore, search } = useMovies()
+export default function Movies({ query }: { query: string }) {
+	const { search, loadMore, state } = useMovies()
+	const dsearch = useMemo(() => debounce((q: string) => search(q), 600), [])
+	const isLoading = state.state === 'loading'
+	const hasMovies = state.state === 'data' && !!state.movies && !!state.movies.length
+	const hasMore = state.page < state.pages
+	const movies = state.movies
+
+	useEffect(() => {
+		dsearch(query)
+	}, [query])
 
 	useEffect(() => {
 		loadMore()
@@ -23,8 +35,6 @@ export default function Movies() {
 			if (!scroll)
 				return
 			const { scrollTop, scrollHeight } = scroll
-			console.log("height:", window.innerHeight)
-			console.log(scrollTop, scrollHeight)
 			if (scrollTop + threshold >= scrollHeight)
 				loadMore()
 		}
@@ -33,37 +43,32 @@ export default function Movies() {
 		return () => removeEventListener('scroll', scrollHandler)
 	}, [])
 
-	const updateQuery = (e: ChangeEvent<HTMLInputElement>) =>
-		setQuery(e.target.value)
-
-	const openMovie = (movie: YtsMovie) =>
-		router.push(`/movie/${movie.imdb_code}`)
-
-	return <div>
-		<h1>Movies</h1>
-		<input
-			type="search"
-			placeholder="Search for a movie..."
-			value={query}
-			onChange={updateQuery} />
-		<button onClick={() => search(query)}>Search</button>
-		<br /><br /><br />
-		<div style={moviesListStyle}>
+	return <div className="container mx-auto flex flex-col items-center">
+		<div className="w-full grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6
+			place-items-center">
 			{
-				movies.length
-				? movies.map(movie =>
-						<MovieCard
-							key={movie.id}
-							movie={movie}
-							onClick={() => openMovie(movie)} />
+				movies !== undefined
+					? movies.map((movie, i) =>
+						<a
+							href={`/movie/${movie.imdb_code}`}
+							key={movie.id + movie.imdb_code + i}>
+								<MovieCard movie={movie} />
+						</a>
 					)
-				: query
-					? <p>No results found for {query}</p>
-					: <p>Please Wait...</p>
+					: null
 			}
 		</div>
-		<br />
-		{isLoading && <p>Loading...</p>}
-		<br />
+		{isLoading && <p className={searchInfoTW}>Loading...</p>}
+		{
+			!isLoading
+				&& hasMovies
+				&& !hasMore
+				&& <p className={searchInfoTW}>No More Results</p>
+		}
+		{
+			!isLoading
+				&& !hasMovies
+				&& <p className={searchInfoTW}>No results found for {query}</p>
+		}
 	</div>
 }
