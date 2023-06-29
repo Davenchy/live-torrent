@@ -31,35 +31,32 @@ function getFiles(path: string, files: TorrentFileInfo[]): TorrentFileInfo[] {
 }
 
 function File({
-	file, onClick, onWatch
+	file, infohash
 	}: {
 		file: TorrentFileInfo,
-		onClick: (file: TorrentFileInfo) => void,
-		onWatch: (path: string) => void
+		infohash: string,
 }) {
 
 	return <li>
-		<span onClick={() => onClick(file)} style={{cursor: 'pointer'}}>
-			{file.name}</span>
-		<span
-			style={{marginLeft: '12px'}}>
+		<a href={`/api/torrent/${infohash}${file.path}`}>
+			{file.name}</a>
+		<span className="m-4">
 			{Math.round(file.downloaded / file.size * 100)}%</span>
 		{
 			file.type.startsWith('video')
-				? <span
-					onClick={() => onWatch(file.path)}
-					style={{marginLeft: '16px', cursor: 'pointer'}}>watch</span>
+				? <a
+					href={`/player/${infohash}${file.path}`}
+					className="px-2 py-1 bg-blue-500 text-white rounded-lg">watch</a>
 				: null
 		}
 	</li>
 }
 
 function Directory({ name, onClick }: { name: string, onClick: () => void }) {
-	return <li style={{
-		textDecoration: 'underline',
-		cursor: 'pointer'
-	}}
-	onClick={onClick}>{name}/</li>
+	return <li
+		className="cursor-pointer underline font-bold"
+		onClick={onClick}
+		>{name}/</li>
 }
 
 export default function FileExplorer({
@@ -76,9 +73,6 @@ export default function FileExplorer({
 		setFiles(torrent ? getFiles(path, torrent.files) : [])
 	}, [path, torrent])
 
-	const openFile = (file: TorrentFileInfo) =>
-		router.push(`/api/torrent/${infohash}${file.path}`)
-
 	const watchVideo = (path: string) =>
 		router.push(`/player/${infohash}${path}`)
 
@@ -86,8 +80,8 @@ export default function FileExplorer({
 	if (error || !torrent) return <div>Failed to fetch torrent files!</div>
 
 	return <div>
-		<div>Path: {path}</div>
-		<div>
+		<h2 className="text-xl text-gray-600">Path: {path}</h2>
+		<div className="ml-8 mt-4">
 			<ul>
 				{
 					/* the back button */
@@ -108,8 +102,7 @@ export default function FileExplorer({
 						<File
 							key={file.path}
 							file={file}
-							onClick={openFile}
-							onWatch={watchVideo}/>)
+							infohash={infohash} />)
 				}
 			</ul>
 		</div>
