@@ -26,3 +26,49 @@ npm run build
 # finally get ready
 npm start
 ```
+
+## Docker
+
+### Build Docker Image
+
+```sh
+docker build -t live-torrent-next .
+```
+
+### Run Docker Container
+
+- run/create a new container
+
+```sh
+docker run --name=live-torrent-next -d -p 3000:3000 live-torrent-next
+```
+
+- start the container
+
+```sh
+docker start live-torrent-next
+```
+
+- stop the container
+
+```sh
+docker stop live-torrent-next
+```
+
+### Old LiveTorrent
+
+- To pull the old LiveTorrent docker image
+
+```sh
+docker pull davenchy/live-torrent
+```
+
+- To run a container for the old LiveTorrent
+
+```sh
+docker run --name=live-torrent -d -p 3000:8080 -e "OSUA=<your opensubtitles user agent>" davenchy/live-torrent
+```
+
+- The __OSUA__ enviroment variable must be set to your opensubtitles user agent.
+
+It is not mandatory to run but it is required to fetch subtitles.
