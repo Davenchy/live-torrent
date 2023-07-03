@@ -77,4 +77,6 @@ docker pull davenchy/live-torrent
 docker run --name=live-torrent -d -p 3000:8080 -e "OSUA=<your opensubtitles user agent>" davenchy/live-torrent
 ```
 
-- The __OSUA__ enviroment variable must be set to your opensubtitles user agent. It is not mandatory to run but it is required to fetch subtitles.
+- The __OSUA__ enviroment variable must be set to your opensubtitles user agent. It is not mandatory to set but it is required to fetch subtitles.
+
+- To get your own __OpenSubtitles_User_Agent__ check this [link](https://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst#Howtorequestanewuseragent)
