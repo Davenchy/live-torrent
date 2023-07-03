@@ -1,6 +1,11 @@
 name: Docker Image CI
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: The image tag
+        required: true
+        default: latest
 #   push:
 #     branches: [ "main" ]
 #   pull_request:
