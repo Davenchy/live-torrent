@@ -32,5 +32,5 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: davenchy/live-torrent-next:$(date +%s)
+        tags: davenchy/live-torrent-next:${{ github.event.inputs.tag }}
         labels: ${{ steps.meta.outputs.labels }}
