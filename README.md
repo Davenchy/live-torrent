@@ -45,6 +45,12 @@ docker build -t live-torrent-next .
 docker run --name=live-torrent-next -d -p 3000:3000 live-torrent-next
 ```
 
+> OR use our pre-built image form docker hub `davenchy/live-torrent-next:latest`
+
+```sh
+docker run --name=live-torrent-next -d -p 3000:3000 davenchy/live-torrent-next:latest
+```
+
 - start the container
 
 ```sh
