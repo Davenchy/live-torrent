@@ -1,5 +1,13 @@
 # Live Torrent V4
 
+## Project Status and Updates
+
+This project is outdated, and this Docker [image](https://hub.docker.com/repository/docker/davenchy/live-torrent) is likely the only functional version. However, many functionalities within the image are outdated and no longer work.
+
+I have rewritten the [backend server](https://github.com/Davenchy/live-torrent-backend) to be up-to-date and functional.
+
+The frontend **has not been updated yet**, and there is no estimated time for its update, but I will address it in the future.
+
 ### Rebuilding Live Torrent with __Next.js ❤️__ flavor from scratch.
 
 > In progress
